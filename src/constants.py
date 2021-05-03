@@ -18,4 +18,14 @@
 #
 
 DEFAULT_SETTINGS = {
+    "output.resolution": (1920, 1080),
+    "output.fps": 30,
+
+    "layout.middle_fac": 0.5,
+    "layout.border_fac": 0,
+    "layout.keys_height": 0.2,
+
+    "piano.method": "video",
+    "piano.video_path": "",
+    "piano.video_rect": (),
 }
