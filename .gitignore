@@ -1,0 +1,7 @@
+__pycache__
+.vscode
+
+*.mid
+*.mp3
+*.mp4
+settings.json
