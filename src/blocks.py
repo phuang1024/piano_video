@@ -25,15 +25,14 @@ pygame.init()
 
 def render_blocks(settings, surface, notes, frame):
     width, height = settings["output.resolution"]
-    keys_total_width = width - 2*(1-settings["layout.border_fac"])
-    offset = settings["layout.border_fac"] * width
+    middle = settings["computed.middle"]
+    px_per_frame = settings["computed.px_per_frame"]
 
-    px_per_frame = settings["blocks.speed"] * height / settings["output.fps"]
-    middle = settings["layout.middle_fac"] * height
-
+    keys_total_width = settings["computed.keys_total_width"]
+    offset = settings["computed.keys_offset"]
     black_fac = settings["piano.black_width_fac"]
-    white_width = keys_total_width / TOTAL_KEYS
-    black_width = white_width * black_fac
+    black_width = settings["computed.black_width"]
+    white_width = settings["computed.white_width"]
 
     for note, start, end in notes:
         start_y = middle - px_per_frame*(start-frame)

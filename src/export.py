@@ -27,6 +27,33 @@ from midi import parse_midis
 pygame.init()
 
 
+def compute_info(settings):
+    """
+    Computes information required for rendering and stores it in settings.
+    Saves re-computations each frame.
+    """
+
+    width, height = settings["output.resolution"]
+    keys_total_width = width - 2*(1-settings["layout.border_fac"])
+    keys_offset = settings["layout.border_fac"] * width
+
+    px_per_frame = settings["blocks.speed"] * height / settings["output.fps"]
+    middle = settings["layout.middle_fac"] * height
+
+    black_fac = settings["piano.black_width_fac"]
+    white_width = keys_total_width / TOTAL_KEYS
+    black_width = white_width * black_fac
+
+    settings["computed.keys_total_width"] = keys_total_width
+    settings["computed.keys_offset"] = keys_offset
+
+    settings["computed.px_per_frame"] = px_per_frame
+    settings["computed.middle"] = middle
+
+    settings["computed.white_width"] = white_width
+    settings["computed.black_width"] = black_width
+
+
 def detect_length(settings, notes):
     max_frame = max(notes, key=lambda x: x[2])
     return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
@@ -61,6 +88,8 @@ def export_images(settings, length, notes):
 
 
 def export(settings):
+    compute_info(settings)
+
     notes = parse_midis(settings)
     length = settings["output.length"] if settings["output.length"] != "autodetect" \
         else detect_length(settings, notes)
