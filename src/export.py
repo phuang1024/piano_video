@@ -43,16 +43,18 @@ def export_video(settings, length, notes):
         settings["output.fps"], settings["output.resolution"])
 
     for frame in range(length):
+        log(f"Exporting frame {frame+1} of {length}", clear=True)
+
         img = surf_to_array(render(settings, notes, frame))
         video.write(img)
 
+    log(f"Finished exporting {length} frames", clear=True, new=True)
     video.release()
 
 
 def export_images(settings, length, notes):
     os.makedirs(settings["output.path"], exist_ok=True)
     for frame in range(length):
-        print(frame)
         img = render(settings, notes, frame)
         path = os.path.join(settings["output.path"], f"{frame}.jpg")
         pygame.image.save(img, path)

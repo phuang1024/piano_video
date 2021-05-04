@@ -17,10 +17,13 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 import numpy as np
 import pygame
 from constants import TOTAL_KEYS, WHITE_KEYS
 pygame.init()
+
+LOGGER_CLEAR_LEN = 75
 
 
 def surf_to_array(surf: pygame.Surface) -> np.ndarray:
@@ -42,3 +45,25 @@ def key_x_loc(width, key, black_fac):
         loc -= white_width * black_fac
 
     return loc
+
+
+def log(msg, clear=False, new=False, flush=True):
+    if clear:
+        clearline(flush=False)
+    sys.stdout.write(msg)
+    if flush and not new:
+        sys.stdout.flush()
+    if new:
+        newline(flush=flush)
+
+def clearline(flush=True):
+    sys.stdout.write("\r")
+    sys.stdout.write(" "*LOGGER_CLEAR_LEN)
+    sys.stdout.write("\r")
+    if flush:
+        sys.stdout.flush()
+
+def newline(flush=True):
+    sys.stdout.write("\n")
+    if flush:
+        sys.stdout.flush()
