@@ -27,7 +27,7 @@ import cv2
 from constants import *
 from utils import *
 from export import export
-from videomix import compute_crop_points, crop_piano
+from videomix import compute_crop_points, crop_piano, generate_mask
 pygame.init()
 
 
@@ -75,10 +75,16 @@ def preview_crop(settings, frame):
     pygame.draw.circle(surf, color, (x6, y6), 5, width=1)
 
     out_path = settings["output.path"]
-    cropped = array_to_surf(crop_piano(settings, img))
+    mask = generate_mask(int(distance(x1, y1, x2, y2)), int(distance(x1, y1, x3, y3)), int(distance(x1, y1, x5, y5)))
+
+    cropped = crop_piano(settings, img)
+    masked = cropped * mask
     cropped_path = os.path.join(os.path.dirname(out_path), "cropped_"+os.path.basename(out_path))
+    masked_path = os.path.join(os.path.dirname(out_path), "masked_"+os.path.basename(out_path))
+
     pygame.image.save(surf, out_path)
-    pygame.image.save(cropped, cropped_path)
+    cv2.imwrite(cropped_path, cropped)
+    cv2.imwrite(masked_path, masked)
 
 
 def main():

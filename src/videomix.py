@@ -54,3 +54,14 @@ def crop_piano(settings, image):
     persp = cv2.getPerspectiveTransform(src_points, dst_points)
     result = cv2.warpPerspective(image, persp, (width, height))
     return result
+
+
+def generate_mask(width, height, start_y):
+    mask = []
+    for y in range(height):
+        value = (height-y) / (height-start_y)
+        value = max(min(value, 1), 0) ** 2
+        color = (value, value, value)
+        mask.append([color for _ in range(width)])
+
+    return np.array(mask)
