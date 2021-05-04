@@ -18,8 +18,15 @@
 #
 
 DEFAULT_SETTINGS = {
+    "files.midis": [],
+    "files.video": "",
+
     "output.resolution": (1920, 1080),
     "output.fps": 30,
+    "output.format": "video",
+    "output.length": "autodetect",
+    "output.ending_pause": 1,
+    "output.path": "",
 
     "layout.middle_fac": 0.5,
     "layout.border_fac": 0,
@@ -28,4 +35,12 @@ DEFAULT_SETTINGS = {
     "piano.method": "video",
     "piano.video_path": "",
     "piano.video_rect": (),
+    "piano.black_width_fac": 0.6,
+
+    "blocks.color": (255, 255, 255),
+    "blocks.speed": 0.15,
 }
+
+WHITE_KEYS = 52
+BLACK_KEYS = 36
+TOTAL_KEYS = WHITE_KEYS + BLACK_KEYS
