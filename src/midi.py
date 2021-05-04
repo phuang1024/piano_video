@@ -23,7 +23,7 @@ import mido
 def parse_midis(settings):
     notes = []
 
-    for file in settings.midis:
+    for file in settings["files.midis"]:
         midi = mido.MidiFile(file)
         tpb = midi.ticks_per_beat
 
@@ -31,13 +31,13 @@ def parse_midis(settings):
         tempo = 500000
         curr_frame = 0
         for msg in midi.tracks[0]:
-            curr_frame += msg.time / tpb * tempo / 1000000 * settings["fps"]
+            curr_frame += msg.time / tpb * tempo / 1000000 * settings["output.fps"]
             if msg.is_meta and msg.type == "set_tempo":
                 tempo = msg.tempo
             elif msg.type in ("note_on", "note_off"):
                 note, velocity = msg.note-21, msg.velocity
                 if velocity == 0 or msg.type == "note_off":
-                    notes.append((note, starts[notes], curr_frame))
+                    notes.append((note, starts[note], curr_frame))
                 else:
                     starts[note] = curr_frame
 
