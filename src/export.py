@@ -17,30 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import os
-import argparse
-import json
 from constants import *
-from export import export
+from midi import parse_midis
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Creates a video from a piano MIDI.")
-    parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=True)
-    parser.add_argument("-o", "--output", help="video output path", type=str, required=True)
-    args = parser.parse_args()
-
-    if os.path.isfile(args.settings):
-        with open(args.settings, "r") as file:
-            user_settings = json.load(file)
-        settings = DEFAULT_SETTINGS.copy()
-        for key in user_settings:
-            settings[key] = user_settings[key]
-
-        export(settings)
-
-    else:
-        print(f"No file: {args.settings}")
-
-
-main()
+def export(settings):
+    notes = parse_midis(settings)
