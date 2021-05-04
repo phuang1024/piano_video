@@ -44,14 +44,22 @@ class VideoReader:
         self.last_img = frame
         return frame
 
-    def read(self, frame_num) -> np.ndarray:
+    def read(self, frame_num, verbose=False) -> np.ndarray:
         if frame_num == self.last_frame_num:
             return self.last_img
 
         elif self.last_frame_num == -1 or frame_num > self.last_frame_num:
             while True:
+                if verbose:
+                    clearline()
+                    log(f"Reading frame {self.last_frame_num}/{frame_num} of {self.path}")
                 if frame_num == self.last_frame_num:
+                    if verbose:
+                        clearline()
+                        log(f"Reading frame {frame_num} of {self.path}: Finished")
+                        newline()
                     return self.last_img
+
                 rval, frame = self.video.read()
                 self.last_frame_num += 1
                 self.raise_rval(rval)
@@ -89,7 +97,7 @@ def compute_crop(settings):
 
 def preview_crop(settings):
     output = settings["files.output"]
-    image = VideoReader(settings["files.video"]).read(settings["other.frame"])
+    image = VideoReader(settings["files.video"]).read(settings["other.frame"], verbose=True)
     computed = settings["piano.computed_crop"]
 
     image_crop_box = array_to_surf(image)
