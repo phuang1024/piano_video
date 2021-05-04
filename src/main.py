@@ -37,6 +37,7 @@ def main():
         for key in user_settings:
             settings[key] = user_settings[key]
 
+        settings["output.path"] = args.output
         export(settings)
 
     else:
