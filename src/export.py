@@ -22,6 +22,7 @@ import cv2
 import pygame
 from constants import *
 from utils import *
+from blocks import render_blocks
 from midi import parse_midis
 pygame.init()
 
@@ -31,26 +32,28 @@ def detect_length(settings, notes):
     return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
 
 
-def render(settings, frame):
-    return pygame.Surface(settings["output.resolution"])
+def render(settings, notes, frame):
+    surface = pygame.Surface(settings["output.resolution"])
+    render_blocks(settings, surface, notes, frame)
+    return surface
 
 
-def export_video(settings, length):
+def export_video(settings, length, notes):
     video = cv2.VideoWriter(settings["output.path"], cv2.VideoWriter_fourcc(*"MPEG"),
         settings["output.fps"], settings["output.resolution"])
 
     for frame in range(length):
-        img = surf_to_array(render(settings, frame))
+        img = surf_to_array(render(settings, notes, frame))
         video.write(img)
 
     video.release()
 
 
-def export_images(settings, length):
+def export_images(settings, length, notes):
     os.makedirs(settings["output.path"], exist_ok=True)
     for frame in range(length):
         print(frame)
-        img = render(settings, frame)
+        img = render(settings, notes, frame)
         path = os.path.join(settings["output.path"], f"{frame}.jpg")
         pygame.image.save(img, path)
 
@@ -61,6 +64,6 @@ def export(settings):
         else detect_length(settings, notes)
 
     if settings["output.format"] == "video":
-        export_video(settings, length)
+        export_video(settings, length, notes)
     elif settings["output.format"] == "images":
-        export_images(settings, length)
+        export_images(settings, length, notes)
