@@ -47,7 +47,7 @@ def preview_crop(settings, frame):
     surf = array_to_surf(img)
     (x1, y1), (x2, y2), height = settings["piano.video_crop"]
     slope = (y2-y1) / (x2-x1)
-    x3, y3 = ((y1-height)/slope if slope != 0 else x1), y1-height
+    x3, y3 = (x1-height*slope if slope != 0 else x1), y1+height
     x4, y4 = x3 + (x2-x1), y3 + (y2-y1)
 
     color = (255, 0, 0)
