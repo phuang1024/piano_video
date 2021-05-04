@@ -37,6 +37,8 @@ def render_blocks(settings, surface, notes, frame):
     for note, start, end in notes:
         start_y = middle - px_per_frame*(start-frame)
         end_y = middle - px_per_frame*(end-frame)
+        if start_y - end_y < settings["blocks.min_height"]:
+            end_y = start_y - settings["blocks.min_height"]
 
         if not (start_y < 0 or end_y > height):   # Don't draw if out of bounds
             x = key_x_loc(keys_total_width, note, black_fac) + offset

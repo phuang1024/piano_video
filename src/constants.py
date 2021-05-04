@@ -39,6 +39,7 @@ DEFAULT_SETTINGS = {
 
     "blocks.color": (255, 255, 255),
     "blocks.speed": 0.15,
+    "blocks.min_height": 30,
 }
 
 WHITE_KEYS = 52
