@@ -17,7 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import numpy as np
 import cv2
+from utils import *
 
 
 class VideoReader:
@@ -27,33 +29,62 @@ class VideoReader:
 
     def raise_rval(self, rval):
         if not rval:
-            raise ValueError(f"Error decoding frame {self.last_frame} of video {self.path}")
+            raise ValueError(f"Error decoding frame {self.last_frame_num} of video {self.path}")
 
     def reset(self):
         self.video = cv2.VideoCapture(self.path)
-        self.last_frame = -1
+        self.last_frame_num = -1
         self.last_img = None
 
-    def next(self):
+    def next(self) -> np.ndarray:
         rval, frame = self.video.read()
-        self.last_frame += 1
+        self.last_frame_num += 1
         self.raise_rval(rval)
         self.last_img = frame
         return frame
 
-    def read(self, frame_num):
-        if frame_num == self.last_frame:
+    def read(self, frame_num) -> np.ndarray:
+        if frame_num == self.last_frame_num:
             return self.last_img
 
-        elif self.last_frame == -1 or frame_num > self.last_frame:
+        elif self.last_frame_num == -1 or frame_num > self.last_frame_num:
             while True:
-                if frame_num == self.last_frame:
+                if frame_num == self.last_frame_num:
                     return self.last_img
                 rval, frame = self.video.read()
-                self.last_frame += 1
+                self.last_frame_num += 1
                 self.raise_rval(rval)
                 self.last_img = frame
 
-        elif frame_num < self.last_frame:
+        elif frame_num < self.last_frame_num:
             self.reset()
             return self.read(frame_num)
+
+
+def compute_crop(settings):
+    width, height = settings["output.resolution"]
+    points, mask_size = settings["piano.video_crop"]
+
+    slope1 = (points[0][1]-points[3][1]) / (points[0][0]-points[3][0])
+    x5, y5 = points[3][0]-(mask_size/slope1), points[3][1]+mask_size
+
+    slope2 = (points[1][1]-points[2][1]) / (points[1][0]-points[2][0])
+    x6, y6 = points[2][0]-(mask_size/slope2), points[2][1]+mask_size
+
+    height_fac = distance(*points[0], *points[3]) / distance(*points[0], *points[1])
+    src_points = [points[0], points[1], [x6, y6], [x5, y5]]
+    dst_points = [[0, height/2], [width, height/2], [width, height/2+width*height_fac], [0, height/2+width*height_fac]]
+
+    settings["piano.computed_crop"] = [
+        [*points, [x5, y5], [x6, y6]],
+        src_points,
+        dst_points,
+        cv2.getPerspectiveTransform(src_points, dst_points),
+    ]
+
+
+def preview_crop(settings):
+    image = VideoReader(settings["files.video"]).read(settings["other.frame"])
+
+    image_crop_box = np.empty_like(image)
+    image_crop_box[:] = image
