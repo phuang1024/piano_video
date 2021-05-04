@@ -35,6 +35,7 @@ DEFAULT_SETTINGS = {
     "piano.method": "video",
     "piano.video_path": "",
     "piano.video_crop": [],
+    "piano.video_offset": 0,
     "piano.black_width_fac": 0.6,
 
     "blocks.time_offset": 0,

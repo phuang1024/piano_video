@@ -54,6 +54,18 @@ def compute_info(settings):
     settings["computed.black_width"] = black_width
 
 
+def piano_video_values(settings):
+    piano_video = cv2.VideoCapture(settings["files.video"])
+    piano_mask = generate_mask(settings)
+
+    for i in range(settings["piano.video_offset"]):
+        rval, frame = piano_video.read()
+        if not rval:
+            raise ValueError("Error decoding piano video.")
+
+    return (piano_video, piano_mask)
+
+
 def detect_length(settings, notes):
     max_frame = max(notes, key=lambda x: x[2])
     return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
@@ -70,8 +82,7 @@ def export_video(settings, length, notes):
     video = cv2.VideoWriter(settings["output.path"], cv2.VideoWriter_fourcc(*"MPEG"),
         settings["output.fps"], settings["output.resolution"])
 
-    piano_video = cv2.VideoCapture(settings["files.video"])
-    piano_mask = generate_mask(settings)
+    piano_video, piano_mask = piano_video_values(settings)
     for frame in range(length):
         log(f"Exporting frame {frame+1} of {length}", clear=True)
 
@@ -85,8 +96,7 @@ def export_video(settings, length, notes):
 def export_images(settings, length, notes):
     os.makedirs(settings["output.path"], exist_ok=True)
 
-    piano_video = cv2.VideoCapture(settings["files.video"])
-    piano_mask = generate_mask(settings)
+    piano_video, piano_mask = piano_video_values(settings)
     for frame in range(length):
         img = render(settings, notes, frame, piano_video, piano_mask)
         path = os.path.join(settings["output.path"], f"{frame}.jpg")
