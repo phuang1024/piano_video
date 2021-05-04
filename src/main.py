@@ -22,14 +22,16 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
 import argparse
 import json
-import cv2
 from constants import *
+from video import compute_crop, preview_crop
 
 
 def main():
     parser = argparse.ArgumentParser(description="Creates a video from a piano MIDI.")
     parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=True)
     parser.add_argument("-o", "--output", help="output file path (WILL overwrite without prompt)", type=str, required=True)
+    parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
+    parser.add_argument("-f", "--frame", help="frame to use in modes where applicable", type=int, required=False)
     args = parser.parse_args()
 
     if not os.path.isfile(args.settings):
@@ -42,6 +44,14 @@ def main():
     for key in user_settings:
         settings[key] = user_settings[key]
     settings["files.output"] = args.output
+    settings["other.frame"] = args.frame if args.frame is not None else 0
+
+    compute_crop(settings)
+
+    if args.mode is None or args.mode == "EXPORT":
+        pass
+    elif args.mode == "PREVIEW_CROP":
+        preview_crop(settings)
 
 
 main()
