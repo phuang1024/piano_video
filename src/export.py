@@ -46,6 +46,15 @@ def export_video(settings, length):
     video.release()
 
 
+def export_images(settings, length):
+    os.makedirs(settings["output.path"], exist_ok=True)
+    for frame in range(length):
+        print(frame)
+        img = render(settings, frame)
+        path = os.path.join(settings["output.path"], f"{frame}.jpg")
+        pygame.image.save(img, path)
+
+
 def export(settings):
     notes = parse_midis(settings)
     length = settings["output.length"] if settings["output.length"] != "autodetect" \
@@ -53,3 +62,5 @@ def export(settings):
 
     if settings["output.format"] == "video":
         export_video(settings, length)
+    elif settings["output.format"] == "images":
+        export_images(settings, length)
