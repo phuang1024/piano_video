@@ -19,8 +19,9 @@
 
 import sys
 import numpy as np
+import cv2
 import pygame
-from constants import TOTAL_KEYS, WHITE_KEYS
+from constants import *
 pygame.init()
 
 LOGGER_CLEAR_LEN = 75
@@ -30,6 +31,7 @@ def surf_to_array(surf: pygame.Surface) -> np.ndarray:
     return pygame.surfarray.array3d(surf).swapaxes(0, 1)
 
 def array_to_surf(array: np.ndarray) -> pygame.Surface:
+    array = cv2.cvtColor(array, cv2.COLOR_BGR2RGB)
     return pygame.image.frombuffer(array.tobytes(), array.shape[1::-1], "RGB")
 
 
