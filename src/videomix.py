@@ -23,19 +23,17 @@ from utils import *
 
 
 def compute_crop_points(settings):
-    (x1, y1), (x2, y2), height = settings["piano.video_crop"]
+    (x1, y1), (x2, y2), piano_height, fade_height = settings["piano.video_crop"]
+    height = piano_height + fade_height
     slope = (y2-y1) / (x2-x1)
     x3, y3 = (x1-height*slope if slope != 0 else x1), y1+height
     x4, y4 = x3 + (x2-x1), y3 + (y2-y1)
+    x5, y5 = (x1-piano_height*slope if slope != 0 else x1), y1+piano_height
+    x6, y6 = x5 + (x2-x1), y5 + (y2-y1)
 
-    settings["piano.video_crop_x1"] = x1
-    settings["piano.video_crop_y1"] = y1
-    settings["piano.video_crop_x2"] = x2
-    settings["piano.video_crop_y2"] = y2
-    settings["piano.video_crop_x3"] = x3
-    settings["piano.video_crop_y3"] = y3
-    settings["piano.video_crop_x4"] = x4
-    settings["piano.video_crop_y4"] = y4
+    for i in range(1, 7):
+        settings[f"piano.video_crop_x{i}"] = locals()[f"x{i}"]
+        settings[f"piano.video_crop_y{i}"] = locals()[f"y{i}"]
 
 
 def crop_piano(settings, image):
