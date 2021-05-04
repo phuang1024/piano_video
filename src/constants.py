@@ -38,7 +38,7 @@ DEFAULT_SETTINGS = {
     "piano.black_width_fac": 0.6,
 
     "blocks.time_offset": 0,
-    "blocks.x_offset": 20,
+    "blocks.x_offset": 0,
     "blocks.color": (255, 255, 255),
     "blocks.speed": 0.15,
     "blocks.min_height": 30,
