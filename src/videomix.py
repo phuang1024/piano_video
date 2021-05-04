@@ -17,7 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import numpy as np
 import cv2
+from utils import *
 
 
 def compute_crop_points(settings):
@@ -34,3 +36,23 @@ def compute_crop_points(settings):
     settings["piano.video_crop_y3"] = y3
     settings["piano.video_crop_x4"] = x4
     settings["piano.video_crop_y4"] = y4
+
+
+def crop_piano(settings, image):
+    x1 = settings["piano.video_crop_x1"]
+    y1 = settings["piano.video_crop_y1"]
+    x2 = settings["piano.video_crop_x2"]
+    y2 = settings["piano.video_crop_y2"]
+    x3 = settings["piano.video_crop_x3"]
+    y3 = settings["piano.video_crop_y3"]
+    x4 = settings["piano.video_crop_x4"]
+    y4 = settings["piano.video_crop_y4"]
+
+    width = int(distance(x1, y1, x2, y2))
+    height = int(distance(x1, y1, x3, y3))
+    src_points = np.array(((x1, y1), (x2, y2), (x4, y4), (x3, y3)), dtype=np.float32)
+    dst_points = np.array(((0, 0), (width, 0), (width, height), (0, height)), dtype=np.float32)
+
+    persp = cv2.getPerspectiveTransform(src_points, dst_points)
+    result = cv2.warpPerspective(image, persp, (width, height))
+    return result

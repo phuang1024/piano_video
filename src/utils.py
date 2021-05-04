@@ -27,6 +27,10 @@ pygame.init()
 LOGGER_CLEAR_LEN = 75
 
 
+def distance(x1, y1, x2, y2):
+    return ((x1-x2)**2 + (y1-y2)**2) ** 0.5
+
+
 def surf_to_array(surf: pygame.Surface) -> np.ndarray:
     return pygame.surfarray.array3d(surf).swapaxes(0, 1)
 
