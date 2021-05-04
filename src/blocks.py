@@ -39,7 +39,7 @@ def render_blocks(settings, surface, notes, frame):
         start_y = middle - px_per_frame*(start-frame)
         end_y = middle - px_per_frame*(end-frame)
 
-        if 0 <= start_y <= height or 0 <= end_y <= height:
+        if not (start_y < 0 or end_y > height):   # Don't draw if out of bounds
             x = key_x_loc(keys_total_width, note, black_fac) + offset
             curr_width = white_width if is_white_key(note) else black_width
             pygame.draw.rect(surface, settings["blocks.color"], (x, end_y, curr_width, start_y-end_y))
