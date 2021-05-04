@@ -19,6 +19,7 @@
 
 import numpy as np
 import cv2
+from constants import *
 from utils import *
 
 
@@ -66,11 +67,12 @@ def compute_crop(settings):
     points, mask_size = settings["piano.video_crop"]
 
     # Using np.float64 returns inf when dividing by 0, which is what we want
-    slope1 = np.float64(points[0][1]-points[3][1]) / (points[0][0]-points[3][0])
-    x5, y5 = points[3][0]+(mask_size/slope1), points[3][1]+mask_size
+    with np.errstate(divide="ignore"):
+        slope1 = np.float64(points[0][1]-points[3][1]) / (points[0][0]-points[3][0])
+        x5, y5 = points[3][0]+(mask_size/slope1), points[3][1]+mask_size
 
-    slope2 = np.float64(points[1][1]-points[2][1]) / (points[1][0]-points[2][0])
-    x6, y6 = points[2][0]+(mask_size/slope2), points[2][1]+mask_size
+        slope2 = np.float64(points[1][1]-points[2][1]) / (points[1][0]-points[2][0])
+        x6, y6 = points[2][0]+(mask_size/slope2), points[2][1]+mask_size
 
     height_fac = distance(*points[0], *points[3]) / distance(*points[0], *points[1])
     src_points = [points[0], points[1], [x6, y6], [x5, y5]]
@@ -91,13 +93,18 @@ def preview_crop(settings):
     computed = settings["piano.computed_crop"]
 
     image_crop_box = array_to_surf(image)
-    pygame.draw.line(image_crop_box, (0, 255, 0), computed[0][0], computed[0][1])
-    pygame.draw.line(image_crop_box, (0, 255, 0), computed[0][0], computed[0][3])
-    pygame.draw.line(image_crop_box, (0, 255, 0), computed[0][2], computed[0][1])
-    pygame.draw.line(image_crop_box, (0, 255, 0), computed[0][2], computed[0][3])
-    pygame.draw.line(image_crop_box, (255, 0, 0), computed[0][2], computed[0][5])
-    pygame.draw.line(image_crop_box, (255, 0, 0), computed[0][3], computed[0][4])
-    pygame.draw.line(image_crop_box, (255, 0, 0), computed[0][4], computed[0][5])
+    pygame.draw.line(image_crop_box, RED, computed[0][0], computed[0][1], 2)
+    pygame.draw.line(image_crop_box, RED, computed[0][0], computed[0][3], 2)
+    pygame.draw.line(image_crop_box, RED, computed[0][2], computed[0][1], 2)
+    pygame.draw.line(image_crop_box, RED, computed[0][2], computed[0][3], 2)
+    pygame.draw.line(image_crop_box, GREEN, computed[0][2], computed[0][5], 2)
+    pygame.draw.line(image_crop_box, GREEN, computed[0][3], computed[0][4], 2)
+    pygame.draw.line(image_crop_box, GREEN, computed[0][4], computed[0][5], 2)
+
+    for i in range(4):
+        pygame.draw.circle(image_crop_box, RED, computed[0][i], 10, width=2)
+    for i in range(4, 6):
+        pygame.draw.circle(image_crop_box, GREEN, computed[0][i], 10, width=2)
 
     ans = input(f"Save crop preview to {output}? (y/n/Q) ").lower().strip()
     if ans == "y":
