@@ -19,6 +19,7 @@
 
 import numpy as np
 import pygame
+from constants import TOTAL_KEYS, WHITE_KEYS
 pygame.init()
 
 
@@ -27,3 +28,17 @@ def surf_to_array(surf: pygame.Surface) -> np.ndarray:
 
 def array_to_surf(array: np.ndarray) -> pygame.Surface:
     return pygame.image.frombuffer(array.tobytes(), array.shape[1::-1], "RGB")
+
+
+def is_white_key(key):
+    return (key-3) % 12 not in (1, 3, 6, 8, 10)
+
+def key_x_loc(width, key, black_fac):
+    white_width = width / WHITE_KEYS
+    num_white_before = [is_white_key(k) for k in range(key)].count(True)
+
+    loc = num_white_before * white_width
+    if not is_white_key(key):
+        loc -= white_width * black_fac
+
+    return loc
