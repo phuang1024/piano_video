@@ -17,10 +17,37 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import math
 import pygame
+import pygame.gfxdraw
 from constants import *
 from utils import *
 pygame.init()
+
+
+def circle_verts(x, y, radius, x_sign, y_sign, start_degree, angle, steps=8):
+    for i in range(steps+1):
+        curr_angle = math.radians(start_degree + angle/steps*i)
+        curr_x = math.cos(curr_angle)
+        curr_y = math.sin(curr_angle)
+        curr_x = abs(curr_x) * x_sign
+        curr_y = abs(curr_y) * y_sign
+
+        yield (radius*curr_x + x, radius*curr_y + y)
+
+
+def draw_rounded_block(surface, color, rect, radius):
+    x, y, width, height = rect
+    verts = []
+
+    verts.extend(circle_verts(x+radius, y+radius, radius, -1, -1, 180, 90))
+    verts.extend(circle_verts(x+width-radius, y+radius, radius, 1, -1, 270, 90))
+    verts.extend(circle_verts(x+width-radius, y+height-radius, radius, 1, 1, 0, 90))
+    verts.extend(circle_verts(x+radius, y+height-radius, radius, -1, 1, 90, 90))
+
+    # pygame.gfxdraw.filled_polygon(surface, verts, color)
+    # pygame.gfxdraw.aapolygon(surface, verts, color)
+    pygame.draw.polygon(surface, color, verts)
 
 
 def render_blocks(settings, surface, notes, frame):
@@ -43,4 +70,9 @@ def render_blocks(settings, surface, notes, frame):
         if not (start_y < 0 or end_y > height):   # Don't draw if out of bounds
             x = key_x_loc(keys_total_width, note, black_fac) + offset
             curr_width = white_width if is_white_key(note) else black_width
-            pygame.draw.rect(surface, settings["blocks.color"], (x, end_y, curr_width, start_y-end_y))
+            rect = (x, end_y, curr_width, start_y-end_y)
+            if settings["blocks.rounding"] > 0:
+                draw_rounded_block(surface, settings["blocks.color"], rect,
+                    settings["blocks.rounding"])
+            else:
+                pygame.draw.rect(surface, settings["blocks.color"], rect)
