@@ -18,13 +18,12 @@
 #
 
 import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = True
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
 import argparse
 import json
-import pygame
 import cv2
-pygame.init()
+from constants import *
 
 
 def main():
@@ -39,6 +38,10 @@ def main():
 
     with open(args.settings, "r") as file:
         user_settings = json.load(file)
+    settings = DEFAULT_SETTINGS.copy()
+    for key in user_settings:
+        settings[key] = user_settings[key]
+    settings["files.output"] = args.output
 
 
 main()
