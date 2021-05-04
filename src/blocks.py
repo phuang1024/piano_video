@@ -18,11 +18,36 @@
 #
 
 import math
+import mido
 import pygame
 import pygame.gfxdraw
 from constants import *
 from utils import *
 pygame.init()
+
+
+def parse_midis(settings):
+    notes = []
+
+    for file in settings["files.midis"]:
+        midi = mido.MidiFile(file)
+        tpb = midi.ticks_per_beat
+
+        starts = [None for _ in range(88)]
+        tempo = 500000
+        curr_frame = -1 * settings["output.fps"] * settings["blocks.time_offset"]
+        for msg in midi.tracks[0]:
+            curr_frame += msg.time / tpb * tempo / 1000000 * settings["output.fps"]
+            if msg.is_meta and msg.type == "set_tempo":
+                tempo = msg.tempo
+            elif msg.type in ("note_on", "note_off"):
+                note, velocity = msg.note-21, msg.velocity
+                if velocity == 0 or msg.type == "note_off":
+                    notes.append((note, starts[note], curr_frame))
+                else:
+                    starts[note] = curr_frame
+
+    return notes
 
 
 def circle_verts(x, y, radius, x_sign, y_sign, start_degree, angle, steps=8):
@@ -68,7 +93,7 @@ def render_blocks(settings, surface, notes, frame):
             end_y = start_y - settings["blocks.min_height"]
 
         if not (start_y < 0 or end_y > height):   # Don't draw if out of bounds
-            x = key_x_loc(keys_total_width, note, black_fac) + offset
+            x = key_x_loc(keys_total_width, note, black_fac) + offset + settings["blocks.x_offset"]
             curr_width = white_width if is_white_key(note) else black_width
             rect = (x, end_y, curr_width, start_y-end_y)
             if settings["blocks.rounding"] > 0:

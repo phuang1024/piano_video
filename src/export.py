@@ -22,8 +22,7 @@ import cv2
 import pygame
 from constants import *
 from utils import *
-from blocks import render_blocks
-from midi import parse_midis
+from blocks import render_blocks, parse_midis
 from videomix import generate_mask, render_piano
 pygame.init()
 
