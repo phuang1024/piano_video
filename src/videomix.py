@@ -56,7 +56,19 @@ def crop_piano(settings, image):
     return result
 
 
-def generate_mask(width, height, start_y):
+def generate_mask(settings):
+    x1 = settings["piano.video_crop_x1"]
+    y1 = settings["piano.video_crop_y1"]
+    x2 = settings["piano.video_crop_x2"]
+    y2 = settings["piano.video_crop_y2"]
+    x3 = settings["piano.video_crop_x3"]
+    y3 = settings["piano.video_crop_y3"]
+    x5 = settings["piano.video_crop_x5"]
+    y5 = settings["piano.video_crop_y5"]
+
+    width = int(distance(x1, y1, x2, y2))
+    height = int(distance(x1, y1, x3, y3))
+    start_y = int(distance(x1, y1, x5, y5))
     mask = []
     for y in range(height):
         value = (height-y) / (height-start_y)
@@ -65,3 +77,26 @@ def generate_mask(width, height, start_y):
         mask.append([color for _ in range(width)])
 
     return np.array(mask)
+
+
+def render_piano(settings, surface, mask, video, video_frame, target_frame, prev_image):
+    # if video_frame == target_frame:
+    #     image = prev_image
+    # else:
+    #     for i in range(target_frame-video_frame):
+    #         rval, image = video.read()
+    #         if not rval:
+    #             raise ValueError("Video decoding failed.")
+    rval, image = video.read()
+
+    piano = crop_piano(settings, image) * mask
+    piano = array_to_surf(piano)
+    piano_width = settings["output.resolution"][0] * (1 - 2*settings["layout.border_fac"])
+    piano_height = (piano_width/piano.get_width()) * piano.get_height()
+
+    piano_width, piano_height = map(int, (piano_width, piano_height))
+    piano = pygame.transform.scale(piano, (piano_width, piano_height))
+
+    piano_x = settings["output.resolution"][0] * settings["layout.border_fac"]
+    piano_y = settings["output.resolution"][1] * settings["layout.middle_fac"]
+    surface.blit(piano, (piano_x, piano_y))

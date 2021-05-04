@@ -75,7 +75,7 @@ def preview_crop(settings, frame):
     pygame.draw.circle(surf, color, (x6, y6), 5, width=1)
 
     out_path = settings["output.path"]
-    mask = generate_mask(int(distance(x1, y1, x2, y2)), int(distance(x1, y1, x3, y3)), int(distance(x1, y1, x5, y5)))
+    mask = generate_mask(settings)
 
     cropped = crop_piano(settings, img)
     masked = cropped * mask
@@ -104,7 +104,7 @@ def main():
         settings["output.path"] = os.path.expanduser(os.path.realpath(args.output))
 
         compute_crop_points(settings)
-        if not hasattr(args, "mode") or args.mode == "EXPORT":
+        if not hasattr(args, "mode") or args.mode is None or args.mode == "EXPORT":
             export(settings)
         elif args.mode == "PREVIEW_CROP":
             preview_crop(settings, args.frame if (hasattr(args, "frame") and args.frame is not None) else 0)

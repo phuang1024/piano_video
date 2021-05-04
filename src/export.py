@@ -24,6 +24,7 @@ from constants import *
 from utils import *
 from blocks import render_blocks
 from midi import parse_midis
+from videomix import generate_mask, render_piano
 pygame.init()
 
 
@@ -59,9 +60,10 @@ def detect_length(settings, notes):
     return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
 
 
-def render(settings, notes, frame):
+def render(settings, notes, frame, piano_video, mask):
     surface = pygame.Surface(settings["output.resolution"])
     render_blocks(settings, surface, notes, frame)
+    render_piano(settings, surface, mask, piano_video, 0, frame, None)
     return surface
 
 
@@ -69,10 +71,12 @@ def export_video(settings, length, notes):
     video = cv2.VideoWriter(settings["output.path"], cv2.VideoWriter_fourcc(*"MPEG"),
         settings["output.fps"], settings["output.resolution"])
 
+    piano_video = cv2.VideoCapture(settings["files.video"])
+    piano_mask = generate_mask(settings)
     for frame in range(length):
         log(f"Exporting frame {frame+1} of {length}", clear=True)
 
-        img = surf_to_array(render(settings, notes, frame))
+        img = surf_to_array(render(settings, notes, frame, piano_video, piano_mask))
         video.write(img)
 
     log(f"Finished exporting {length} frames", clear=True, new=True)
@@ -81,8 +85,11 @@ def export_video(settings, length, notes):
 
 def export_images(settings, length, notes):
     os.makedirs(settings["output.path"], exist_ok=True)
+
+    piano_video = cv2.VideoCapture(settings["files.video"])
+    piano_mask = generate_mask(settings)
     for frame in range(length):
-        img = render(settings, notes, frame)
+        img = render(settings, notes, frame, piano_video, piano_mask)
         path = os.path.join(settings["output.path"], f"{frame}.jpg")
         pygame.image.save(img, path)
 

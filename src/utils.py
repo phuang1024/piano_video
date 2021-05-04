@@ -32,10 +32,14 @@ def distance(x1, y1, x2, y2):
 
 
 def surf_to_array(surf: pygame.Surface) -> np.ndarray:
-    return pygame.surfarray.array3d(surf).swapaxes(0, 1)
+    array = pygame.surfarray.array3d(surf).swapaxes(0, 1)
+    array = cv2.cvtColor(array, cv2.COLOR_BGR2RGB)
+    return array
 
 def array_to_surf(array: np.ndarray) -> pygame.Surface:
+    array = array.astype(np.float32)
     array = cv2.cvtColor(array, cv2.COLOR_BGR2RGB)
+    array = array.astype(np.int8)
     return pygame.image.frombuffer(array.tobytes(), array.shape[1::-1], "RGB")
 
 
