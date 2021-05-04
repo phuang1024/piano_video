@@ -18,16 +18,23 @@
 #
 
 import os
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+
 import argparse
 import json
 from constants import *
 from export import export
 
 
+def preview_crop(settings):
+    pass
+
+
 def main():
     parser = argparse.ArgumentParser(description="Creates a video from a piano MIDI.")
     parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=True)
-    parser.add_argument("-o", "--output", help="video output path", type=str, required=True)
+    parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
+    parser.add_argument("-o", "--output", help="output file path (WILL overwrite)", type=str, required=True)
     args = parser.parse_args()
 
     if os.path.isfile(args.settings):
@@ -36,9 +43,12 @@ def main():
         settings = DEFAULT_SETTINGS.copy()
         for key in user_settings:
             settings[key] = user_settings[key]
-
         settings["output.path"] = os.path.expanduser(os.path.realpath(args.output))
-        export(settings)
+
+        if not hasattr(args, "mode") or args.mode == "EXPORT":
+            export(settings)
+        elif args.mode == "PREVIEW_CROP":
+            preview_crop(settings)
 
     else:
         print(f"No file: {args.settings}")

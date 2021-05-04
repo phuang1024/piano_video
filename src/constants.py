@@ -34,7 +34,7 @@ DEFAULT_SETTINGS = {
 
     "piano.method": "video",
     "piano.video_path": "",
-    "piano.video_rect": (),
+    "piano.video_crop": [],
     "piano.black_width_fac": 0.6,
 
     "blocks.color": (255, 255, 255),
