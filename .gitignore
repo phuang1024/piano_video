@@ -1,7 +1,8 @@
 __pycache__
 .vscode
 
+/src/*.json
+
 *.mid
 *.mp3
 *.mp4
-settings.json
