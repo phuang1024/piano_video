@@ -37,7 +37,7 @@ DEFAULT_SETTINGS = {
     "piano.video_crop": [],
     "piano.black_width_fac": 0.6,
 
-    "blocks.time_offset": 10,
+    "blocks.time_offset": 0,
     "blocks.x_offset": 20,
     "blocks.color": (255, 255, 255),
     "blocks.speed": 0.15,
