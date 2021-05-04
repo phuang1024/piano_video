@@ -61,18 +61,18 @@ def preview_crop(settings, frame):
     y6 = settings["piano.video_crop_y6"]
 
     color = (255, 0, 0)
-    pygame.draw.line(surf, color, (x1, y1), (x2, y2))
-    pygame.draw.line(surf, color, (x1, y1), (x3, y3))
-    pygame.draw.line(surf, color, (x2, y2), (x4, y4))
-    pygame.draw.line(surf, color, (x3, y3), (x4, y4))
-    pygame.draw.line(surf, color, (x5, y5), (x6, y6))
+    pygame.draw.line(surf, color, (x1, y1), (x2, y2), 2)
+    pygame.draw.line(surf, color, (x1, y1), (x3, y3), 2)
+    pygame.draw.line(surf, color, (x2, y2), (x4, y4), 2)
+    pygame.draw.line(surf, color, (x3, y3), (x4, y4), 2)
+    pygame.draw.line(surf, color, (x5, y5), (x6, y6), 2)
 
-    pygame.draw.circle(surf, color, (x1, y1), 5, width=1)
-    pygame.draw.circle(surf, color, (x2, y2), 5, width=1)
-    pygame.draw.circle(surf, color, (x3, y3), 5, width=1)
-    pygame.draw.circle(surf, color, (x4, y4), 5, width=1)
-    pygame.draw.circle(surf, color, (x5, y5), 5, width=1)
-    pygame.draw.circle(surf, color, (x6, y6), 5, width=1)
+    pygame.draw.circle(surf, color, (x1, y1), 5, width=2)
+    pygame.draw.circle(surf, color, (x2, y2), 5, width=2)
+    pygame.draw.circle(surf, color, (x3, y3), 5, width=2)
+    pygame.draw.circle(surf, color, (x4, y4), 5, width=2)
+    pygame.draw.circle(surf, color, (x5, y5), 5, width=2)
+    pygame.draw.circle(surf, color, (x6, y6), 5, width=2)
 
     out_path = settings["output.path"]
     mask = generate_mask(settings)
