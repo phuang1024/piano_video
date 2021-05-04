@@ -49,6 +49,8 @@ def main():
             export(settings)
         elif args.mode == "PREVIEW_CROP":
             preview_crop(settings)
+        else:
+            print(f"Invalid mode: {args.mode}")
 
     else:
         print(f"No file: {args.settings}")
