@@ -27,6 +27,7 @@ import cv2
 from constants import *
 from utils import *
 from export import export
+from videomix import compute_crop_points
 pygame.init()
 
 
@@ -45,10 +46,15 @@ def preview_crop(settings, frame):
 
     rval, img = video.read()
     surf = array_to_surf(img)
-    (x1, y1), (x2, y2), height = settings["piano.video_crop"]
-    slope = (y2-y1) / (x2-x1)
-    x3, y3 = (x1-height*slope if slope != 0 else x1), y1+height
-    x4, y4 = x3 + (x2-x1), y3 + (y2-y1)
+
+    x1 = settings["piano.video_crop_x1"]
+    y1 = settings["piano.video_crop_y1"]
+    x2 = settings["piano.video_crop_x2"]
+    y2 = settings["piano.video_crop_y2"]
+    x3 = settings["piano.video_crop_x3"]
+    y3 = settings["piano.video_crop_y3"]
+    x4 = settings["piano.video_crop_x4"]
+    y4 = settings["piano.video_crop_y4"]
 
     color = (255, 0, 0)
     pygame.draw.line(surf, color, (x1, y1), (x2, y2))
@@ -80,6 +86,7 @@ def main():
             settings[key] = user_settings[key]
         settings["output.path"] = os.path.expanduser(os.path.realpath(args.output))
 
+        compute_crop_points(settings)
         if not hasattr(args, "mode") or args.mode == "EXPORT":
             export(settings)
         elif args.mode == "PREVIEW_CROP":
