@@ -74,6 +74,7 @@ def detect_length(settings, notes):
 def render(settings, notes, frame, piano_video, mask):
     surface = pygame.Surface(settings["output.resolution"])
     render_blocks(settings, surface, notes, frame)
+    pygame.draw.rect(surface, (0, 0, 0), (0, settings["computed.middle"], *settings["output.resolution"]))
     render_piano(settings, surface, mask, piano_video, 0, frame, None)
     return surface
 
