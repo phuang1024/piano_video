@@ -28,7 +28,8 @@ DEFAULT_SETTINGS = {
     "output.format": "video",
 
     "blocks.time_offset": 0,
-    "blocks.black_key_fac": 0.65,
+    "blocks.black_width_fac": 0.65,
+    "blocks.speed": 0.15,
 
     "piano.video_offset": 0,
     "piano.video_crop": [],

@@ -23,13 +23,15 @@ import time
 import pygame
 import cv2
 from utils import *
-from blocks import compute_length
+from blocks import compute_length, render_blocks
 from video import VideoReader, render_frame as render_piano
 pygame.init()
 
 
 def render(settings, piano_video, frame):
     surf = pygame.Surface(settings["output.resolution"])
+
+    render_blocks(settings, surf, frame)
 
     piano = array_to_surf(render_piano(settings, piano_video, frame))
     piano = pygame.transform.scale(piano, list(map(int, settings["piano.computed_crop"][4][:2])))

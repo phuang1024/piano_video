@@ -18,6 +18,7 @@
 #
 
 import mido
+from utils import *
 
 
 def init(settings):
@@ -46,6 +47,22 @@ def parse_midis(settings):
                     starts[note] = curr_frame
 
     settings["blocks.notes"] = notes
+
+
+def render_blocks(settings, surface, frame):
+    width, height = settings["output.resolution"]
+    middle = height / 2
+
+    px_per_frame = settings["blocks.speed"] * height / settings["output.fps"]
+
+    for note, start, end in settings["blocks.notes"]:
+        start_y = middle - px_per_frame*(start-frame)
+        end_y = middle - px_per_frame*(end-frame)
+
+        if not (start_y < 0 or end_y > height):   # Don't draw block if out of bounds
+            x, curr_width = key_position(settings, note)
+            rect = (x, end_y, curr_width, start_y-end_y)
+            pygame.draw.rect(surface, (255, 255, 255), rect)
 
 
 def compute_length(settings):
