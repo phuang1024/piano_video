@@ -55,8 +55,8 @@ def cache_glare(settings):
 
                 x_loc, key_width = key_position(settings, note)
                 x_loc += key_width/2
-                file.write(struct.pack("<I", int(x_loc-glare_width/2)))
-                file.write(struct.pack("<I", int((height-glare_height)/2)))
+                file.write(struct.pack("<H", int(x_loc-glare_width/2)))
+                file.write(struct.pack("<H", int((height-glare_height)/2)))
 
                 glare = np.empty((glare_height, glare_width), dtype=np.float32)
                 glare_rays = [random.uniform(0, 2*math.pi) for _ in range(random.randint(1, 5))]
@@ -103,8 +103,8 @@ def add_glare(settings, surface, frame):
                 note, key_width = key_position(settings, file.read(1)[0])
                 start = struct.unpack("f", file.read(4))[0]
                 end = struct.unpack("f", file.read(4))[0]
-                x_loc = struct.unpack("<I", file.read(4))[0]
-                y_loc = struct.unpack("<I", file.read(4))[0]
+                x_loc = struct.unpack("<H", file.read(2))[0]
+                y_loc = struct.unpack("<H", file.read(2))[0]
 
                 if start <= frame <= end:
                     fac = random.uniform(0.9, 1.1)
