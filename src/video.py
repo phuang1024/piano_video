@@ -157,3 +157,13 @@ def preview_crop(settings):
         cv2.imwrite(output, crop(settings, image)*settings["piano.mask"])
     elif ans == "q":
         return
+
+
+def interactive_preview(settings):
+    image = VideoReader(settings["files.video"]).read(settings["other.frame"], verbose=True)
+    image = cv2.resize(image, (1280, 720))
+
+    print("Press \"Ctrl+C\" to exit.")
+    while True:
+        cv2.imshow("Interactive Preview - Piano Video", image)
+        cv2.waitKey(1)
