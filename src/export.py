@@ -60,7 +60,7 @@ def export(settings):
     piano_video = VideoReader(settings["files.video"])
     length = compute_length(settings)
 
-    logger = ProgressLogger("Frame", length)
+    logger = ProgressLogger("Rendering", length)
     for frame in range(length):
         logger.update(frame)
         logger.log()

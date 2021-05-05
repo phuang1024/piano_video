@@ -18,12 +18,15 @@
 #
 
 import os
+import math
 import struct
 import random
 import numpy as np
-import pygame
 from constants import *
 from utils import *
+
+RAY_FAC_MAX = 1.25
+RAY_DIST_MAX = 0.14
 
 
 def cache_glare(settings):
@@ -56,11 +59,23 @@ def cache_glare(settings):
                 file.write(struct.pack("<I", int((height-glare_height)/2)))
 
                 glare = np.empty((glare_height, glare_width), dtype=np.float32)
+                glare_rays = [random.uniform(0, 2*math.pi) for _ in range(random.randint(1, 5))]
                 for x in range(glare_width):
                     for y in range(glare_height):
                         x_fac = min(x, glare_width-x) / (glare_width/2)
                         y_fac = min(y, glare_height-y) / (glare_height/2)
-                        glare[y, x] = x_fac*y_fac
+
+                        dx = x - glare_width/2
+                        dy = y - glare_height/2
+                        angle = math.atan2(dy, dx)
+                        min_diff = float("inf")
+                        for ray in glare_rays:
+                            diff = min(abs(ray-angle), abs(ray-angle+360), abs(ray-angle-360))
+                            min_diff = min(min_diff, diff)
+                        ray_fac = RAY_FAC_MAX - (RAY_FAC_MAX-1)/RAY_DIST_MAX*min_diff
+                        ray_fac = max(ray_fac, 1)
+
+                        glare[y, x] = x_fac*y_fac*ray_fac
 
                 data = glare.tobytes()
                 file.write(struct.pack("<I", len(data)))
