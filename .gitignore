@@ -2,6 +2,7 @@ __pycache__
 .vscode
 
 /src/*.json
+/src/piano_video_cache
 
 *.mid
 *.mp3
