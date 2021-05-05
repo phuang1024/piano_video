@@ -41,6 +41,7 @@ class VideoReader:
         self.video = cv2.VideoCapture(self.path)
         self.last_frame_num = -1
         self.last_img = None
+        self.fps = self.video.get(cv2.CAP_PROP_FPS)
 
     def next(self) -> np.ndarray:
         rval, frame = self.video.read()
@@ -122,7 +123,10 @@ def generate_mask(settings):
 
 
 def render_frame(settings, video, frame_num):
-    return crop(settings, video.read(frame_num)) * settings["piano.mask"]
+    fps = settings["output.fps"]
+    video_frame = (frame_num + fps*settings["piano.video_offset"]) * video.fps/fps
+
+    return crop(settings, video.read(video_frame)) * settings["piano.mask"]
 
 
 def preview_crop(settings):

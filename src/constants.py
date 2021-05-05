@@ -25,6 +25,7 @@ DEFAULT_SETTINGS = {
     "output.resolution": [1920, 1080],
     "output.fps": 30,
 
+    "piano.video_offset": 0,
     "piano.video_crop": [],
 }
 

@@ -36,7 +36,7 @@ def render(settings, piano_video, frame):
 
 
 def export(settings):
-    video = cv2.VideoWriter(settings["files.output"], cv2.VideoWriter_fourcc(*"MPEG"),
+    video = cv2.VideoWriter(settings["files.output"], cv2.VideoWriter_fourcc(*"mp4v"),
         settings["output.fps"], tuple(settings["output.resolution"]))
     piano_video = VideoReader(settings["files.video"])
 
