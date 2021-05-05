@@ -25,7 +25,8 @@ import cv2
 from utils import *
 from blocks import compute_length, render_blocks
 from video import VideoReader, render_frame as render_piano
-from glare import add_glare, cache_glare
+from glare import render_glare, cache_glare
+from smoke import cache_smoke_dots
 pygame.init()
 
 
@@ -38,7 +39,7 @@ def render(settings, piano_video, frame):
     piano = pygame.transform.scale(piano, list(map(int, settings["piano.computed_crop"][4][:2])))
     surface.blit(piano, (0, settings["output.resolution"][1]/2))
 
-    add_glare(settings, surface, frame)
+    render_glare(settings, surface, frame)
 
     return surface
 
@@ -48,8 +49,8 @@ def export(settings):
     output = settings["files.output"]
     images_output = output+".images"
 
-
     cache_glare(settings)
+    cache_smoke_dots(settings)
 
     if fmat == "images":
         os.makedirs(images_output, exist_ok=True)

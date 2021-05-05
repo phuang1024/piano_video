@@ -84,7 +84,7 @@ def cache_glare(settings):
     logger.finish(f"Finished caching {len(notes)} glares")
 
 
-def add_glare(settings, surface, frame):
+def render_glare(settings, surface, frame):
     if not settings["effects.glare"]:
         return
 

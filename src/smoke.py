@@ -37,25 +37,25 @@ def cache_smoke_dots(settings):
                 x_loc, key_width = key_position(settings, note)
                 x_loc += key_width/2
 
-                num_dots = (end-start) * dot_time_inc
+                num_dots = int((end-start) * dot_time_inc)
                 file.write(struct.pack("<I", num_dots))
 
                 for j in range(num_dots):
                     simulate_dot(settings, file, start+dot_time_inc*j, x_loc, height/2, key_width)
 
-    logger.finish(f"Finished caching {len(notes)} glares")
+    logger.finish(f"Finished caching {len(notes)} smoke dots")
 
 
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):
-    lifetime = settings["effects.smoke.dots.lifetime"] * settings["output.fps"] + random.uniform()
-    file.write(struct.pack(lifetime, "<H"))
+    lifetime = settings["effects.smoke.dots.lifetime"] * settings["output.fps"] + random.randint(-10, 10)
+    file.write(struct.pack("<H", lifetime))
 
-    x = start_x + random.randint(x_width/-2, x_width/2)
+    x = start_x + random.randint(int(x_width/-2), int(x_width/2))
     y = start_y
     x_vel = 2
     y_vel = 0
     for f in range(lifetime):
-        file.write(struct.pack("<H", frame+f))
+        file.write(struct.pack("<H", int(frame+f)))
         file.write(struct.pack("<H", int(x)))
         file.write(struct.pack("<H", int(y)))
 
