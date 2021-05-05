@@ -56,7 +56,7 @@ def key_position(settings, key):
     loc = num_white_before * white_width
     is_white = is_white_key(key)
     if not is_white:
-        loc -= white_width * settings["blocks.black_width_fac"] / 2
+        loc -= white_width * settings["blocks.black_width_fac"] / 1.75
 
     width = white_width if is_white else white_width * settings["blocks.black_width_fac"]
 
