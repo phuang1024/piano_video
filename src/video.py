@@ -23,6 +23,11 @@ from constants import *
 from utils import *
 
 
+def init(settings):
+    compute_crop(settings)
+    generate_mask(settings)
+
+
 class VideoReader:
     def __init__(self, path):
         self.path = path
