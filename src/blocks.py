@@ -17,9 +17,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import math
 import mido
 from utils import *
+
+GLOW_STEPS = 5
 
 
 def init(settings):
@@ -57,9 +58,10 @@ def draw_block_solid(settings, surface, rect):
 
     rounding = settings["blocks.rounding"]
     base_col = settings["blocks.color"]
+    glow_col = settings["blocks.glow_color"]
 
-    # Draw main block
     for cy in range(h+1):
+        # Compute rounding
         if rounding == 0:
             offset = 0
         else:
@@ -70,6 +72,16 @@ def draw_block_solid(settings, surface, rect):
             else:
                 offset = 0
 
+        # Draw glow
+        if settings["blocks.glow"]:
+            left = x+offset-1
+            right = x+w-offset+1
+            for i in range(GLOW_STEPS):
+                curr_col = [c/(GLOW_STEPS+1) * ((GLOW_STEPS+1)-i) for c in glow_col]
+                surface.set_at((int(left-i), cy+y), curr_col)
+                surface.set_at((int(right+i), cy+y), curr_col)
+
+        # Draw main block
         for cx in range(w+1):
             dist_to_block = min(abs(cx-offset), abs(cx-(w-offset)))
             if offset <= cx <= w-offset:
