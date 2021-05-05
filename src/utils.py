@@ -54,6 +54,10 @@ class ProgressLogger:
         self.frame = frame
 
 
+def mix_colors(col1, col2, fac):
+    return [col1[i]*(1-fac) + col2[i]*fac for i in range(len(col1))]
+
+
 def distance(x1, y1, x2, y2):
     return ((x1-x2)**2 + (y1-y2)**2) ** 0.5
 
