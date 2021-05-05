@@ -62,8 +62,8 @@ def export(settings):
         remaining = (length-frame-1) / per_second
 
         clearline()
-        log(f"Frame {frame+1}/{length}, {round(per_second, 1)} fps, {round(percent, 1)}% done, " + \
-            f"{round(elapse, 1)} elapsed, {round(remaining, 1)} remaining")
+        log(f"Frame {frame+1}/{length}, {str(per_second)[:4]} fps, {str(percent)[:4]}% done, " + \
+            f"{str(elapse)[:4]} elapsed, {str(remaining)[:4]} remaining")
 
         img = render(settings, piano_video, frame)
         if fmat == "video":
