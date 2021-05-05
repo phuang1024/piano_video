@@ -41,7 +41,7 @@ DEFAULT_SETTINGS = {
     "effects.glare": True,
     "effects.glare_size": [100, 60],
     "effects.smoke.dots": True,
-    "effects.smoke.dots.dps": 200,
+    "effects.smoke.dots.dps": 150,
     "effects.smoke.dots.lifetime": 3,
 
     "other.random_seed": 0,

@@ -24,21 +24,24 @@ import pygame
 import cv2
 from utils import *
 from blocks import compute_length, render_blocks
-from video import VideoReader, render_frame as render_piano
+from video import VideoReader, render_frame as crop_piano
 from glare import render_glare, cache_glare
-from smoke import cache_smoke_dots
+from smoke import cache_smoke_dots, render_dots
 pygame.init()
+
+
+def render_piano(settings, surface, piano_video, frame):
+    piano = array_to_surf(crop_piano(settings, piano_video, frame))
+    piano = pygame.transform.scale(piano, list(map(int, settings["piano.computed_crop"][4][:2])))
+    surface.blit(piano, (0, settings["output.resolution"][1]/2))
 
 
 def render(settings, piano_video, frame):
     surface = pygame.Surface(settings["output.resolution"])
 
+    render_dots(settings, surface, frame)
     render_blocks(settings, surface, frame)
-
-    piano = array_to_surf(render_piano(settings, piano_video, frame))
-    piano = pygame.transform.scale(piano, list(map(int, settings["piano.computed_crop"][4][:2])))
-    surface.blit(piano, (0, settings["output.resolution"][1]/2))
-
+    render_piano(settings, surface, piano_video, frame)
     render_glare(settings, surface, frame)
 
     return surface
