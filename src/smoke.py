@@ -53,16 +53,17 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     x = start_x + random.randint(int(x_width/-2), int(x_width/2))
     y = start_y
     x_vel = 0
-    y_vel = -4
+    y_vel = -2.5
     for f in range(lifetime):
         file.write(struct.pack("<H", int(frame+f)))
         file.write(struct.pack("<H", int(x)))
         file.write(struct.pack("<H", int(y)))
 
-        x_vel += random.uniform(-0.1, 0.1)
-        y_vel += random.uniform(0, 0.01)
+        x_vel += random.uniform(-0.2, 0.2)
+        y_vel += random.uniform(-0.08, 0.08)
         x += x_vel
         y += y_vel
+        x = max(x, 0)
 
 
 def render_dots(settings, surface, frame):
@@ -89,11 +90,16 @@ def render_dots(settings, surface, frame):
                 if start <= frame <= end+max_life:
                     for i in range(num_dots):
                         lifetime = struct.unpack("<H", file.read(2))[0]
+                        first_frame = None
                         for j in range(lifetime):
                             curr_frame = struct.unpack("<H", file.read(2))[0]
+                            if first_frame is None:
+                                first_frame = curr_frame
+
                             if curr_frame == frame:
-                                x = struct.unpack("<H", file.read(2))[0]
+                                x = struct.unpack("<H", file.read(2))[0] + settings["blocks.x_offset"]
                                 y = struct.unpack("<H", file.read(2))[0]
-                                pygame.draw.circle(surface, (255, 255, 255), (x, y), 1)
+                                value = (first_frame+lifetime-curr_frame) / lifetime * 255
+                                pygame.draw.circle(surface, (value, value, value), (x, y), 1)
                             else:
                                 file.read(4)   # Read x and y locs
