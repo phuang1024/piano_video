@@ -82,17 +82,23 @@ def compute_crop(settings):
         slope2 = np.float64(points[1][1]-points[2][1]) / (points[1][0]-points[2][0])
         x6, y6 = points[2][0]+(mask_size/slope2), points[2][1]+mask_size
 
-    height_fac = distance(*points[0], *points[3]) / distance(*points[0], *points[1])
-    src_points = [points[0], points[1], [x6, y6], [x5, y5]]
-    dst_points = [[0, height/2], [width, height/2], [width, height/2+width*height_fac], [0, height/2+width*height_fac]]
+    height_fac = distance(*points[0], x5, y5) / distance(*points[0], *points[1])
+    src_points = np.array([points[0], points[1], [x6, y6], [x5, y5]]).astype(np.float32)
+    dst_points = np.array([[0, 0], [width, 0], [width, width*height_fac], [0, width*height_fac]]).astype(np.float32)
 
     settings["piano.computed_crop"] = [
         [*points, [x5, y5], [x6, y6]],
         src_points,
         dst_points,
-        cv2.getPerspectiveTransform(np.array(src_points).astype(np.float32),
-            np.array(dst_points).astype(np.float32)),
+        cv2.getPerspectiveTransform(src_points, dst_points),
+        [width, width*height_fac]
     ]
+
+
+def crop(settings, image):
+    persp, size = settings["piano.computed_crop"][3:]
+    result = cv2.warpPerspective(image, persp, tuple(map(int, size)))
+    return result
 
 
 def preview_crop(settings):
@@ -117,6 +123,14 @@ def preview_crop(settings):
     ans = input(f"Save crop preview to {output}? (y/n/Q) ").lower().strip()
     if ans == "y":
         pygame.image.save(image_crop_box, output)
+    elif ans == "n":
+        pass
+    else:
+        return
+
+    ans = input(f"Save cropped image to {output}? (y/n/Q) ").lower().strip()
+    if ans == "y":
+        cv2.imwrite(output, crop(settings, image))
     elif ans == "n":
         pass
     else:
