@@ -58,16 +58,10 @@ def export(settings):
     piano_video = VideoReader(settings["files.video"])
     length = compute_length(settings)
 
-    start = time.time()
+    logger = ProgressLogger("Frame", length)
     for frame in range(length):
-        elapse = time.time() - start
-        per_second = (frame+1) / elapse
-        percent = (frame+1) / length * 100
-        remaining = (length-frame-1) / per_second
-
-        clearline()
-        log(f"Frame {frame+1}/{length}, {str(per_second)[:4]} fps, {str(percent)[:4]}% done, " + \
-            f"{str(elapse)[:4]} elapsed, {str(remaining)[:4]} remaining")
+        logger.update(frame)
+        logger.log()
 
         img = render(settings, piano_video, frame)
         if fmat == "video":
@@ -76,8 +70,7 @@ def export(settings):
             path = os.path.join(images_output, f"{frame}.jpg")
             pygame.image.save(img, path)
 
-    log(f"Finished exporting {length} frames")
-    newline()
+    logger.finish(f"Finished exporting {length} frames")
 
     if fmat == "video":
         video.release()

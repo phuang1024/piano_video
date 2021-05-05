@@ -18,6 +18,7 @@
 #
 
 import sys
+import time
 import numpy as np
 import cv2
 import pygame
@@ -25,6 +26,32 @@ from constants import *
 pygame.init()
 
 LOGGER_CLEAR_LEN = 75
+
+
+class ProgressLogger:
+    def __init__(self, msg, total):
+        self.msg = msg
+        self.total = total
+        self.frame = 0
+        self.start = time.time()
+
+    def log(self):
+        frame = self.frame
+        total = self.total
+
+        elapse = time.time() - self.start
+        per_second = (frame+1) / elapse
+        percent = (frame+1) / total * 100
+        remaining = (total-frame-1) / per_second
+
+        log(f"{self.msg} {frame+1}/{total}, {str(per_second)[:4]} fps, {str(percent)[:4]}% done, " + \
+            f"{str(elapse)[:4]} elapsed, {str(remaining)[:4]} remaining", clear=True)
+
+    def finish(self, msg):
+        log(msg, clear=True, new=True)
+
+    def update(self, frame):
+        self.frame = frame
 
 
 def distance(x1, y1, x2, y2):
