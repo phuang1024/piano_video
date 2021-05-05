@@ -19,6 +19,7 @@
 
 import os
 import subprocess
+import time
 import pygame
 import cv2
 from utils import *
@@ -50,9 +51,17 @@ def export(settings):
 
     piano_video = VideoReader(settings["files.video"])
     length = compute_length(settings)
+
+    start = time.time()
     for frame in range(length):
+        elapse = time.time() - start
+        per_second = (frame+1) / elapse
+        percent = (frame+1) / length * 100
+        remaining = (length-frame-1) / per_second
+
         clearline()
-        log(f"Exporting {frame+1}/{length}")
+        log(f"Exporting {frame+1}/{length}, {round(per_second, 1)} fps, {round(percent, 1)}% done, " + \
+            f"{round(elapse, 1)} elapsed, {round(remaining, 1)} remaining")
 
         img = render(settings, piano_video, frame)
         if fmat == "video":
