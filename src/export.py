@@ -25,6 +25,7 @@ import cv2
 from utils import *
 from blocks import compute_length, render_blocks
 from video import VideoReader, render_frame as render_piano
+from glare import cache_glare
 pygame.init()
 
 
@@ -44,6 +45,9 @@ def export(settings):
     fmat = settings["output.format"]
     output = settings["files.output"]
     images_output = output+".images"
+
+
+    cache_glare(settings)
 
     if fmat == "images":
         os.makedirs(images_output, exist_ok=True)

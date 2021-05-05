@@ -18,37 +18,28 @@
 #
 
 import os
+import struct
+import numpy as np
+import pygame
+from constants import *
+from utils import *
 
-# Using lists to keep consistent with json data
-DEFAULT_SETTINGS = {
-    "files.midis": [],
-    "files.video": "",
-    "files.output": "",
 
-    "output.resolution": [1920, 1080],
-    "output.fps": 30,
-    "output.ending_pause": 3,
-    "output.format": "video",
+def cache_glare(settings):
+    path = os.path.join(CACHE, "glare")
 
-    "blocks.time_offset": 0,
-    "blocks.x_offset": 0,
-    "blocks.black_width_fac": 0.65,
-    "blocks.speed": 0.15,
+    for i, (note, start, end) in enumerate(settings["blocks.notes"]):
+        with open(os.path.join(path, f"{i}.bin"), "wb") as file:
+            file.write(bytes([note]))
+            file.write(struct.pack("f", start))
+            file.write(struct.pack("f", end))
 
-    "piano.video_offset": 0,
-    "piano.video_crop": [],
+            x_loc, width = key_position(settings, note)
+            x_loc += width/2
 
-    "effects.glare": True,
-    "effects.glare_size": [],
 
-    "other.random_seed": 0,
-}
+def add_glare(settings, surface, frame):
+    if not settings["effects.glare"]:
+        return
 
-PARENT = os.path.dirname(os.path.realpath(__file__))
-CACHE = os.path.join(PARENT, "piano_video_cache")
-
-WHITE_KEYS = 52
-BLACK_KEYS = 36
-
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
+    random = settings["other.random"]
