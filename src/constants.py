@@ -39,7 +39,7 @@ DEFAULT_SETTINGS = {
     "piano.video_crop": [],
 
     "effects.glare": True,
-    "effects.glare_size": [200, 100],
+    "effects.glare_size": [100, 60],
 
     "other.random_seed": 0,
 }

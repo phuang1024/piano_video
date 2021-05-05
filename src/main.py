@@ -48,7 +48,7 @@ def main():
         settings[key] = user_settings[key]
     settings["files.output"] = args.output
     settings["other.frame"] = args.frame if args.frame is not None else 0
-    settings["other.random"] = random.Random(settings["other.random_seed"])
+    random.seed(settings["other.random_seed"])
 
     os.makedirs(CACHE, exist_ok=True)
 
