@@ -39,7 +39,7 @@ DEFAULT_SETTINGS = {
     "piano.video_crop": [],
 
     "effects.glare": True,
-    "effects.glare_size": [100, 60],
+    "effects.glare_size": [100, 75],
     "effects.smoke.dots": True,
     "effects.smoke.dots.dps": 150,
     "effects.smoke.dots.lifetime": 3,

@@ -57,19 +57,13 @@ class VideoReader:
         elif self.last_frame_num == -1 or frame_num > self.last_frame_num:
             while True:
                 if verbose:
-                    clearline()
-                    log(f"Reading frame {self.last_frame_num}/{frame_num} of {self.path}")
+                    log(f"Reading frame {self.last_frame_num}/{frame_num} of {self.path}", clear=True)
                 if frame_num == self.last_frame_num:
                     if verbose:
-                        clearline()
-                        log(f"Reading frame {frame_num} of {self.path}: Finished")
-                        newline()
+                        log(f"Reading frame {frame_num} of {self.path}: Finished", clear=True, new=True)
                     return self.last_img
 
-                rval, frame = self.video.read()
-                self.last_frame_num += 1
-                self.raise_rval(rval)
-                self.last_img = frame
+                self.next()
 
         elif frame_num < self.last_frame_num:
             self.reset()
