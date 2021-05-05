@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import math
 import mido
 from utils import *
 
@@ -50,6 +51,36 @@ def parse_midis(settings):
     settings["blocks.notes"] = notes
 
 
+def draw_block_solid(settings, surface, rect):
+    width, height = settings["output.resolution"]
+    x, y, w, h = map(int, rect)
+
+    rounding = settings["blocks.rounding"]
+    base_col = settings["blocks.color"]
+
+    # Draw main block
+    for cy in range(h+1):
+        if rounding == 0:
+            offset = 0
+        else:
+            if cy < rounding:
+                offset = rounding - (rounding**2 - (rounding-cy)**2) ** 0.5
+            elif cy > h-rounding:
+                offset = rounding - (rounding**2 - (rounding-(h-cy))**2) ** 0.5
+            else:
+                offset = 0
+
+        for cx in range(w+1):
+            dist_to_block = min(abs(cx-offset), abs(cx-(w-offset)))
+            if offset <= cx <= w-offset:
+                color = base_col
+            elif dist_to_block <= 1:
+                color = [i/2 for i in base_col]
+            else:
+                continue
+            surface.set_at((cx+x, cy+y), color)
+
+
 def render_blocks(settings, surface, frame):
     width, height = settings["output.resolution"]
     middle = height / 2
@@ -64,7 +95,11 @@ def render_blocks(settings, surface, frame):
             x, curr_width = key_position(settings, note)
             x += settings["blocks.x_offset"]
             rect = (x, end_y, curr_width, start_y-end_y)
-            pygame.draw.rect(surface, (255, 255, 255), rect)
+
+            if settings["blocks.style"] == "PREVIEW":
+                pygame.draw.rect(surface, (255, 255, 255), rect)
+            elif settings["blocks.style"] == "SOLID_COLOR":
+                draw_block_solid(settings, surface, rect)
 
 
 def compute_length(settings):

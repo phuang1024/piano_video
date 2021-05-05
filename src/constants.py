@@ -34,6 +34,15 @@ DEFAULT_SETTINGS = {
     "blocks.x_offset": 0,
     "blocks.black_width_fac": 0.6,
     "blocks.speed": 0.15,
+    "blocks.style": "SOLID_COLOR",
+
+    "blocks.rounding": 8,
+    "blocks.fade_top": True,
+    "blocks.color": [200, 200, 210],
+    "blocks.glow": True,
+    "blocks.glow_color": [100, 110, 160],
+    "blocks.border": 1,
+    "blocks.border_color": [220, 225, 240],
 
     "piano.video_offset": 0,
     "piano.video_crop": [],
