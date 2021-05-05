@@ -140,26 +140,20 @@ def preview_crop(settings):
     for i in range(4, 6):
         pygame.draw.circle(image_crop_box, GREEN, computed[0][i], 10, width=2)
 
-    ans = input(f"Save crop preview to {output}? (y/n/Q) ").lower().strip()
+    ans = input(f"Save crop preview to {output}? (y/N/q) ").lower().strip()
     if ans == "y":
         pygame.image.save(image_crop_box, output)
-    elif ans == "n":
-        pass
-    else:
+    elif ans == "q":
         return
 
-    ans = input(f"Save cropped image to {output}? (y/n/Q) ").lower().strip()
+    ans = input(f"Save cropped image to {output}? (y/N/q) ").lower().strip()
     if ans == "y":
         cv2.imwrite(output, crop(settings, image))
-    elif ans == "n":
-        pass
-    else:
+    elif ans == "q":
         return
 
-    ans = input(f"Save masked image to {output}? (y/n/Q) ").lower().strip()
+    ans = input(f"Save masked image to {output}? (y/N/q) ").lower().strip()
     if ans == "y":
         cv2.imwrite(output, crop(settings, image)*settings["piano.mask"])
-    elif ans == "n":
-        pass
-    else:
+    elif ans == "q":
         return
