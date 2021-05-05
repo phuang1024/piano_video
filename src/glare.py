@@ -31,9 +31,14 @@ def cache_glare(settings):
 
     width, height = settings["output.resolution"]
     glare_width, glare_height = settings["effects.glare_size"]
+    notes = settings["blocks.notes"]
 
+    logger = ProgressLogger("Caching glare", len(notes))
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
-        for i, (note, start, end) in enumerate(settings["blocks.notes"]):
+        for i, (note, start, end) in enumerate(notes):
+            logger.update(i)
+            logger.log()
+
             infofile.write(struct.pack("<I", i))
 
             with open(os.path.join(path, f"{i}.bin"), "wb") as file:
@@ -56,6 +61,8 @@ def cache_glare(settings):
                 data = glare.tobytes()
                 file.write(struct.pack("<I", len(data)))
                 file.write(data)
+
+    logger.finish(f"Finished caching {len(notes)} glares")
 
 
 def add_glare(settings, surface, frame):

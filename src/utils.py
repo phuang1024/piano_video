@@ -25,7 +25,7 @@ import pygame
 from constants import *
 pygame.init()
 
-LOGGER_CLEAR_LEN = 75
+LOGGER_CLEAR_LEN = 80
 
 
 class ProgressLogger:
