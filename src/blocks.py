@@ -21,6 +21,7 @@ import mido
 from utils import *
 
 GLOW_STEPS = 5
+TOP_FADE_HEIGHT = 250
 
 
 def init(settings):
@@ -90,7 +91,14 @@ def draw_block_solid(settings, surface, rect):
                 color = [i/2 for i in base_col]
             else:
                 continue
-            surface.set_at((cx+x, cy+y), color)
+
+            abs_y = cy + y
+            if abs_y <= TOP_FADE_HEIGHT:
+                fac = (abs_y + TOP_FADE_HEIGHT*2) / (TOP_FADE_HEIGHT*3)
+                col = [i*fac for i in color]
+            else:
+                col = color
+            surface.set_at((cx+x, cy+y), col)
 
 
 def render_blocks(settings, surface, frame):
