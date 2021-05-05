@@ -37,10 +37,12 @@ def render_piano(settings, surface, piano_video, frame):
 
 
 def render(settings, piano_video, frame):
+    width, height = settings["output.resolution"]
     surface = pygame.Surface(settings["output.resolution"])
 
     render_dots(settings, surface, frame)
     render_blocks(settings, surface, frame)
+    pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
     render_piano(settings, surface, piano_video, frame)
     render_glare(settings, surface, frame)
 
