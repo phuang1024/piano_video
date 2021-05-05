@@ -97,7 +97,7 @@ def compute_crop(settings):
         src_points,
         dst_points,
         cv2.getPerspectiveTransform(src_points, dst_points),
-        [width, width*height_fac, width*mask_height_fac]
+        [width, width*height_fac, width*(height_fac-mask_height_fac)]
     ]
 
 
@@ -119,6 +119,10 @@ def generate_mask(settings):
         mask.append([color for _ in range(width)])
 
     settings["piano.mask"] = np.array(mask, dtype=np.float32)
+
+
+def render_frame(settings, video, frame_num):
+    return crop(settings, video.read(frame_num)) * settings["piano.mask"]
 
 
 def preview_crop(settings):
