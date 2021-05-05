@@ -23,7 +23,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import argparse
 import json
 from constants import *
-from video import compute_crop, preview_crop
+from video import compute_crop, generate_mask, preview_crop
 
 
 def main():
@@ -47,6 +47,7 @@ def main():
     settings["other.frame"] = args.frame if args.frame is not None else 0
 
     compute_crop(settings)
+    generate_mask(settings)
 
     if args.mode is None or args.mode == "EXPORT":
         pass

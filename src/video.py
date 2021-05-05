@@ -83,6 +83,7 @@ def compute_crop(settings):
         x6, y6 = points[2][0]+(mask_size/slope2), points[2][1]+mask_size
 
     height_fac = distance(*points[0], x5, y5) / distance(*points[0], *points[1])
+    mask_height_fac = mask_size / distance(*points[0], *points[1])
     src_points = np.array([points[0], points[1], [x6, y6], [x5, y5]]).astype(np.float32)
     dst_points = np.array([[0, 0], [width, 0], [width, width*height_fac], [0, width*height_fac]]).astype(np.float32)
 
@@ -91,14 +92,28 @@ def compute_crop(settings):
         src_points,
         dst_points,
         cv2.getPerspectiveTransform(src_points, dst_points),
-        [width, width*height_fac]
+        [width, width*height_fac, width*mask_height_fac]
     ]
 
 
 def crop(settings, image):
     persp, size = settings["piano.computed_crop"][3:]
-    result = cv2.warpPerspective(image, persp, tuple(map(int, size)))
+    result = cv2.warpPerspective(image, persp, tuple(map(int, size[:2])))
     return result
+
+
+def generate_mask(settings):
+    width, height, mask_height = settings["piano.computed_crop"][4]
+    mask = []
+
+    width, height, mask_height = map(int, (width, height, mask_height))
+    for y in range(height):
+        value = (height-y) / (height-mask_height)
+        value = max(min(value, 1), 0) ** 2
+        color = (value, value, value)
+        mask.append([color for _ in range(width)])
+
+    settings["piano.mask"] = np.array(mask, dtype=np.float32)
 
 
 def preview_crop(settings):
@@ -131,6 +146,14 @@ def preview_crop(settings):
     ans = input(f"Save cropped image to {output}? (y/n/Q) ").lower().strip()
     if ans == "y":
         cv2.imwrite(output, crop(settings, image))
+    elif ans == "n":
+        pass
+    else:
+        return
+
+    ans = input(f"Save masked image to {output}? (y/n/Q) ").lower().strip()
+    if ans == "y":
+        cv2.imwrite(output, crop(settings, image)*settings["piano.mask"])
     elif ans == "n":
         pass
     else:
