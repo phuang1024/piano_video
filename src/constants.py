@@ -32,7 +32,7 @@ DEFAULT_SETTINGS = {
 
     "blocks.time_offset": 0,
     "blocks.x_offset": 0,
-    "blocks.black_width_fac": 0.65,
+    "blocks.black_width_fac": 0.6,
     "blocks.speed": 0.15,
 
     "piano.video_offset": 0,

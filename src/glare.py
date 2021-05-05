@@ -85,7 +85,7 @@ def add_glare(settings, surface, frame):
             num = struct.unpack("<I", num)[0]
             path = os.path.join(cache_path, f"{num}.bin")
             with open(path, "rb") as file:
-                file.read(1)    # Read byte containing note, not needed now.
+                note, key_width = key_position(settings, file.read(1)[0])
                 start = struct.unpack("f", file.read(4))[0]
                 end = struct.unpack("f", file.read(4))[0]
                 x_loc = struct.unpack("<I", file.read(4))[0]
@@ -96,7 +96,7 @@ def add_glare(settings, surface, frame):
                     glare = np.frombuffer(file.read(struct.unpack("<I", file.read(4))[0]), dtype=np.float32).reshape((glare_height, glare_width))
                     for y_val in range(glare_height):
                         for x_val in range(glare_width):
-                            x = x_loc + x_val
+                            x = int(x_loc + x_val + key_width/2)
                             y = y_loc + y_val
                             curr_fac = max(min(glare[y_val][x_val]*fac, 1), 0)
                             surface.set_at((x, y), mix_colors(surface.get_at((x, y))[:3], (255, 255, 255), curr_fac))
