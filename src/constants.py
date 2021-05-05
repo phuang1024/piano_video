@@ -28,10 +28,14 @@ DEFAULT_SETTINGS = {
     "output.format": "video",
 
     "blocks.time_offset": 0,
+    "blocks.black_key_fac": 0.65,
 
     "piano.video_offset": 0,
     "piano.video_crop": [],
 }
+
+WHITE_KEYS = 52
+BLACK_KEYS = 36
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)

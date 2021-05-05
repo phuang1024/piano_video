@@ -46,6 +46,22 @@ def array_to_surf(array: np.ndarray) -> pygame.Surface:
 def is_white_key(key):
     return (key-3) % 12 not in (1, 3, 6, 8, 10)
 
+def key_position(settings, key):
+    """
+    Returns (x_location, x_size)
+    """
+    white_width = settings["output.resolution"][0] / WHITE_KEYS
+    num_white_before = [is_white_key(k) for k in range(key)].count(True)
+
+    loc = num_white_before * white_width
+    is_white = is_white_key(key)
+    if not is_white:
+        loc -= white_width * settings["blocks.black_width_fac"] / 2
+
+    width = white_width if is_white else white_width * settings["blocks.black_width_fac"]
+
+    return (loc, width)
+
 
 def log(msg, clear=False, new=False, flush=True):
     if clear:
