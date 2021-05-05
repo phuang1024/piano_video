@@ -25,20 +25,22 @@ import cv2
 from utils import *
 from blocks import compute_length, render_blocks
 from video import VideoReader, render_frame as render_piano
-from glare import cache_glare
+from glare import add_glare, cache_glare
 pygame.init()
 
 
 def render(settings, piano_video, frame):
-    surf = pygame.Surface(settings["output.resolution"])
+    surface = pygame.Surface(settings["output.resolution"])
 
-    render_blocks(settings, surf, frame)
+    render_blocks(settings, surface, frame)
 
     piano = array_to_surf(render_piano(settings, piano_video, frame))
     piano = pygame.transform.scale(piano, list(map(int, settings["piano.computed_crop"][4][:2])))
-    surf.blit(piano, (0, settings["output.resolution"][1]/2))
+    surface.blit(piano, (0, settings["output.resolution"][1]/2))
 
-    return surf
+    add_glare(settings, surface, frame)
+
+    return surface
 
 
 def export(settings):

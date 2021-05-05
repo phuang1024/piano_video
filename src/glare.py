@@ -19,6 +19,7 @@
 
 import os
 import struct
+import random
 import numpy as np
 import pygame
 from constants import *
@@ -26,6 +27,9 @@ from utils import *
 
 
 def cache_glare(settings):
+    if not settings["effects.glare"]:
+        return
+
     path = os.path.join(CACHE, "glare")
     os.makedirs(path, exist_ok=True)
 
@@ -51,11 +55,11 @@ def cache_glare(settings):
                 file.write(struct.pack("<I", int(x_loc-glare_width/2)))
                 file.write(struct.pack("<I", int((height-glare_height)/2)))
 
-                glare = np.empty((glare_height, glare_width))
+                glare = np.empty((glare_height, glare_width), dtype=np.float32)
                 for x in range(glare_width):
                     for y in range(glare_height):
-                        x_fac = abs(x - x_loc) / (glare_width/2)
-                        y_fac = abs(y - height/2) / (glare_height/2)
+                        x_fac = min(x, glare_width-x) / (glare_width/2)
+                        y_fac = min(y, glare_height-y) / (glare_height/2)
                         glare[y, x] = x_fac*y_fac
 
                 data = glare.tobytes()
@@ -69,4 +73,30 @@ def add_glare(settings, surface, frame):
     if not settings["effects.glare"]:
         return
 
-    random = settings["other.random"]
+    cache_path = os.path.join(CACHE, "glare")
+    glare_width, glare_height = settings["effects.glare_size"]
+
+    with open(os.path.join(cache_path, "info.bin"), "rb") as infofile:
+        while True:
+            num = infofile.read(4)
+            if len(num) < 4:
+                break
+
+            num = struct.unpack("<I", num)[0]
+            path = os.path.join(cache_path, f"{num}.bin")
+            with open(path, "rb") as file:
+                file.read(1)    # Read byte containing note, not needed now.
+                start = struct.unpack("f", file.read(4))[0]
+                end = struct.unpack("f", file.read(4))[0]
+                x_loc = struct.unpack("<I", file.read(4))[0]
+                y_loc = struct.unpack("<I", file.read(4))[0]
+
+                if start <= frame <= end:
+                    fac = random.uniform(0.9, 1.1)
+                    glare = np.frombuffer(file.read(struct.unpack("<I", file.read(4))[0]), dtype=np.float32).reshape((glare_height, glare_width))
+                    for y_val in range(glare_height):
+                        for x_val in range(glare_width):
+                            x = x_loc + x_val
+                            y = y_loc + y_val
+                            curr_fac = max(min(glare[y_val][x_val]*fac, 1), 0)
+                            surface.set_at((x, y), mix_colors(surface.get_at((x, y))[:3], (255, 255, 255), curr_fac))
