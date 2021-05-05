@@ -27,15 +27,19 @@ from utils import *
 
 def cache_glare(settings):
     path = os.path.join(CACHE, "glare")
+    os.makedirs(path, exist_ok=True)
 
-    for i, (note, start, end) in enumerate(settings["blocks.notes"]):
-        with open(os.path.join(path, f"{i}.bin"), "wb") as file:
-            file.write(bytes([note]))
-            file.write(struct.pack("f", start))
-            file.write(struct.pack("f", end))
+    with open(os.path.join(path, "info.bin"), "wb") as infofile:
+        for i, (note, start, end) in enumerate(settings["blocks.notes"]):
+            infofile.write(struct.pack("<I", i))
 
-            x_loc, width = key_position(settings, note)
-            x_loc += width/2
+            with open(os.path.join(path, f"{i}.bin"), "wb") as file:
+                file.write(bytes([note]))
+                file.write(struct.pack("f", start))
+                file.write(struct.pack("f", end))
+
+                x_loc, width = key_position(settings, note)
+                x_loc += width/2
 
 
 def add_glare(settings, surface, frame):

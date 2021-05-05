@@ -50,7 +50,7 @@ def main():
     settings["other.frame"] = args.frame if args.frame is not None else 0
     settings["other.random"] = random.Random(settings["other.random_seed"])
 
-    os.makedirs(CACHE)
+    os.makedirs(CACHE, exist_ok=True)
 
     video_init(settings)
     blocks_init(settings)
