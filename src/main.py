@@ -24,6 +24,7 @@ import argparse
 import json
 from constants import *
 from export import export
+from blocks import init as blocks_init
 from video import init as video_init, preview_crop, interactive_preview
 
 
@@ -48,6 +49,7 @@ def main():
     settings["other.frame"] = args.frame if args.frame is not None else 0
 
     video_init(settings)
+    blocks_init(settings)
 
     if args.mode is None or args.mode == "EXPORT":
         export(settings)

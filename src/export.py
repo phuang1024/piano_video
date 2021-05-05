@@ -22,6 +22,7 @@ import subprocess
 import pygame
 import cv2
 from utils import *
+from blocks import compute_length
 from video import VideoReader, render_frame as render_piano
 pygame.init()
 
@@ -48,8 +49,10 @@ def export(settings):
             settings["output.fps"], tuple(settings["output.resolution"]))
 
     piano_video = VideoReader(settings["files.video"])
-    for frame in range(200):
-        print(frame)
+    length = compute_length(settings)
+    for frame in range(length):
+        clearline()
+        log(f"Exporting {frame+1}/{length}")
 
         img = render(settings, piano_video, frame)
         if fmat == "video":
@@ -57,6 +60,9 @@ def export(settings):
         elif fmat == "images":
             path = os.path.join(images_output, f"{frame}.jpg")
             pygame.image.save(img, path)
+
+    log(f"Finished exporting {length} frames")
+    newline()
 
     if fmat == "video":
         video.release()
