@@ -29,6 +29,9 @@ def cache_glare(settings):
     path = os.path.join(CACHE, "glare")
     os.makedirs(path, exist_ok=True)
 
+    width, height = settings["output.resolution"]
+    glare_width, glare_height = settings["effects.glare_size"]
+
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
         for i, (note, start, end) in enumerate(settings["blocks.notes"]):
             infofile.write(struct.pack("<I", i))
@@ -38,8 +41,21 @@ def cache_glare(settings):
                 file.write(struct.pack("f", start))
                 file.write(struct.pack("f", end))
 
-                x_loc, width = key_position(settings, note)
-                x_loc += width/2
+                x_loc, key_width = key_position(settings, note)
+                x_loc += key_width/2
+                file.write(struct.pack("<I", int(x_loc-glare_width/2)))
+                file.write(struct.pack("<I", int((height-glare_height)/2)))
+
+                glare = np.empty((glare_height, glare_width))
+                for x in range(glare_width):
+                    for y in range(glare_height):
+                        x_fac = abs(x - x_loc) / (glare_width/2)
+                        y_fac = abs(y - height/2) / (glare_height/2)
+                        glare[y, x] = x_fac*y_fac
+
+                data = glare.tobytes()
+                file.write(struct.pack("<I", len(data)))
+                file.write(data)
 
 
 def add_glare(settings, surface, frame):

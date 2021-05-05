@@ -45,7 +45,7 @@ class ProgressLogger:
         remaining = (total-frame-1) / per_second
 
         log(f"{self.msg} {frame+1}/{total}, {str(per_second)[:4]} fps, {str(percent)[:4]}% done, " + \
-            f"{str(elapse)[:4]} elapsed, {str(remaining)[:4]} remaining", clear=True)
+            f"{str(elapse)[:4]}s elapsed, {str(remaining)[:4]}s remaining", clear=True)
 
     def finish(self, msg):
         log(msg, clear=True, new=True)
