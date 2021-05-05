@@ -22,6 +22,7 @@ from utils import *
 
 GLOW_STEPS = 5
 TOP_FADE_HEIGHT = 250
+LIGHT_UP_HEIGHT = 150
 
 
 def init(settings):
@@ -92,13 +93,23 @@ def draw_block_solid(settings, surface, rect):
             else:
                 continue
 
+            # Fade in dark
+            curr_col = color
             abs_y = cy + y
-            if abs_y <= TOP_FADE_HEIGHT:
-                fac = (abs_y + TOP_FADE_HEIGHT*2) / (TOP_FADE_HEIGHT*3)
-                col = [i*fac for i in color]
-            else:
-                col = color
-            surface.set_at((cx+x, cy+y), col)
+            if settings["blocks.fade_top"]:
+                if abs_y <= TOP_FADE_HEIGHT:
+                    fac = (abs_y + TOP_FADE_HEIGHT*2) / (TOP_FADE_HEIGHT*3)
+                    curr_col = [i*fac for i in color]
+
+            # Light up when playing
+            light_up_start = height/2 - LIGHT_UP_HEIGHT
+            if y+h >= height/2:
+                if abs_y >= light_up_start:
+                    fac = (abs_y-light_up_start) / (height/2-light_up_start)
+                    fac = max(min(fac, 1), 0)
+                    curr_col = mix_colors(color, (255, 255, 255), fac)
+
+            surface.set_at((cx+x, cy+y), curr_col)
 
 
 def render_blocks(settings, surface, frame):
