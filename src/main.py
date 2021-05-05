@@ -23,6 +23,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import argparse
 import json
 from constants import *
+from export import export
 from video import init as video_init, preview_crop, interactive_preview
 
 
@@ -49,7 +50,7 @@ def main():
     video_init(settings)
 
     if args.mode is None or args.mode == "EXPORT":
-        pass
+        export(settings)
     elif args.mode == "PREVIEW_CROP":
         preview_crop(settings)
     elif args.mode == "INTERACTIVE_PREVIEW":
