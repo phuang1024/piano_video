@@ -47,4 +47,19 @@ def cache_smoke_dots(settings):
 
 
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):
-    pass
+    lifetime = settings["effects.smoke.dots.lifetime"] * settings["output.fps"] + random.uniform()
+    file.write(struct.pack(lifetime, "<H"))
+
+    x = start_x + random.randint(x_width/-2, x_width/2)
+    y = start_y
+    x_vel = 2
+    y_vel = 0
+    for f in range(lifetime):
+        file.write(struct.pack("<H", frame+f))
+        file.write(struct.pack("<H", int(x)))
+        file.write(struct.pack("<H", int(y)))
+
+        x_vel -= random.uniform(0, 0.025)
+        y_vel += random.uniform(-0.01, 0.01)
+        x += x_vel
+        y += y_vel
