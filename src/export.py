@@ -18,6 +18,7 @@
 #
 
 import os
+import subprocess
 import pygame
 import cv2
 from utils import *
@@ -36,14 +37,29 @@ def render(settings, piano_video, frame):
 
 
 def export(settings):
-    video = cv2.VideoWriter(settings["files.output"], cv2.VideoWriter_fourcc(*"mp4v"),
-        settings["output.fps"], tuple(settings["output.resolution"]))
-    piano_video = VideoReader(settings["files.video"])
+    fmat = settings["output.format"]
+    output = settings["files.output"]
+    images_output = output+".images"
 
-    for frame in range(1000):
+    if fmat == "images":
+        os.makedirs(images_output, exist_ok=True)
+    elif fmat == "video":
+        video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
+            settings["output.fps"], tuple(settings["output.resolution"]))
+
+    piano_video = VideoReader(settings["files.video"])
+    for frame in range(200):
         print(frame)
 
-        img = surf_to_array(render(settings, piano_video, frame))
-        video.write(img)
+        img = render(settings, piano_video, frame)
+        if fmat == "video":
+            video.write(surf_to_array(img))
+        elif fmat == "images":
+            path = os.path.join(images_output, f"{frame}.jpg")
+            pygame.image.save(img, path)
 
-    video.release()
+    if fmat == "video":
+        video.release()
+    else:
+        subprocess.Popen(["ffmpeg", "-y", "-i", os.path.join(images_output, "%d.jpg"), "-c:v", "libx264", "-framerate",
+            str(settings["output.fps"]), output], stdin=subprocess.PIPE, stdout=subprocess.PIPE).wait()
