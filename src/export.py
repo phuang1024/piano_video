@@ -78,7 +78,7 @@ def export(settings):
             path = os.path.join(images_output, f"{frame}.jpg")
             pygame.image.save(img, path)
 
-    logger.finish(f"Finished exporting {length} frames")
+    logger.finish(f"Finished exporting {length} frames in $TIMEs")
 
     if fmat == "video":
         video.release()

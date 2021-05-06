@@ -43,7 +43,7 @@ def cache_smoke_dots(settings):
                 for j in range(num_dots):
                     simulate_dot(settings, file, start+1/dot_time_inc*j, x_loc, height/2, key_width)
 
-    logger.finish(f"Finished caching {len(notes)} smoke dots")
+    logger.finish(f"Finished caching {len(notes)} smoke dots in $TIMEs")
 
 
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):

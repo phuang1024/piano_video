@@ -81,7 +81,7 @@ def cache_glare(settings):
                 file.write(struct.pack("<I", len(data)))
                 file.write(data)
 
-    logger.finish(f"Finished caching {len(notes)} glares")
+    logger.finish(f"Finished caching {len(notes)} glares in $TIMEs")
 
 
 def render_glare(settings, surface, frame):

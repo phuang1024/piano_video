@@ -48,7 +48,8 @@ class ProgressLogger:
             f"{str(elapse)[:4]}s elapsed, {str(remaining)[:4]}s remaining", clear=True)
 
     def finish(self, msg):
-        log(msg, clear=True, new=True)
+        elapse = time.time() - self.start
+        log(msg.replace("$TIME", str(elapse)[:4]), clear=True, new=True)
 
     def update(self, frame):
         self.frame = frame
