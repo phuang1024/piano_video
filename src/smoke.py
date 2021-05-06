@@ -14,7 +14,7 @@ def cache_smoke_dots(settings):
     if not settings["effects.smoke.dots"]:
         return
 
-    path = os.path.join(CACHE, "smoke.dots")
+    path = os.path.join(settings["files.cache"], "smoke.dots")
     os.makedirs(path, exist_ok=True)
 
     width, height = settings["output.resolution"]
@@ -70,7 +70,7 @@ def render_dots(settings, surface, frame):
     if not settings["effects.smoke.dots"]:
         return
 
-    cache_path = os.path.join(CACHE, "smoke.dots")
+    cache_path = os.path.join(settings["files.cache"], "smoke.dots")
     max_life = settings["effects.smoke.dots.lifetime"]*settings["output.fps"] + 10
 
     with open(os.path.join(cache_path, "info.bin"), "rb") as infofile:

@@ -57,7 +57,7 @@ DEFAULT_SETTINGS = {
 }
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
-CACHE = os.path.join(PARENT, "piano_video_cache")
+DEFAULT_RANDOM = 0
 
 WHITE_KEYS = 52
 BLACK_KEYS = 36

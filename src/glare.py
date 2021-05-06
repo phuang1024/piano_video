@@ -33,7 +33,7 @@ def cache_glare(settings):
     if not settings["effects.glare"]:
         return
 
-    path = os.path.join(CACHE, "glare")
+    path = os.path.join(settings["files.cache"], "glare")
     os.makedirs(path, exist_ok=True)
 
     width, height = settings["output.resolution"]
@@ -88,7 +88,7 @@ def render_glare(settings, surface, frame):
     if not settings["effects.glare"]:
         return
 
-    cache_path = os.path.join(CACHE, "glare")
+    cache_path = os.path.join(settings["files.cache"], "glare")
     glare_width, glare_height = settings["effects.glare_size"]
 
     with open(os.path.join(cache_path, "info.bin"), "rb") as infofile:
