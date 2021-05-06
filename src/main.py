@@ -20,6 +20,7 @@
 import os
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
+import shutil
 import random
 import argparse
 import json
@@ -33,6 +34,7 @@ def main():
     parser = argparse.ArgumentParser(description="Creates a video from a piano MIDI.")
     parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=True)
     parser.add_argument("-o", "--output", help="output file path (WILL overwrite without prompt)", type=str, required=True)
+    parser.add_argument("-nc", "--no-copy", help="don't backup copy output video", action="store_true")
     parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
     parser.add_argument("-f", "--frame", help="frame to use in modes where applicable", type=int, required=False)
     args = parser.parse_args()
@@ -46,7 +48,8 @@ def main():
     settings = DEFAULT_SETTINGS.copy()
     for key in user_settings:
         settings[key] = user_settings[key]
-    settings["files.output"] = args.output
+    output = os.path.realpath(args.output)
+    settings["files.output"] = output
     settings["other.frame"] = args.frame if args.frame is not None else 0
     random.seed(settings["other.random_seed"])
 
@@ -57,6 +60,8 @@ def main():
 
     if args.mode is None or args.mode == "EXPORT":
         export(settings)
+        if not args.nc:
+            shutil.copy(output, os.path.join(os.path.dirname(output), "backup_"+os.path.basename(output)))
     elif args.mode == "PREVIEW_CROP":
         preview_crop(settings)
     elif args.mode == "INTERACTIVE_PREVIEW":
