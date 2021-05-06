@@ -20,7 +20,7 @@
 import mido
 from utils import *
 
-GLOW_STEPS = 5
+GLOW_STEPS = 4
 TOP_FADE_HEIGHT = 250
 LIGHT_UP_HEIGHT = 150
 
@@ -54,15 +54,57 @@ def parse_midis(settings):
     settings["blocks.notes"] = notes
 
 
+def draw_glow_1px(settings, surface, rect, cx, cy):
+    x, y, w, h = map(int, rect)
+    r = settings["blocks.rounding"]
+    glow_col = settings["blocks.glow_color"]
+
+    if r <= cx <= w-r and r <= cy <= r:   # Point is inside the block
+        dist = 0
+    elif r <= cx <= w-r:                  # Point is above or below block
+        dist = min(abs(cy), abs(cy-h))
+    elif r <= cy <= h-r:                  # Point is to the side of the block
+        dist = min(abs(cx), abs(cx-w))
+    else:                                 # Point is in one of the corners
+        # Right triangle hypotenuse (pythagorean) - rounding radius
+        dx = min(abs(r-cx), abs(w-r-cx))
+        dy = min(abs(r-cy), abs(h-r-cy))
+        dist = (dx**2 + dy**2) ** 0.5 - r
+
+    fac = (r-dist) / r
+    fac = max(min(fac, 1), 0)
+    if fac > 0 and dist != 0:
+        color = [i*fac for i in glow_col]
+        surface.set_at((x+cx, y+cy), color)
+
+
+def draw_glow(settings, surface, rect):
+    width, height = settings["output.resolution"]
+    x, y, w, h = map(int, rect)
+    rounding = settings["blocks.rounding"]
+
+    for cy in range(-rounding, h+1+rounding):
+        if cy+y < 0 or cy+y > height/2:
+            continue
+        for cx in range(-rounding, w+1+rounding):
+            draw_glow_1px(settings, surface, rect, cx, cy)
+
+
 def draw_block_solid(settings, surface, rect):
     width, height = settings["output.resolution"]
     x, y, w, h = map(int, rect)
 
     rounding = settings["blocks.rounding"]
     base_col = settings["blocks.color"]
-    glow_col = settings["blocks.glow_color"]
+
+    # Draw glow
+    if settings["blocks.glow"]:
+        draw_glow(settings, surface, rect)
 
     for cy in range(h+1):
+        if cy+y < 0 or cy+y > height/2:
+            continue
+
         # Compute rounding
         if rounding == 0:
             offset = 0
@@ -73,15 +115,6 @@ def draw_block_solid(settings, surface, rect):
                 offset = rounding - (rounding**2 - (rounding-(h-cy))**2) ** 0.5
             else:
                 offset = 0
-
-        # Draw glow
-        if settings["blocks.glow"]:
-            left = x+offset-1
-            right = x+w-offset+1
-            for i in range(GLOW_STEPS):
-                curr_col = [c/(GLOW_STEPS+1) * ((GLOW_STEPS+1)-i) for c in glow_col]
-                surface.set_at((int(left-i), cy+y), curr_col)
-                surface.set_at((int(right+i), cy+y), curr_col)
 
         # Draw main block
         for cx in range(w+1):
