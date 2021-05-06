@@ -113,5 +113,6 @@ def render_glare(settings, surface, frame):
                         for x_val in range(glare_width):
                             x = int(x_loc + x_val + key_width/2)
                             y = y_loc + y_val
-                            curr_fac = max(min(glare[y_val][x_val]*fac, 1), 0)
-                            surface.set_at((x, y), mix_colors(surface.get_at((x, y))[:3], (255, 255, 255), curr_fac))
+                            if in_surface(surface, (x, y)):
+                                curr_fac = max(min(glare[y_val][x_val]*fac, 1), 0)
+                                surface.set_at((x, y), mix_colors(surface.get_at((x, y))[:3], (255, 255, 255), curr_fac))

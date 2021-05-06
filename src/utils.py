@@ -58,6 +58,15 @@ class ProgressLogger:
 def mix_colors(col1, col2, fac):
     return [col1[i]*(1-fac) + col2[i]*fac for i in range(len(col1))]
 
+def in_surface(surf, loc):
+    x, y = loc
+    w, h = surf.get_size()
+    return 0 <= x < w and 0 <= y < h
+
+def bounds(v, lower=float("-inf"), upper=float("inf")):
+    # TODO replace max(min(v, 1), 0) with this function
+    return max(min(v, upper), lower)
+
 
 def distance(x1, y1, x2, y2):
     return ((x1-x2)**2 + (y1-y2)**2) ** 0.5
