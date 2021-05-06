@@ -53,7 +53,7 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     x = start_x + random.randint(int(x_width/-2), int(x_width/2))
     y = start_y
     x_vel = 0
-    y_vel = -2.5
+    y_vel = -4
     for f in range(lifetime):
         file.write(struct.pack("<H", int(frame+f)))
         file.write(struct.pack("<H", int(x)))
@@ -89,17 +89,27 @@ def render_dots(settings, surface, frame):
 
                 if start <= frame <= end+max_life:
                     for i in range(num_dots):
+                        # Iterate through all dots for current note
                         lifetime = struct.unpack("<H", file.read(2))[0]
                         first_frame = None
+
+                        prev_x, prev_y = None, None
                         for j in range(lifetime):
+                            # Search until found current frame for current dot
+
                             curr_frame = struct.unpack("<H", file.read(2))[0]
                             if first_frame is None:
                                 first_frame = curr_frame
 
+                            x = struct.unpack("<H", file.read(2))[0] + settings["blocks.x_offset"]
+                            y = struct.unpack("<H", file.read(2))[0]
                             if curr_frame == frame:
-                                x = struct.unpack("<H", file.read(2))[0] + settings["blocks.x_offset"]
-                                y = struct.unpack("<H", file.read(2))[0]
                                 value = (first_frame+lifetime-curr_frame) / lifetime * 255
-                                pygame.draw.circle(surface, (value, value, value), (x, y), 1)
-                            else:
-                                file.read(4)   # Read x and y locs
+                                color = (value, value, value)
+                                if prev_x is None:
+                                    pygame.draw.circle(surface, color, (x, y), 1)
+                                else:    # Motion blur
+                                    pygame.draw.line(surface, color, (prev_x, prev_y), (x, y))
+
+                            prev_x = x
+                            prev_y = y
