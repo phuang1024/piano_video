@@ -65,7 +65,7 @@ def main():
 
     if args.mode is None or args.mode == "EXPORT":
         export(settings)
-        if not args.nc:
+        if not args.no_copy:
             shutil.copy(output, os.path.join(os.path.dirname(output), "backup_"+os.path.basename(output)))
     elif args.mode == "PREVIEW_CROP":
         preview_crop(settings)
