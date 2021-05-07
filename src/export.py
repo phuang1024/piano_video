@@ -62,9 +62,9 @@ def export(settings):
     cache_glare(settings)
     cache_smoke_dots(settings)
 
-    if fmat == "images":
+    if fmat == "IMAGES":
         os.makedirs(images_output, exist_ok=True)
-    elif fmat == "video":
+    elif fmat == "VIDEO":
         video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
             settings["output.fps"], tuple(settings["output.resolution"]))
 
@@ -77,15 +77,15 @@ def export(settings):
         logger.log()
 
         img = render(settings, piano_video, frame)
-        if fmat == "video":
+        if fmat == "VIDEO":
             video.write(surf_to_array(img))
-        elif fmat == "images":
+        elif fmat == "IMAGES":
             path = os.path.join(images_output, f"{frame}.jpg")
             pygame.image.save(img, path)
 
     logger.finish(f"Finished exporting {length} frames in $TIMEs")
 
-    if fmat == "video":
+    if fmat == "VIDEO":
         video.release()
     else:
         subprocess.Popen(["ffmpeg", "-y", "-i", os.path.join(images_output, "%d.jpg"), "-c:v", "libx264", "-framerate",

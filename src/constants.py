@@ -28,7 +28,7 @@ DEFAULT_SETTINGS = {
     "output.resolution": [1920, 1080],
     "output.fps": 30,
     "output.ending_pause": 3,
-    "output.format": "video",
+    "output.format": "VIDEO",
 
     "blocks.time_offset": 0,
     "blocks.x_offset": 0,
