@@ -24,7 +24,7 @@ import pygame
 import cv2
 from utils import *
 from blocks import compute_length, render_blocks
-from piano import VideoReader, render_frame as crop_piano
+from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
 from glare import render_glare, cache_glare
 from smoke import cache_smoke_dots, render_dots
 pygame.init()
@@ -33,7 +33,11 @@ pygame.init()
 def render_piano(settings, surface, piano_video, frame):
     piano = array_to_surf(crop_piano(settings, piano_video, frame))
     piano = pygame.transform.scale(piano, list(map(int, settings["piano.computed_crop"][4][:2])))
-    surface.blit(piano, (0, settings["output.resolution"][1]/2))
+
+    y = settings["output.resolution"][1]/2
+    if settings["piano.top"] == "LIGHT_BAR":
+        y += LB_HEIGHT
+    surface.blit(piano, (0, y))
 
 
 def render(settings, piano_video, frame):
@@ -44,6 +48,7 @@ def render(settings, piano_video, frame):
     render_blocks(settings, surface, frame)
     pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
     render_piano(settings, surface, piano_video, frame)
+    render_top(settings, surface, frame)
     render_glare(settings, surface, frame)
 
     return surface

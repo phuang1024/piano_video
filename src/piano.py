@@ -22,6 +22,9 @@ import cv2
 from constants import *
 from utils import *
 
+LB_LIGHT_WIDTH = 160    # Half width of light in the light bar (LB)
+LB_HEIGHT = 6
+
 
 def init(settings):
     compute_crop(settings)
@@ -121,6 +124,34 @@ def render_frame(settings, video, frame_num):
     video_frame = (frame_num + fps*settings["piano.video_offset"]) * video.fps/fps
 
     return crop(settings, video.read(video_frame)) * settings["piano.mask"]
+
+
+def render_top(settings, surface, frame):
+    width, height = settings["output.resolution"]
+    lb_start = int(height/2) + LB_HEIGHT
+
+    # Calculate intensity array
+    if settings["piano.top"] == "LIGHT_BAR":
+        intensity = [0] * width
+        for note, start, end in settings["blocks.notes"]:
+            if start <= frame <= end:
+                x_loc, key_width = key_position(settings, note)
+                x = int(x_loc + key_width/2 + settings["blocks.x_offset"])
+                for i in range(LB_LIGHT_WIDTH):
+                    curr_int = (LB_LIGHT_WIDTH-i) / LB_LIGHT_WIDTH
+                    intensity[x+i] += curr_int
+                    if i != 0:   # Don't increment center twice
+                        intensity[x-i] += curr_int
+
+        for x in range(width):
+            # Value = brightness (HSV)
+            top_value = intensity[x]
+            bottom_value = top_value * 1.25
+            top_value = bounds(top_value, 0.1, 1) * 255
+            bottom_value = bounds(bottom_value, 0.15, 1) * 255
+            for y in range(LB_HEIGHT):
+                color = (bottom_value,)*3 if y < 2 else (top_value,)*3
+                surface.set_at((x, lb_start-y), color)
 
 
 def preview_crop(settings):
