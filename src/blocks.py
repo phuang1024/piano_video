@@ -55,6 +55,7 @@ def parse_midis(settings):
 
 
 def draw_glow_1px(settings, surface, rect, cx, cy):
+    width, height = settings["output.resolution"]
     x, y, w, h = map(int, rect)
     r = settings["blocks.rounding"]
     glow_col = settings["blocks.glow_color"]
@@ -74,8 +75,9 @@ def draw_glow_1px(settings, surface, rect, cx, cy):
     fac = (r-dist) / r
     fac = max(min(fac, 1), 0)
     if fac > 0 and dist != 0:
-        color = [i*fac for i in glow_col]
-        surface.set_at((x+cx, y+cy), color)
+        if 0 <= x+cx < width and 0 <= y+cy < height:
+            color = mix_colors(surface.get_at((x+cx, y+cy)), glow_col, fac)
+            surface.set_at((x+cx, y+cy), color)
 
 
 def draw_glow(settings, surface, rect):

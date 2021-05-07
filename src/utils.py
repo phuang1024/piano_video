@@ -56,7 +56,7 @@ class ProgressLogger:
 
 
 def mix_colors(col1, col2, fac):
-    return [col1[i]*(1-fac) + col2[i]*fac for i in range(len(col1))]
+    return [col1[i]*(1-fac) + col2[i]*fac for i in range(3)]
 
 def in_surface(surf, loc):
     x, y = loc
