@@ -23,7 +23,7 @@ from constants import *
 from utils import *
 
 LB_LIGHT_WIDTH = 160    # Half width of light in the light bar (LB)
-LB_HEIGHT = 6
+LB_HEIGHT = 8
 
 
 def init(settings):

@@ -107,6 +107,11 @@ def draw_block_solid(settings, surface, rect):
         if cy+y < 0 or cy+y > height/2:
             continue
 
+        # px_col is the color for this current pixel.
+        px_col = base_col
+        if settings["blocks.style"] == "VERTICAL_GRADIENT":
+            px_col = transform_gradient((cy+y) / (height/2), base_col)
+
         # Compute rounding
         if rounding == 0:
             offset = 0
@@ -122,9 +127,9 @@ def draw_block_solid(settings, surface, rect):
         for cx in range(w+1):
             dist_to_block = min(abs(cx-offset), abs(cx-(w-offset)))
             if offset <= cx <= w-offset:
-                color = base_col
+                color = px_col
             elif dist_to_block <= 1:
-                color = [i/2 for i in base_col]
+                color = [i/2 for i in px_col]
             else:
                 continue
 
@@ -164,7 +169,7 @@ def render_blocks(settings, surface, frame):
 
             if settings["blocks.style"] == "PREVIEW":
                 pygame.draw.rect(surface, (255, 255, 255), rect)
-            elif settings["blocks.style"] == "SOLID_COLOR":
+            elif settings["blocks.style"] in ("SOLID_COLOR", "HORIZONTAL_GRADIENT", "VERTICAL_GRADIENT"):
                 draw_block_solid(settings, surface, rect)
 
 
