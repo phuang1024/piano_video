@@ -27,7 +27,7 @@ import json
 from constants import *
 from export import export
 from blocks import init as blocks_init
-from video import init as video_init, preview_crop, interactive_preview
+from piano import init as video_init, preview_crop, interactive_preview
 
 
 def main():

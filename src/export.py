@@ -24,7 +24,7 @@ import pygame
 import cv2
 from utils import *
 from blocks import compute_length, render_blocks
-from video import VideoReader, render_frame as crop_piano
+from piano import VideoReader, render_frame as crop_piano
 from glare import render_glare, cache_glare
 from smoke import cache_smoke_dots, render_dots
 pygame.init()
