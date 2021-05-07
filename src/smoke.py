@@ -59,8 +59,8 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
         file.write(struct.pack("<H", int(x)))
         file.write(struct.pack("<H", int(y)))
 
-        x_vel += random.uniform(-0.2, 0.2)
-        y_vel += random.uniform(-0.08, 0.08)
+        x_vel += random.uniform(-0.05, 0.05)
+        y_vel += random.uniform(-0.04, 0.08)
         x += x_vel
         y += y_vel
         x = max(x, 0)
