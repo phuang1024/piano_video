@@ -27,7 +27,16 @@ pygame.init()
 RADIUS = 8
 
 
-def render_text_elements(res, text, font_path, spacing, fac):
+def blur_fade(surface, shape, fac):
+    radius = RADIUS*(1-fac)
+    mask = np.full(shape, fac, np.float32)
+
+    image = surf_to_array(surface)
+    image = np.array(Image.fromarray(image).filter(ImageFilter.GaussianBlur(radius))) * mask
+    return image.astype(np.uint8)
+
+
+def render_text_elements(res, text, font_path, spacing):
     width, height = res
 
     surface = pygame.Surface(res)
@@ -38,7 +47,7 @@ def render_text_elements(res, text, font_path, spacing, fac):
         else:
             font = pygame.font.SysFont(font_path, size)
 
-        surf = font.render(string, 1, [fac*brightness*255]*3)
+        surf = font.render(string, 1, [brightness*255]*3)
         curr_x = width/2 - surf.get_width()/2
         curr_y = y - surf.get_height()/2
         surface.blit(surf, (curr_x, curr_y))
@@ -50,6 +59,7 @@ def render_text_elements(res, text, font_path, spacing, fac):
 
 def add_text(video, fps, res, text, font_path):
     width, height = res
+    shape = (height, width, 3)
 
     spacing = height
     for string, size, brightness in text:
@@ -60,7 +70,7 @@ def add_text(video, fps, res, text, font_path):
     total_frames = 0
 
     # Black
-    image = np.zeros((res[1], res[0], 3), dtype=np.uint8)
+    image = np.zeros(shape, dtype=np.uint8)
     for frame in range(int(fps/2)):
         progress.update(total_frames)
         progress.log()
@@ -75,14 +85,13 @@ def add_text(video, fps, res, text, font_path):
         total_frames += 1
 
         fac = frame/fps
-        radius = RADIUS*(1-fac)
 
-        image = surf_to_array(render_text_elements(res, text, font_path, spacing, fac))
-        image = np.array(Image.fromarray(image).filter(ImageFilter.GaussianBlur(radius)))
+        surface = render_text_elements(res, text, font_path, spacing)
+        image = blur_fade(surface, shape, fac)
         video.write(image)
 
     # Normal
-    image = surf_to_array(render_text_elements(res, text, font_path, spacing, 1))
+    image = surf_to_array(render_text_elements(res, text, font_path, spacing))
     for frame in range(4*fps):
         progress.update(total_frames)
         progress.log()
@@ -97,14 +106,13 @@ def add_text(video, fps, res, text, font_path):
         total_frames += 1
 
         fac = 1 - (frame/fps)
-        radius = RADIUS*(1-fac)
 
-        image = surf_to_array(render_text_elements(res, text, font_path, spacing, fac))
-        image = np.array(Image.fromarray(image).filter(ImageFilter.GaussianBlur(radius)))
+        surface = render_text_elements(res, text, font_path, spacing)
+        image = blur_fade(surface, shape, fac)
         video.write(image)
 
     # Black
-    image = np.zeros((res[1], res[0], 3), dtype=np.uint8)
+    image = np.zeros(shape, dtype=np.uint8)
     for frame in range(int(fps/2)):
         progress.update(total_frames)
         progress.log()
