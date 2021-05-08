@@ -56,12 +56,23 @@ def add_text(video, fps, res, text, font_path):
         spacing -= size
     spacing /= len(text) + 1
 
-    progress = ProgressLogger("Rendering text", fps*6)
+    progress = ProgressLogger("Rendering text", fps*7)
+    total_frames = 0
+
+    # Black
+    image = np.zeros((res[1], res[0], 3), dtype=np.uint8)
+    for frame in range(int(fps/2)):
+        progress.update(total_frames)
+        progress.log()
+        total_frames += 1
+
+        video.write(image)
 
     # Fade in
     for frame in range(fps):
-        progress.update(frame)
+        progress.update(total_frames)
         progress.log()
+        total_frames += 1
 
         fac = frame/fps
         radius = RADIUS*(1-fac)
@@ -73,20 +84,32 @@ def add_text(video, fps, res, text, font_path):
     # Normal
     image = surf_to_array(render_text_elements(res, text, font_path, spacing, 1))
     for frame in range(4*fps):
-        progress.update(frame+fps)
+        progress.update(total_frames)
         progress.log()
+        total_frames += 1
+
         video.write(image)
 
     # Fade out
     for frame in range(fps):
-        progress.update(frame+5*fps)
+        progress.update(total_frames)
         progress.log()
+        total_frames += 1
 
         fac = 1 - (frame/fps)
         radius = RADIUS*(1-fac)
 
         image = surf_to_array(render_text_elements(res, text, font_path, spacing, fac))
         image = np.array(Image.fromarray(image).filter(ImageFilter.GaussianBlur(radius)))
+        video.write(image)
+
+    # Black
+    image = np.zeros((res[1], res[0], 3), dtype=np.uint8)
+    for frame in range(int(fps/2)):
+        progress.update(total_frames)
+        progress.log()
+        total_frames += 1
+
         video.write(image)
 
     progress.finish("Finished rendering text in $TIMEs")
