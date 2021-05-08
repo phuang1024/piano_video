@@ -54,21 +54,21 @@ class VideoReader:
         return frame
 
     def read(self, frame_num, verbose=False) -> np.ndarray:
-        if frame_num == self.last_frame_num:
+        if self.last_frame_num == frame_num:
             return self.last_img
 
-        elif self.last_frame_num == -1 or frame_num > self.last_frame_num:
+        elif self.last_frame_num < frame_num:
             while True:
                 if verbose:
                     log(f"Reading frame {self.last_frame_num}/{frame_num} of {self.path}", clear=True)
-                if frame_num == self.last_frame_num:
+                if self.last_frame_num >= frame_num:
                     if verbose:
                         log(f"Reading frame {frame_num} of {self.path}: Finished", clear=True, new=True)
                     return self.last_img
 
                 self.next()
 
-        elif frame_num < self.last_frame_num:
+        elif self.last_frame_num > frame_num:
             self.reset()
             return self.read(frame_num)
 
