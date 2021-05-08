@@ -31,7 +31,11 @@ def blur_fade(surface, shape, fac):
     radius = RADIUS*(1-fac)
     mask = np.full(shape, fac, np.float32)
 
-    image = surf_to_array(surface)
+    if isinstance(surface, pygame.Surface):
+        image = surf_to_array(surface)
+    else:
+        image = surface
+
     image = np.array(Image.fromarray(image).filter(ImageFilter.GaussianBlur(radius))) * mask
     return image.astype(np.uint8)
 

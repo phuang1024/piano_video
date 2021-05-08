@@ -20,7 +20,7 @@
 import pygame
 import cv2
 from utils import *
-from text import add_text
+from text import add_text, blur_fade
 from blocks import compute_length, render_blocks
 from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
 from glare import render_glare, cache_glare
@@ -56,6 +56,7 @@ def export(settings):
     output = settings["files.output"]
     res = settings["output.resolution"]
     fps = settings["output.fps"]
+    shape = (*res[::-1], 3)
 
     cache_glare(settings)
     cache_smoke_dots(settings)
@@ -74,8 +75,12 @@ def export(settings):
         logger.update(frame)
         logger.log()
 
-        img = render(settings, piano_video, frame)
-        video.write(surf_to_array(img))
+        img = surf_to_array(render(settings, piano_video, frame))
+        if frame < fps:
+            img = blur_fade(img, shape, frame/fps)
+        elif frame > length-fps:
+            img = blur_fade(img, shape, (length-frame)/fps)
+        video.write(img)
     logger.finish(f"Finished exporting {length} frames in $TIMEs")
 
     if settings["text.show_ending"]:
