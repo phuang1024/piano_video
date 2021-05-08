@@ -42,6 +42,13 @@ def render(settings, piano_video, frame):
     width, height = settings["output.resolution"]
     surface = pygame.Surface(settings["output.resolution"])
 
+    if settings["piano.octave_lines"]:
+        note = 3
+        while note < 88:
+            x = int(key_position(settings, note)[0] + settings["blocks.x_offset"])
+            pygame.draw.line(surface, (75, 75, 75), (x, 0), (x, height))
+            note += 12
+
     render_dots(settings, surface, frame)
     render_blocks(settings, surface, frame)
     pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))

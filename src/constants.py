@@ -48,6 +48,7 @@ DEFAULT_SETTINGS = {
     "piano.video_offset": 0,
     "piano.video_crop": [],
     "piano.top": "LIGHT_BAR",
+    "piano.octave_lines": True,
 
     "effects.glare": True,
     "effects.glare_size": [150, 100],
