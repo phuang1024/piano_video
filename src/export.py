@@ -19,10 +19,10 @@
 
 import os
 import subprocess
-import time
 import pygame
 import cv2
 from utils import *
+from text import add_text
 from blocks import compute_length, render_blocks
 from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
 from glare import render_glare, cache_glare
@@ -55,18 +55,18 @@ def render(settings, piano_video, frame):
 
 
 def export(settings):
-    fmat = settings["output.format"]
     output = settings["files.output"]
-    images_output = output+".images"
+    res = settings["output.resolution"]
+    fps = settings["output.fps"]
 
     cache_glare(settings)
     cache_smoke_dots(settings)
 
-    if fmat == "IMAGES":
-        os.makedirs(images_output, exist_ok=True)
-    elif fmat == "VIDEO":
-        video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
-            settings["output.fps"], tuple(settings["output.resolution"]))
+    video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
+        settings["output.fps"], tuple(settings["output.resolution"]))
+
+    if settings["text.show_intro"]:
+        add_text(video, fps, res, settings["text.intro"], settings["text.font"])
 
     piano_video = VideoReader(settings["files.video"])
     length = compute_length(settings)
@@ -77,16 +77,7 @@ def export(settings):
         logger.log()
 
         img = render(settings, piano_video, frame)
-        if fmat == "VIDEO":
-            video.write(surf_to_array(img))
-        elif fmat == "IMAGES":
-            path = os.path.join(images_output, f"{frame}.jpg")
-            pygame.image.save(img, path)
+        video.write(surf_to_array(img))
 
     logger.finish(f"Finished exporting {length} frames in $TIMEs")
-
-    if fmat == "VIDEO":
-        video.release()
-    else:
-        subprocess.Popen(["ffmpeg", "-y", "-i", os.path.join(images_output, "%d.jpg"), "-c:v", "libx264", "-framerate",
-            str(settings["output.fps"]), output], stdin=subprocess.PIPE, stdout=subprocess.PIPE).wait()
+    video.release()

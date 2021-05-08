@@ -54,6 +54,12 @@ DEFAULT_SETTINGS = {
     "effects.smoke.dots.dps": 150,
     "effects.smoke.dots.lifetime": 3,
 
+    "text.font": "",
+    "text.show_intro": False,
+    "text.intro": [],
+    "text.show_ending": False,
+    "text.ending": [],
+
     "other.random_seed": 0,
 }
 
