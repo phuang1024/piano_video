@@ -17,8 +17,6 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import os
-import subprocess
 import pygame
 import cv2
 from utils import *
@@ -78,6 +76,9 @@ def export(settings):
 
         img = render(settings, piano_video, frame)
         video.write(surf_to_array(img))
-
     logger.finish(f"Finished exporting {length} frames in $TIMEs")
+
+    if settings["text.show_ending"]:
+        add_text(video, fps, res, settings["text.ending"], settings["text.font"])
+
     video.release()

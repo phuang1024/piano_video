@@ -70,4 +70,23 @@ def add_text(video, fps, res, text, font_path):
         image = np.array(Image.fromarray(image).filter(ImageFilter.GaussianBlur(radius)))
         video.write(image)
 
+    # Normal
+    image = surf_to_array(render_text_elements(res, text, font_path, spacing, 1))
+    for frame in range(4*fps):
+        progress.update(frame+fps)
+        progress.log()
+        video.write(image)
+
+    # Fade out
+    for frame in range(fps):
+        progress.update(frame+5*fps)
+        progress.log()
+
+        fac = 1 - (frame/fps)
+        radius = RADIUS*(1-fac)
+
+        image = surf_to_array(render_text_elements(res, text, font_path, spacing, fac))
+        image = np.array(Image.fromarray(image).filter(ImageFilter.GaussianBlur(radius)))
+        video.write(image)
+
     progress.finish("Finished rendering text in $TIMEs")
