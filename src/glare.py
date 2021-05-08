@@ -111,7 +111,7 @@ def render_glare(settings, surface, frame):
                     glare = np.frombuffer(file.read(struct.unpack("<I", file.read(4))[0]), dtype=np.float32).reshape((glare_height, glare_width))
                     for y_val in range(glare_height):
                         for x_val in range(glare_width):
-                            x = int(x_loc + x_val + key_width/2)
+                            x = int(x_loc + x_val + settings["blocks.x_offset"])
                             y = y_loc + y_val
                             if in_surface(surface, (x, y)):
                                 curr_fac = max(min(glare[y_val][x_val]*fac, 1), 0)

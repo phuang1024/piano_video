@@ -61,19 +61,19 @@ def mix_colors(col1, col2, fac):
 
 def transform_gradient(fac, gradient):
     if fac <= gradient[0][0]:
-        return gradient[0][1]
+        return [i*255 for i in colorsys.hsv_to_rgb(*gradient[0][1])]
     elif fac >= gradient[-1][0]:
-        return gradient[-1][1]
+        return [i*255 for i in colorsys.hsv_to_rgb(*gradient[-1][1])]
     else:
         for i in range(len(gradient)):
             if gradient[i][0] >= fac:
                 idx = i
                 break
-        rng = gradient[i][0] - gradient[i-1][0]
-        new_fac = (fac-gradient[i-1][0]) / rng
+        rng = gradient[idx][0] - gradient[idx-1][0]
+        new_fac = (fac-gradient[idx-1][0]) / rng
 
-        col1 = colorsys.hsv_to_rgb(*gradient[i-1][1])
-        col2 = colorsys.hsv_to_rgb(*gradient[i][1])
+        col1 = colorsys.hsv_to_rgb(*gradient[idx-1][1])
+        col2 = colorsys.hsv_to_rgb(*gradient[idx][1])
         new_col = mix_colors(col1, col2, new_fac)
 
         return [i*255 for i in new_col]
