@@ -1,4 +1,5 @@
-numpy
-pygame
 cv2
 mido
+numpy
+pillow
+pygame
