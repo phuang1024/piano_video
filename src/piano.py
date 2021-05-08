@@ -23,7 +23,7 @@ from constants import *
 from utils import *
 
 LB_LIGHT_WIDTH = 160    # Half width of light in the light bar (LB)
-LB_HEIGHT = 8
+LB_HEIGHT = 10
 
 
 def init(settings):
@@ -150,7 +150,10 @@ def render_top(settings, surface, frame):
             top_value = bounds(top_value, 0.1, 1) * 255
             bottom_value = bounds(bottom_value, 0.15, 1) * 255
             for y in range(LB_HEIGHT):
-                color = (bottom_value,)*3 if y < 2 else (top_value,)*3
+                if y == 0:
+                    color = (0, 0, 0)
+                else:
+                    color = (bottom_value,)*3 if y < 2 else (top_value,)*3
                 surface.set_at((x, lb_start-y), color)
 
 
