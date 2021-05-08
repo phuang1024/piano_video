@@ -32,6 +32,7 @@ DEFAULT_SETTINGS = {
 
     "blocks.time_offset": 0,
     "blocks.x_offset": 0,
+    "blocks.time_mult": 1,
     "blocks.black_width_fac": 0.6,
     "blocks.speed": 0.15,
     "blocks.style": "SOLID_COLOR",

@@ -40,7 +40,7 @@ def parse_midis(settings):
         tempo = 500000
         curr_frame = -1 * settings["output.fps"] * settings["blocks.time_offset"]
         for msg in midi.tracks[0]:
-            curr_frame += msg.time / tpb * tempo / 1000000 * settings["output.fps"]
+            curr_frame += msg.time / tpb * tempo / 1000000 * settings["output.fps"] / settings["blocks.time_mult"]
             if msg.is_meta and msg.type == "set_tempo":
                 tempo = msg.tempo
             elif msg.type in ("note_on", "note_off"):
