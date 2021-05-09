@@ -18,6 +18,7 @@
 #
 
 import sys
+import shutil
 import time
 import colorsys
 import numpy as np
@@ -25,8 +26,6 @@ import cv2
 import pygame
 from constants import *
 pygame.init()
-
-LOGGER_CLEAR_LEN = 80
 
 
 class ProgressLogger:
@@ -45,6 +44,16 @@ class ProgressLogger:
             return parts[0]
         return s[:digits]
 
+    @staticmethod
+    def _fit(msg, width=None):
+        if width is None:
+            width = shutil.get_terminal_size()[0]
+
+        if len(msg) < width:
+            return msg
+        else:
+            return msg[:width-4] + "..."
+
     def log(self):
         frame = self.frame
         total = self.total
@@ -54,8 +63,10 @@ class ProgressLogger:
         percent = (frame+1) / total * 100
         remaining = (total-frame-1) / per_second
 
-        log(f"{self.msg} {frame+1}/{total}, {self._truncate(per_second)} fps, {self._truncate(percent)}% done, " + \
-            f"{self._truncate(elapse)}s elapsed, {self._truncate(remaining)}s remaining", clear=True)
+        msg = f"{self.msg} {frame+1}/{total}, {self._truncate(per_second)} fps, {self._truncate(percent)}% done, " + \
+            f"{self._truncate(elapse)}s elapsed, {self._truncate(remaining)}s remaining"
+        msg = self._fit(msg)
+        log(msg, clear=True)
 
     def finish(self, msg):
         elapse = time.time() - self.start
@@ -143,8 +154,9 @@ def log(msg, clear=False, new=False, flush=True):
         newline(flush=flush)
 
 def clearline(flush=True):
+    width = shutil.get_terminal_size()[0]
     sys.stdout.write("\r")
-    sys.stdout.write(" "*LOGGER_CLEAR_LEN)
+    sys.stdout.write(" "*width)
     sys.stdout.write("\r")
     if flush:
         sys.stdout.flush()
