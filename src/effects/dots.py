@@ -73,18 +73,20 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
 
     x = start_x + random.randint(int(x_width/-2), int(x_width/2))/5
     y = start_y
-    x_vel = random.uniform(-0.3, 0.3)
-    y_vel = -6
 
+    args = (file, frame, (width, height), (x, y), lifetime)
     if style == "FLOATING":
-        simulate_dot_floating(file, frame, (width, height), (x, y), (x_vel, y_vel), lifetime)
+        simulate_dot_floating(*args)
     elif style == "BOUNCING":
-        simulate_dot_dropping(file, frame, (width, height), (x, y), (x_vel, y_vel), lifetime)
+        simulate_dot_dropping(*args)
+    elif style == "SPARKS":
+        simulate_dot_sparks(*args)
 
-def simulate_dot_floating(file, frame, size, loc, vel, lifetime):
+def simulate_dot_floating(file, frame, size, loc, lifetime):
     width, height = size
     x, y = loc
-    x_vel, y_vel = vel
+    x_vel = random.uniform(-0.3, 0.3)
+    y_vel = -6
 
     for f in range(lifetime):
         file.write(struct.pack("<H", int(frame+f)))
@@ -97,7 +99,7 @@ def simulate_dot_floating(file, frame, size, loc, vel, lifetime):
         y += y_vel
         x = max(x, 0)
 
-def simulate_dot_dropping(file, frame, size, loc, vel, lifetime):
+def simulate_dot_dropping(file, frame, size, loc, lifetime):
     width, height = size
     x, y = loc
     x_vel = random.uniform(-3, 3)
@@ -119,6 +121,21 @@ def simulate_dot_dropping(file, frame, size, loc, vel, lifetime):
         x = max(x, 0)
         if y >= height/2:
             y_vel *= -1
+
+def simulate_dot_sparks(file, frame, size, loc, lifetime):
+    width, height = size
+    x, y = loc
+    x_vel = random.uniform(-8, 8)
+    y_vel = random.uniform(-10, -5)
+
+    for f in range(lifetime):
+        file.write(struct.pack("<H", int(frame+f)))
+        file.write(struct.pack("<H", bounds(int(x), 0, width-1)))
+        file.write(struct.pack("<H", bounds(int(y), 0, height-1)))
+
+        y_vel += 0.5
+        y += y_vel
+        x += x_vel
 
 
 def render_dots(settings, surface, frame):
