@@ -54,6 +54,7 @@ DEFAULT_SETTINGS = {
     "effects.glare_size": [150, 100],
     "effects.dots": True,
     "effects.dots.style": "FLOATING",
+    "effects.dots.glow": True,
     "effects.dots.dps": 90,
     "effects.dots.lifetime": 3,
 

@@ -66,6 +66,7 @@ def cache_smoke_dots(settings):
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     width, height = settings["output.resolution"]
     lifetime = settings["effects.dots.lifetime"]*settings["output.fps"] + random.randint(-10, 10)
+    lifetime = int(lifetime)
     style = settings["effects.dots.style"]
 
     file.write(struct.pack("<H", lifetime))
@@ -159,11 +160,15 @@ def render_dots(settings, surface, frame):
                             y = struct.unpack("<H", file.read(2))[0]
                             if curr_frame == frame:
                                 value = (first_frame+lifetime-curr_frame) / lifetime * 255
-                                color = (value, value, value)
                                 if prev_x is None:
-                                    pygame.draw.circle(surface, color, (x, y), 1)
+                                    pygame.draw.circle(surface, [value]*3, (x, y), 1)
                                 else:    # Motion blur
-                                    pygame.draw.line(surface, color, (prev_x, prev_y), (x, y))
+                                    pygame.draw.line(surface, [value]*3, (prev_x, prev_y), (x, y))
+                                if settings["effects.dots.glow"]:
+                                    for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                                        surface.set_at((x+dx, y+dy), [value*0.6]*3)
+                                    for dx, dy in ((-1, -1), (-1, 1), (1, -1), (1, 1)):
+                                        surface.set_at((x+dx, y+dy), [value*0.3]*3)
 
                             prev_x = x
                             prev_y = y
