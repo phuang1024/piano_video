@@ -36,6 +36,15 @@ class ProgressLogger:
         self.frame = 0
         self.start = time.time()
 
+    @staticmethod
+    def _truncate(value, digits=4):
+        s = str(value)
+        parts = s.split(".")
+
+        if len(parts[0]) > digits or len(parts[0]) == digits-1:
+            return parts[0]
+        return s[:digits]
+
     def log(self):
         frame = self.frame
         total = self.total
@@ -45,8 +54,8 @@ class ProgressLogger:
         percent = (frame+1) / total * 100
         remaining = (total-frame-1) / per_second
 
-        log(f"{self.msg} {frame+1}/{total}, {str(per_second)[:4]} fps, {str(percent)[:4]}% done, " + \
-            f"{str(elapse)[:4]}s elapsed, {str(remaining)[:4]}s remaining", clear=True)
+        log(f"{self.msg} {frame+1}/{total}, {self._truncate(per_second)} fps, {self._truncate(percent)}% done, " + \
+            f"{self._truncate(elapse)}s elapsed, {self._truncate(remaining)}s remaining", clear=True)
 
     def finish(self, msg):
         elapse = time.time() - self.start
