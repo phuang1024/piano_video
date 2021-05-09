@@ -68,7 +68,7 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     lifetime = settings["effects.smoke.dots.lifetime"]*settings["output.fps"] + random.randint(-10, 10)
     file.write(struct.pack("<H", lifetime))
 
-    x = start_x + random.randint(int(x_width/-2), int(x_width/2))
+    x = start_x + random.randint(int(x_width/-2), int(x_width/2))/5
     y = start_y
     x_vel = 0
     y_vel = -6
@@ -77,7 +77,7 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
         file.write(struct.pack("<H", bounds(int(x), 0, width-1)))
         file.write(struct.pack("<H", bounds(int(y), 0, height-1)))
 
-        x_vel += random.uniform(-0.1, 0.1)
+        x_vel += random.uniform(-0.25, 0.25)
         y_vel += random.uniform(-0.04, 0.1)
         x += x_vel
         y += y_vel
