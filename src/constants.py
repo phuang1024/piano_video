@@ -52,9 +52,10 @@ DEFAULT_SETTINGS = {
 
     "effects.glare": True,
     "effects.glare_size": [150, 100],
-    "effects.smoke.dots": True,
-    "effects.smoke.dots.dps": 150,
-    "effects.smoke.dots.lifetime": 3,
+    "effects.dots": True,
+    "effects.dots.style": "FLOATING",
+    "effects.dots.dps": 120,
+    "effects.dots.lifetime": 3,
 
     "text.font": "",
     "text.show_intro": False,

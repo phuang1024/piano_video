@@ -28,15 +28,15 @@ RAY_DIST_MAX = 0.14
 
 
 def cache_smoke_dots(settings):
-    if not settings["effects.smoke.dots"]:
+    if not settings["effects.dots"]:
         return
 
-    path = os.path.join(settings["files.cache"], "smoke.dots")
+    path = os.path.join(settings["files.cache"], "dots")
     os.makedirs(path, exist_ok=True)
 
     width, height = settings["output.resolution"]
     notes = settings["blocks.notes"]
-    dot_time_inc = settings["effects.smoke.dots.dps"] / settings["output.fps"]
+    dot_time_inc = settings["effects.dots.dps"] / settings["output.fps"]
 
     logger = ProgressLogger("Caching dots", len(notes))
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
@@ -65,7 +65,7 @@ def cache_smoke_dots(settings):
 
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     width, height = settings["output.resolution"]
-    lifetime = settings["effects.smoke.dots.lifetime"]*settings["output.fps"] + random.randint(-10, 10)
+    lifetime = settings["effects.dots.lifetime"]*settings["output.fps"] + random.randint(-10, 10)
     file.write(struct.pack("<H", lifetime))
 
     x = start_x + random.randint(int(x_width/-2), int(x_width/2))/5
@@ -78,18 +78,18 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
         file.write(struct.pack("<H", bounds(int(y), 0, height-1)))
 
         x_vel += random.uniform(-0.25, 0.25)
-        y_vel += random.uniform(-0.04, 0.1)
+        y_vel += random.uniform(-0.04, 0.12)
         x += x_vel
         y += y_vel
         x = max(x, 0)
 
 
 def render_dots(settings, surface, frame):
-    if not settings["effects.smoke.dots"]:
+    if not settings["effects.dots"]:
         return
 
-    cache_path = os.path.join(settings["files.cache"], "smoke.dots")
-    max_life = settings["effects.smoke.dots.lifetime"]*settings["output.fps"] + 10
+    cache_path = os.path.join(settings["files.cache"], "dots")
+    max_life = settings["effects.dots.lifetime"]*settings["output.fps"] + 10
 
     with open(os.path.join(cache_path, "info.bin"), "rb") as infofile:
         while True:
