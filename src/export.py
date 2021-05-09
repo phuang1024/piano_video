@@ -23,8 +23,8 @@ from utils import *
 from text import add_text, blur_fade
 from blocks import compute_length, render_blocks
 from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
-from glare import render_glare, cache_glare
-from smoke import cache_smoke_dots, render_dots
+from effects.glare import render_glare, cache_glare
+from effects.dots import cache_dots, render_dots
 pygame.init()
 
 
@@ -66,7 +66,7 @@ def export(settings):
     shape = (*res[::-1], 3)
 
     cache_glare(settings)
-    cache_smoke_dots(settings)
+    cache_dots(settings)
 
     video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
         settings["output.fps"], tuple(settings["output.resolution"]))

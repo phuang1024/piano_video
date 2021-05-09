@@ -57,6 +57,7 @@ DEFAULT_SETTINGS = {
     "effects.dots.glow": True,
     "effects.dots.dps": 90,
     "effects.dots.lifetime": 3,
+    "effects.smoke": True,
 
     "text.font": "",
     "text.show_intro": False,

@@ -27,7 +27,7 @@ RAY_FAC_MAX = 1.25
 RAY_DIST_MAX = 0.14
 
 
-def cache_smoke_dots(settings):
+def cache_dots(settings):
     if not settings["effects.dots"]:
         return
 
