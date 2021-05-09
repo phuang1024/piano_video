@@ -58,20 +58,33 @@ def cache_smoke_dots(settings):
                 file.write(struct.pack("<I", num_dots))
 
                 for j in range(num_dots):
-                    simulate_dot(settings, file, start+1/dot_time_inc*j, x_loc, height/2, key_width)
+                    curr_time = start+1/dot_time_inc*j + random.randint(-2, 2)
+                    simulate_dot(settings, file, curr_time, x_loc, height/2, key_width)
 
     logger.finish(f"Finished caching {len(notes)} smoke dots in $TIMEs")
-
 
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     width, height = settings["output.resolution"]
     lifetime = settings["effects.dots.lifetime"]*settings["output.fps"] + random.randint(-10, 10)
+    style = settings["effects.dots.style"]
+
     file.write(struct.pack("<H", lifetime))
 
     x = start_x + random.randint(int(x_width/-2), int(x_width/2))/5
     y = start_y
-    x_vel = 0
+    x_vel = random.uniform(-0.3, 0.3)
     y_vel = -6
+
+    if style == "FLOATING":
+        simulate_dot_floating(file, frame, (width, height), (x, y), (x_vel, y_vel), lifetime)
+    elif style == "BOUNCING":
+        simulate_dot_dropping(file, frame, (width, height), (x, y), (x_vel, y_vel), lifetime)
+
+def simulate_dot_floating(file, frame, size, loc, vel, lifetime):
+    width, height = size
+    x, y = loc
+    x_vel, y_vel = vel
+
     for f in range(lifetime):
         file.write(struct.pack("<H", int(frame+f)))
         file.write(struct.pack("<H", bounds(int(x), 0, width-1)))
@@ -82,6 +95,29 @@ def simulate_dot(settings, file, frame, start_x, start_y, x_width):
         x += x_vel
         y += y_vel
         x = max(x, 0)
+
+def simulate_dot_dropping(file, frame, size, loc, vel, lifetime):
+    width, height = size
+    x, y = loc
+    x_vel = random.uniform(-3, 3)
+    y_vel = random.uniform(-12, -8)
+
+    for f in range(lifetime):
+        file.write(struct.pack("<H", int(frame+f)))
+        file.write(struct.pack("<H", bounds(int(x), 0, width-1)))
+        file.write(struct.pack("<H", bounds(int(y), 0, height-1)))
+
+        if x_vel > 0:
+            x_vel -= 0.04
+        else:
+            x_vel += 0.04
+        y_vel += 1
+        x += x_vel
+        y += y_vel
+
+        x = max(x, 0)
+        if y >= height/2:
+            y_vel *= -1
 
 
 def render_dots(settings, surface, frame):
