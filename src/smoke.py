@@ -163,7 +163,9 @@ def render_dots(settings, surface, frame):
                                 if prev_x is None:
                                     pygame.draw.circle(surface, [value]*3, (x, y), 1)
                                 else:    # Motion blur
-                                    pygame.draw.line(surface, [value]*3, (prev_x, prev_y), (x, y))
+                                    x1 = (x+prev_x) / 2
+                                    y1 = (y+prev_y) / 2
+                                    pygame.draw.line(surface, [value]*3, (x1, y1), (x, y))
                                 if settings["effects.dots.glow"]:
                                     for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
                                         surface.set_at((x+dx, y+dy), [value*0.6]*3)
