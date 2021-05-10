@@ -60,7 +60,7 @@ DEFAULT_SETTINGS = {
     "effects.dots.lifetime": 3,
 
     "effects.stars": True,
-    "effects.stars.probability": 0.2,
+    "effects.stars.probability": 0.35,
     "effects.stars.lifetime": 3,
 
     "text.font": "",
@@ -69,7 +69,7 @@ DEFAULT_SETTINGS = {
     "text.show_ending": False,
     "text.ending": [],
 
-    "other.random_seed": 0,
+    "other.random_seed": 1,
 }
 
 PARENT = os.path.dirname(os.path.realpath(__file__))

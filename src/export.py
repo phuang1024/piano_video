@@ -23,9 +23,9 @@ from utils import *
 from text import add_text, blur_fade
 from blocks import compute_length, render_blocks
 from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
-from effects.glare import render_glare, cache_glare
+from effects.glare import cache_glare, render_glare
 from effects.dots import cache_dots, render_dots
-from effects.stars import cache_stars
+from effects.stars import cache_stars, render_stars
 pygame.init()
 
 
@@ -51,6 +51,7 @@ def render(settings, piano_video, frame):
             note += 12
 
     render_dots(settings, surface, frame)
+    render_stars(settings, surface, frame)
     render_blocks(settings, surface, frame)
     pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
     render_piano(settings, surface, piano_video, frame)

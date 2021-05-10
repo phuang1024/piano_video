@@ -63,7 +63,7 @@ def simulate_star(settings, file, frame, start_x, start_y):
 
     x = start_x
     y = start_y
-    y_vel = -8
+    y_vel = -12
     x_vel = random.uniform(-2, 2)
 
     for f in range(lifetime):
@@ -71,6 +71,39 @@ def simulate_star(settings, file, frame, start_x, start_y):
         file.write(struct.pack("<H", bounds(int(x), 0, width-1)))
         file.write(struct.pack("<H", bounds(int(y), 0, height-1)))
 
-        y_vel += 0.5
+        y_vel += 0.15
         x += x_vel
         y += y_vel
+
+
+def render_stars(settings, surface, frame):
+    if not settings["effects.stars"]:
+        return
+
+    cache_path = os.path.join(settings["files.cache"], "stars")
+    max_life = settings["effects.stars.lifetime"]*settings["output.fps"] + 10
+
+    with open(os.path.join(cache_path, "info.bin"), "rb") as infofile:
+        while True:
+            num = infofile.read(4)
+            if len(num) < 4:
+                break
+
+            num = struct.unpack("<I", num)[0]
+            path = os.path.join(cache_path, f"{num}.bin")
+            with open(path, "rb") as file:
+                file.read(1)   # Get note data, not needed
+                start = struct.unpack("f", file.read(4))[0]
+                end = struct.unpack("f", file.read(4))[0]
+
+                if start <= frame <= end+max_life:
+                    lifetime = struct.unpack("<H", file.read(2))[0]
+
+                    # Search until found current frame for current star
+                    for j in range(lifetime):
+                        curr_frame = struct.unpack("<H", file.read(2))[0]
+                        x = struct.unpack("<H", file.read(2))[0]
+                        y = struct.unpack("<H", file.read(2))[0]
+                        if curr_frame == frame:
+                            pygame.draw.circle(surface, (255, 255, 255), (x, y), 5)
+                            break
