@@ -58,7 +58,7 @@ def cache_glare(settings):
                 file.write(struct.pack("<H", int(x_loc-glare_width/2)))
                 file.write(struct.pack("<H", int((height-glare_height)/2)))
 
-                glare = np.empty((glare_height, glare_width), dtype=np.float32)
+                glare = np.empty((glare_height, glare_width), dtype=np.float16)
                 glare_rays = [random.uniform(0, 2*math.pi) for _ in range(random.randint(1, 5))]
                 for x in range(glare_width):
                     for y in range(glare_height):
@@ -108,7 +108,7 @@ def render_glare(settings, surface, frame):
 
                 if start <= frame <= end:
                     fac = random.uniform(0.9, 1.1)
-                    glare = np.frombuffer(file.read(struct.unpack("<I", file.read(4))[0]), dtype=np.float32).reshape((glare_height, glare_width))
+                    glare = np.frombuffer(file.read(struct.unpack("<I", file.read(4))[0]), dtype=np.float16).reshape((glare_height, glare_width))
                     for y_val in range(glare_height):
                         for x_val in range(glare_width):
                             x = int(x_loc + x_val + settings["blocks.x_offset"])
