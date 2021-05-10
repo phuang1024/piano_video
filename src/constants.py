@@ -52,12 +52,16 @@ DEFAULT_SETTINGS = {
 
     "effects.glare": True,
     "effects.glare_size": [150, 100],
+
     "effects.dots": True,
     "effects.dots.style": "FLOATING",
     "effects.dots.glow": True,
     "effects.dots.dps": 90,
     "effects.dots.lifetime": 3,
-    "effects.smoke": True,
+
+    "effects.stars": True,
+    "effects.stars.probability": 0.2,
+    "effects.stars.lifetime": 3,
 
     "text.font": "",
     "text.show_intro": False,

@@ -25,6 +25,7 @@ from blocks import compute_length, render_blocks
 from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
 from effects.glare import render_glare, cache_glare
 from effects.dots import cache_dots, render_dots
+from effects.stars import cache_stars
 pygame.init()
 
 
@@ -67,6 +68,7 @@ def export(settings):
 
     cache_glare(settings)
     cache_dots(settings)
+    cache_stars(settings)
 
     video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
         settings["output.fps"], tuple(settings["output.resolution"]))

@@ -23,9 +23,6 @@ import random
 from constants import *
 from utils import *
 
-RAY_FAC_MAX = 1.25
-RAY_DIST_MAX = 0.14
-
 
 def cache_dots(settings):
     if not settings["effects.dots"]:
@@ -61,7 +58,7 @@ def cache_dots(settings):
                     curr_time = start+1/dot_time_inc*j + random.randint(-2, 2)
                     simulate_dot(settings, file, curr_time, x_loc, height/2, key_width)
 
-    logger.finish(f"Finished caching {len(notes)} smoke dots in $TIMEs")
+    logger.finish(f"Finished caching {len(notes)} dots in $TIMEs")
 
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     width, height = settings["output.resolution"]
@@ -97,7 +94,6 @@ def simulate_dot_floating(file, frame, size, loc, lifetime):
         y_vel += random.uniform(-0.04, 0.12)
         x += x_vel
         y += y_vel
-        x = max(x, 0)
 
 def simulate_dot_dropping(file, frame, size, loc, lifetime):
     width, height = size
@@ -118,7 +114,6 @@ def simulate_dot_dropping(file, frame, size, loc, lifetime):
         x += x_vel
         y += y_vel
 
-        x = max(x, 0)
         if y >= height/2:
             y_vel *= -1
 
