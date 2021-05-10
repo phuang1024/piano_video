@@ -1,18 +1,14 @@
 # Piano Video
 
-Piano MIDI visualizer.
+![preview](https://github.com/HuangPatrick16777216/piano_video/blob/main/assets/icon.jpg)
 
-[Documentation][docs]
+Piano MIDI visualizer.
 
 Piano Video takes MIDIs and a video, and makes a piano video with falling blocks and smoke effects.
 
-Piano Video Can:
-* Import, export, and parse videos and MIDIs.
-* Simulate smoke and glare effects.
-* Render a video with only MIDIs, a video recording of the piano, and settings.
+## Examples:
 
-Piano Video Cannot:
-* Record MIDI from a keyboard
-* Record video
+* [Beethoven - Moonlight Sonata Movement 1](https://www.youtube.com/watch?v=l3jw24EY0EA)
+* [Beethoven - Moonlight Sonata Movement 2](https://www.youtube.com/watch?v=lIw380uwtc0)
 
 [docs]: https://github.com/HuangPatrick16777216/piano_video/wiki
