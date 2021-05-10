@@ -80,8 +80,10 @@ def render_stars(settings, surface, frame):
     if not settings["effects.stars"]:
         return
 
+    width, height = settings["output.resolution"]
     cache_path = os.path.join(settings["files.cache"], "stars")
     max_life = settings["effects.stars.lifetime"]*settings["output.fps"] + 10
+    rad = settings["effects.stars.size"]
 
     with open(os.path.join(cache_path, "info.bin"), "rb") as infofile:
         while True:
@@ -105,5 +107,14 @@ def render_stars(settings, surface, frame):
                         x = struct.unpack("<H", file.read(2))[0]
                         y = struct.unpack("<H", file.read(2))[0]
                         if curr_frame == frame:
-                            pygame.draw.circle(surface, (255, 255, 255), (x, y), 5)
+                            for dx in range(-rad, rad+1):
+                                for dy in range(-rad, rad+1):
+                                    cx = x + dx
+                                    cy = y + dy
+                                    if 0 <= cx < width and 0 <= cy < height:
+                                        dist = ((cx-x)**2 + (cy-y)**2) ** 0.5
+                                        fac = 1 - (dist/rad)
+                                        if 0 <= fac <= 1:
+                                            col = [255*fac] * 3
+                                            surface.set_at((cx, cy), col)
                             break

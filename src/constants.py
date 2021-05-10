@@ -62,6 +62,7 @@ DEFAULT_SETTINGS = {
     "effects.stars": True,
     "effects.stars.probability": 0.35,
     "effects.stars.lifetime": 3,
+    "effects.stars.size": 8,
 
     "text.font": "",
     "text.show_intro": False,
