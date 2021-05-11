@@ -35,10 +35,11 @@ def main():
     parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=True)
     parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
     parser.add_argument("-o", "--output", help="output file path (WILL overwrite without prompt)", type=str, required=True)
+    parser.add_argument("-f", "--frame", help="frame to use in modes where applicable", type=int, required=False)
     parser.add_argument("--no-copy", help="don't backup copy output video", action="store_true")
     parser.add_argument("--cache-path", help="set the cache path (default \"piano_video_cache\")", type=str, required=False)
+    parser.add_argument("--no-cache", help="don't re-cache", action="store_true")
     parser.add_argument("--random", help="manually set random seed (string)", type=str, required=False)
-    parser.add_argument("-f", "--frame", help="frame to use in modes where applicable", type=int, required=False)
     args = parser.parse_args()
 
     if not os.path.isfile(args.settings):
@@ -66,7 +67,7 @@ def main():
     blocks_init(settings)
 
     if args.mode is None or args.mode == "EXPORT":
-        export(settings)
+        export(settings, (not args.no_cache))
         if not args.no_copy:
             shutil.copy(output, os.path.join(os.path.dirname(output), "backup_"+os.path.basename(output)))
     elif args.mode == "PREVIEW_CROP":

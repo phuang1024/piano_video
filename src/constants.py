@@ -59,7 +59,7 @@ DEFAULT_SETTINGS = {
     "effects.dots.dps": 90,
     "effects.dots.lifetime": 3,
 
-    "effects.stars": True,
+    "effects.stars": False,
     "effects.stars.probability": 0.35,
     "effects.stars.lifetime": 3,
     "effects.stars.size": 8,

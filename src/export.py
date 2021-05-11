@@ -61,15 +61,16 @@ def render(settings, piano_video, frame):
     return surface
 
 
-def export(settings):
+def export(settings, cache):
     output = settings["files.output"]
     res = settings["output.resolution"]
     fps = settings["output.fps"]
     shape = (*res[::-1], 3)
 
-    cache_glare(settings)
-    cache_dots(settings)
-    cache_stars(settings)
+    if cache:
+        cache_glare(settings)
+        cache_dots(settings)
+        cache_stars(settings)
 
     video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
         settings["output.fps"], tuple(settings["output.resolution"]))
