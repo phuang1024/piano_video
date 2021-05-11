@@ -180,9 +180,9 @@ def render_dots(settings, surface, frame):
                                     pygame.draw.line(surface, [value]*3, (x1, y1), (x, y))
                                 if settings["effects.dots.glow"]:
                                     for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-                                        surface.set_at((x+dx, y+dy), [int(value*0.6)]*3)
+                                        surface.set_at((x+dx, y+dy), [value*0.6]*3)
                                     for dx, dy in ((-1, -1), (-1, 1), (1, -1), (1, 1)):
-                                        surface.set_at((x+dx, y+dy), [int(value*0.3)]*3)
+                                        surface.set_at((x+dx, y+dy), [value*0.3]*3)
 
                             prev_x = x
                             prev_y = y
