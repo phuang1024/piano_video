@@ -46,7 +46,9 @@ def parse_midis(settings):
             elif msg.type in ("note_on", "note_off"):
                 note, velocity = msg.note-21, msg.velocity
                 if velocity == 0 or msg.type == "note_off":
-                    end = max(curr_frame, starts[note]+3.5)
+                    end = curr_frame
+                    if curr_frame-starts[note] <= 4:  # Stabilize sixteenth notes
+                        end = 3.5
                     notes.append((note, starts[note], end))
                 else:
                     starts[note] = curr_frame
