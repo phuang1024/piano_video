@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
     "piano.octave_lines": True,
 
     "effects.glare": True,
-    "effects.glare_size": [150, 100],
+    "effects.glare_size": [200, 200],
 
     "effects.dots": True,
     "effects.dots.style": "FLOATING",
