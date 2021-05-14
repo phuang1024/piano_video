@@ -128,6 +128,9 @@ def draw_block_solid(settings, surface, rect):
         # Draw main block
         for cx in range(w+1):
             dist_to_block = min(abs(cx-offset), abs(cx-(w-offset)))
+            if settings["blocks.style"] == "HORIZONTAL_GRADIENT":
+                px_col = transform_gradient((cx+x)/width, base_col)
+
             if offset <= cx <= w-offset:
                 color = px_col
             elif dist_to_block <= 1:

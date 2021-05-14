@@ -92,9 +92,10 @@ def transform_gradient(fac, gradient):
         rng = gradient[idx][0] - gradient[idx-1][0]
         new_fac = (fac-gradient[idx-1][0]) / rng
 
-        col1 = colorsys.hsv_to_rgb(*gradient[idx-1][1])
-        col2 = colorsys.hsv_to_rgb(*gradient[idx][1])
+        col1 = gradient[idx-1][1]
+        col2 = gradient[idx][1]
         new_col = mix_colors(col1, col2, new_fac)
+        new_col = colorsys.hsv_to_rgb(*new_col)
 
         return [i*255 for i in new_col]
 
