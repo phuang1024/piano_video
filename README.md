@@ -1,6 +1,6 @@
 # Piano Video
 
-![preview](https://github.com/HuangPatrick16777216/piano_video/blob/main/assets/icon.jpg)
+![preview](http://54.241.110.86:8000/assets/ex.jpg)
 
 Piano MIDI visualizer.
 
