@@ -100,14 +100,14 @@ def render_glare(settings, surface, frame):
             num = struct.unpack("<I", num)[0]
             path = os.path.join(cache_path, f"{num}.bin")
             with open(path, "rb") as file:
-                note, key_width = key_position(settings, file.read(1)[0])
+                file.read(1)  # Don't need note data
                 start = struct.unpack("f", file.read(4))[0]
                 end = struct.unpack("f", file.read(4))[0]
                 x_loc = struct.unpack("<H", file.read(2))[0]
                 y_loc = struct.unpack("<H", file.read(2))[0]
 
                 if start <= frame <= end:
-                    fac = random.uniform(0.9, 1.1)
+                    fac = random.uniform(0.6, 0.8)
                     glare = np.frombuffer(file.read(struct.unpack("<I", file.read(4))[0]), dtype=np.float16).reshape((glare_height, glare_width))
                     for y_val in range(glare_height):
                         for x_val in range(glare_width):
