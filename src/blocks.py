@@ -27,9 +27,10 @@ LIGHT_UP_HEIGHT = 150
 
 class PxTypes:
     NONE = 0       # Pixel is completely unrelated to the block
-    AA = 1         # Pixel is used to antialias
-    BORDER = 2     # Pixel is on the border
-    AABORDER = 3   # Pixel is used to antialias border
+    INSIDE = 1     # Pixel is used to draw the inside of the block
+    AA = 2         # Pixel is used to antialias block inside (when there is no border)
+    BORDER = 3     # Pixel is on the border
+    AABORDER = 4   # Pixel is used to antialias border
 
 
 def init(settings):
@@ -94,6 +95,10 @@ def px_info(settings, block_rect, loc):
         return {"type": PxTypes.AA, "aafac": 1-abs(y-by)}
     elif by+bh <= y <= by+bh+1:  # Right side
         return {"type": PxTypes.AA, "aafac": 1-abs(y-(by+bh))}
+
+    # Normal pixel
+    elif bx <= x <= bx+bw and by <= y <= by+bw:
+        return {"type": PxTypes.INSIDE}
 
 
 def render_blocks(settings, surface, frame):
