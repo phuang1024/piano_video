@@ -141,8 +141,7 @@ def key_position(settings, key):
         loc -= white_width * settings["blocks.black_width_fac"] / 1.75
 
     width = white_width if is_white else white_width * settings["blocks.black_width_fac"]
-
-    return (loc, width)
+    return (loc+2, width-4)
 
 
 def log(msg, clear=False, new=False, flush=True):
