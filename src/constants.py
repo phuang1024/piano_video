@@ -31,12 +31,15 @@ DEFAULT_SETTINGS = {
     "output.format": "VIDEO",
 
     "blocks.time_offset": 0,
-    "blocks.x_offset": 0,
     "blocks.time_mult": 1,
+    "blocks.x_offset": 0,
     "blocks.black_width_fac": 0.6,
     "blocks.speed": 0.15,
-    "blocks.style": "SOLID_COLOR",
+    "blocks.stabilize_fast": True,
+    "blocks.stabilize_max_time": 6,
+    "blocks.stabilize_new_time": 3.5,
 
+    "blocks.style": "SOLID_COLOR",
     "blocks.rounding": 8,
     "blocks.fade_top": True,
     "blocks.color": [200, 200, 210],

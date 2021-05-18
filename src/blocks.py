@@ -30,8 +30,11 @@ def init(settings):
 
 
 def parse_midis(settings):
-    notes = []
+    stabilize = settings["blocks.stabilize_fast"]
+    stabilize_max = settings["blocks.stabilize_max_time"]
+    stabilize_new = settings["blocks.stabilize_new_time"]
 
+    notes = []
     for file in settings["files.midis"]:
         midi = mido.MidiFile(file)
         tpb = midi.ticks_per_beat
@@ -47,8 +50,8 @@ def parse_midis(settings):
                 note, velocity = msg.note-21, msg.velocity
                 if velocity == 0 or msg.type == "note_off":
                     end = curr_frame
-                    if curr_frame-starts[note] <= 4:  # Stabilize sixteenth notes
-                        end = 3.5
+                    if stabilize and curr_frame-starts[note] <= stabilize_max:  # Stabilize sixteenth notes
+                            end = stabilize_new+starts[note]
                     notes.append((note, starts[note], end))
                 else:
                     starts[note] = curr_frame
