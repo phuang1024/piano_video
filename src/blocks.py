@@ -25,6 +25,13 @@ TOP_FADE_HEIGHT = 250
 LIGHT_UP_HEIGHT = 150
 
 
+class PxTypes:
+    NONE = 0       # Pixel is completely unrelated to the block
+    AA = 1         # Pixel is used to antialias
+    BORDER = 2     # Pixel is on the border
+    AABORDER = 3   # Pixel is used to antialias border
+
+
 def init(settings):
     parse_midis(settings)
 
@@ -58,106 +65,35 @@ def parse_midis(settings):
 
     settings["blocks.notes"] = notes
 
+def compute_length(settings):
+    max_frame = max(settings["blocks.notes"], key=lambda x: x[2])
+    return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
 
-def draw_glow_1px(settings, surface, rect, cx, cy):
+
+def px_info(settings, block_rect, loc):
+    # Assumes block is a rect with no rounding for now.
     width, height = settings["output.resolution"]
-    x, y, w, h = map(int, rect)
+    bx, by, bw, bh = block_rect
+    x, y = loc
     r = settings["blocks.rounding"]
-    glow_col = settings["blocks.glow_color"]
 
-    if r <= cx <= w-r and r <= cy <= r:   # Point is inside the block
-        dist = 0
-    elif r <= cx <= w-r:                  # Point is above or below block
-        dist = min(abs(cy), abs(cy-h))
-    elif r <= cy <= h-r:                  # Point is to the side of the block
-        dist = min(abs(cx), abs(cx-w))
-    else:                                 # Point is in one of the corners
-        # Right triangle hypotenuse (pythagorean) - rounding radius
-        dx = min(abs(r-cx), abs(w-r-cx))
-        dy = min(abs(r-cy), abs(h-r-cy))
-        dist = (dx**2 + dy**2) ** 0.5 - r
+    # Pixel is out of screen
+    if x < 0 or x > width or y < 0 or y > width:
+        return {"type": PxTypes.NONE}
 
-    fac = (r-dist) / r
-    fac = max(min(fac, 1), 0)
-    if fac > 0 and dist != 0:
-        if 0 <= x+cx < width and 0 <= y+cy < height:
-            color = mix_colors(surface.get_at((x+cx, y+cy)), glow_col, fac)
-            surface.set_at((x+cx, y+cy), color)
+    # Pixel is out of block and its aa
+    if x <= bx-1 or x >= bx+bw+1 or y <= by-1 or y >= by+bh+1:
+        return {"type": PxTypes.NONE}
 
-
-def draw_glow(settings, surface, rect):
-    width, height = settings["output.resolution"]
-    x, y, w, h = map(int, rect)
-    rounding = settings["blocks.rounding"]
-
-    for cy in range(-rounding, h+1+rounding):
-        if cy+y < 0 or cy+y > height/2:
-            continue
-        for cx in range(-rounding, w+1+rounding):
-            draw_glow_1px(settings, surface, rect, cx, cy)
-
-
-def draw_block_solid(settings, surface, rect):
-    width, height = settings["output.resolution"]
-    x, y, w, h = map(int, rect)
-
-    rounding = settings["blocks.rounding"]
-    base_col = settings["blocks.color"]
-
-    # Draw glow
-    if settings["blocks.glow"]:
-        draw_glow(settings, surface, rect)
-
-    for cy in range(h+1):
-        if cy+y < 0 or cy+y > height/2:
-            continue
-
-        # px_col is the color for this current pixel.
-        px_col = base_col
-        if settings["blocks.style"] == "VERTICAL_GRADIENT":
-            px_col = transform_gradient((cy+y) / (height/2), base_col)
-
-        # Compute rounding
-        if rounding == 0:
-            offset = 0
-        else:
-            if cy < rounding:
-                offset = rounding - (rounding**2 - (rounding-cy)**2) ** 0.5
-            elif cy > h-rounding:
-                offset = rounding - (rounding**2 - (rounding-(h-cy))**2) ** 0.5
-            else:
-                offset = 0
-
-        # Draw main block
-        for cx in range(w+1):
-            dist_to_block = min(abs(cx-offset), abs(cx-(w-offset)))
-            if settings["blocks.style"] == "HORIZONTAL_GRADIENT":
-                px_col = transform_gradient((cx+x)/width, base_col)
-
-            if offset <= cx <= w-offset:
-                color = px_col
-            elif dist_to_block <= 1:
-                color = [i/2 for i in px_col]
-            else:
-                continue
-
-            # Fade in dark
-            curr_col = color
-            abs_y = cy + y
-            if settings["blocks.fade_top"]:
-                if abs_y <= TOP_FADE_HEIGHT:
-                    fac = (abs_y + TOP_FADE_HEIGHT*2) / (TOP_FADE_HEIGHT*3)
-                    curr_col = [i*fac for i in color]
-
-            # Light up when playing
-            light_up_start = height/2 - LIGHT_UP_HEIGHT
-            if y+h >= height/2:
-                if abs_y >= light_up_start:
-                    fac = (abs_y-light_up_start) / (height/2-light_up_start)
-                    fac = max(min(fac, 1), 0)
-                    curr_col = mix_colors(color, (255, 255, 255), fac)
-
-            surface.set_at((cx+x, cy+y), curr_col)
+    # Edge antialiasing
+    elif bx-1 <= x <= bx:  # Left side
+        return {"type": PxTypes.AA, "aafac": 1-abs(x-bx)}
+    elif bx+bw <= x <= bx+bw+1:  # Right side
+        return {"type": PxTypes.AA, "aafac": 1-abs(x-(bx+bw))}
+    elif by-1 <= y <= by:  # Left side
+        return {"type": PxTypes.AA, "aafac": 1-abs(y-by)}
+    elif by+bh <= y <= by+bh+1:  # Right side
+        return {"type": PxTypes.AA, "aafac": 1-abs(y-(by+bh))}
 
 
 def render_blocks(settings, surface, frame):
@@ -178,9 +114,4 @@ def render_blocks(settings, surface, frame):
             if settings["blocks.style"] == "PREVIEW":
                 pygame.draw.rect(surface, (255, 255, 255), rect)
             elif settings["blocks.style"] in ("SOLID_COLOR", "HORIZONTAL_GRADIENT", "VERTICAL_GRADIENT"):
-                draw_block_solid(settings, surface, rect)
-
-
-def compute_length(settings):
-    max_frame = max(settings["blocks.notes"], key=lambda x: x[2])
-    return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
+                pass
