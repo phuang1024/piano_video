@@ -25,12 +25,16 @@ TOP_FADE_HEIGHT = 250
 LIGHT_UP_HEIGHT = 150
 
 
-class PxTypes:
-    NONE = 0       # Pixel is completely unrelated to the block
-    INSIDE = 1     # Pixel is used to draw the inside of the block
-    AA = 2         # Pixel is used to antialias block inside (when there is no border)
-    BORDER = 3     # Pixel is on the border
-    AABORDER = 4   # Pixel is used to antialias border
+class PxType:
+    nfac: float   # Normal color factor
+    bfac: float   # Border color factor
+    gfac: float   # Glow color factor
+
+    def __init__(self, empty=False, nfac=0, bfac=0, gfac=0):
+        self.empty = empty
+        self.nfac = nfac
+        self.bfac = bfac
+        self.gfac = gfac
 
 
 def init(settings):
@@ -72,33 +76,15 @@ def compute_length(settings):
 
 
 def px_info(settings, block_rect, loc):
-    # Assumes block is a rect with no rounding for now.
     width, height = settings["output.resolution"]
     bx, by, bw, bh = block_rect
     x, y = loc
     r = settings["blocks.rounding"]
 
-    # Pixel is out of screen
-    if x < 0 or x > width or y < 0 or y > width:
-        return {"type": PxTypes.NONE}
-
-    # Pixel is out of block and its aa
-    if x <= bx-1 or x >= bx+bw+1 or y <= by-1 or y >= by+bh+1:
-        return {"type": PxTypes.NONE}
-
-    # Edge antialiasing
-    elif bx-1 <= x <= bx:  # Left side
-        return {"type": PxTypes.AA, "aafac": 1-abs(x-bx)}
-    elif bx+bw <= x <= bx+bw+1:  # Right side
-        return {"type": PxTypes.AA, "aafac": 1-abs(x-(bx+bw))}
-    elif by-1 <= y <= by:  # Left side
-        return {"type": PxTypes.AA, "aafac": 1-abs(y-by)}
-    elif by+bh <= y <= by+bh+1:  # Right side
-        return {"type": PxTypes.AA, "aafac": 1-abs(y-(by+bh))}
-
-    # Normal pixel
-    elif bx <= x <= bx+bw and by <= y <= by+bw:
-        return {"type": PxTypes.INSIDE}
+    if x < 0 or x > width or y < 0 or y > width:      # Out of screen
+        return PxType(empty=True)
+    elif x < bx or x > bx+bw or y < by or y > by+bh:  # Out of block
+        return PxType(empty=True)
 
 
 def render_blocks(settings, surface, frame):
