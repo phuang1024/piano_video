@@ -81,10 +81,32 @@ def px_info(settings, block_rect, loc):
     x, y = loc
     r = settings["blocks.rounding"]
 
-    if x < 0 or x > width or y < 0 or y > width:      # Out of screen
+    if x < 0 or x > width or y < 0 or y > width:  # Out of screen
         return PxType(empty=True)
-    elif x < bx or x > bx+bw or y < by or y > by+bh:  # Out of block
+    elif x < bx-1 or x > bx+bw+1 or y < by-1 or y > by+bh+1:  # Out of block
         return PxType(empty=True)
+
+    elif bx+r <= x <= bx+bw-r and by+r <= y <= by+bh-r:  # Center of block
+        return PxType(nfac=1)
+
+    # Check sides of block
+    left = bx-1 <= x <= bx+r
+    right = bx+bw-r <= x <= bx+bw+1
+    top = by-1 <= y <= by+r
+    bottom = by+bh-r <= y <= by+bh+1
+    if left or right or top or bottom:
+        if left:
+            diff = bx-x
+        elif right:
+            diff = x-bx
+        elif top:
+            diff = by-y
+        elif bottom:
+            diff = y-by
+        aafac = 1 if diff <= 0 else 1-diff
+        return PxType(nfac=aafac)
+
+    return PxType(empty=True)
 
 
 def render_blocks(settings, surface, frame):
