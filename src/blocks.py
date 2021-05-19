@@ -75,7 +75,7 @@ def compute_length(settings):
     return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
 
 
-def px_info(settings, block_rect, loc):
+def px_info(settings, block_rect, loc) -> PxType:
     width, height = settings["output.resolution"]
     bx, by, bw, bh = block_rect
     x, y = loc
@@ -104,9 +104,27 @@ def px_info(settings, block_rect, loc):
         elif bottom:
             diff = y-by
         aafac = 1 if diff <= 0 else 1-diff
+        aafac = bounds(aafac, 0, 1)
         return PxType(nfac=aafac)
 
     return PxType(empty=True)
+
+
+def col_from_info(settings, info: PxType):
+    #TODO
+    ncol = settings["blocks.color"]
+    return [x*info.nfac for x in ncol]
+
+
+def draw_block_normal(settings, surface, rect):
+    bx, by, bw, bh = rect
+
+    for x in range(int(bx)-1, int(bx+bw)+3):
+        for y in range(int(by)-1, int(by+bh)+3):
+            info = px_info(settings, rect, (x, y))
+            if not info.empty:
+                col = col_from_info(settings, info)
+                surface.set_at((x, y), col)
 
 
 def render_blocks(settings, surface, frame):
@@ -126,5 +144,5 @@ def render_blocks(settings, surface, frame):
 
             if settings["blocks.style"] == "PREVIEW":
                 pygame.draw.rect(surface, (255, 255, 255), rect)
-            elif settings["blocks.style"] in ("SOLID_COLOR", "HORIZONTAL_GRADIENT", "VERTICAL_GRADIENT"):
-                pass
+            else:
+                draw_block_normal(settings, surface, rect)
