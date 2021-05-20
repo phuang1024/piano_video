@@ -40,7 +40,7 @@ DEFAULT_SETTINGS = {
     "blocks.stabilize_new_time": 3.5,
 
     "blocks.style": "SOLID_COLOR",
-    "blocks.rounding": 8,
+    "blocks.rounding": 6,
     "blocks.fade_top": True,
     "blocks.color": [200, 200, 210],
     "blocks.glow": True,

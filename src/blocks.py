@@ -90,10 +90,14 @@ def px_info(settings, block_rect, loc) -> PxType:
         return PxType(nfac=1)
 
     # Check sides of block
-    left = bx-1 <= x <= bx+r
-    right = bx+bw-r <= x <= bx+bw+1
-    top = by-1 <= y <= by+r
-    bottom = by+bh-r <= y <= by+bh+1
+    hlim   = (bx+r    <= x <= bx+bw-r)
+    vlim   = (by+r    <= y <= by+bh-r)
+
+    left   = (bx-1    <= x <= bx+r)    and vlim
+    right  = (bx+bw-r <= x <= bx+bw+1) and vlim
+    top    = (by-1    <= y <= by+r)    and hlim
+    bottom = (by+bh-r <= y <= by+bh+1) and hlim
+
     if left or right or top or bottom:
         if left:
             diff = bx-x
