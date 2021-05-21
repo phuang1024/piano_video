@@ -70,6 +70,7 @@ def parse_midis(settings):
 
     settings["blocks.notes"] = notes
 
+
 def compute_length(settings):
     max_frame = max(settings["blocks.notes"], key=lambda x: x[2])
     return int(max_frame[2]) + settings["output.ending_pause"]*settings["output.fps"]
