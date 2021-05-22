@@ -183,5 +183,5 @@ def render_blocks(settings, surface, frame):
 
             if settings["blocks.style"] == "PREVIEW":
                 pygame.draw.rect(surface, (255, 255, 255), rect)
-            else:
+            elif settings["blocks.style"] == "SOLID":
                 draw_block_normal(settings, surface, rect)
