@@ -115,6 +115,27 @@ def px_info(settings, block_rect, loc) -> PxType:
             return PxType(empty=True)
         return PxType(nfac=bounds(aafac, 0, 1))
 
+    # Check corners
+    ul = (bx-1    <= x <= bx+r)    and (by-1    <= y <= by+r)
+    bl = (bx-1    <= x <= bx+r)    and (by+bh-r <= y <= by+bh+1)
+    ur = (bx+bw-r <= x <= bx+bw+1) and (by-1    <= y <= by+r)
+    br = (bx+bw-r <= x <= bx+bw+1) and (by+bh-r <= y <= by+bh+1)
+    if ul or bl or ur or br:
+        if ul:
+            p2 = (bx+r, by+r)
+        elif bl:
+            p2 = (bx+r, by+bh-r)
+        elif ur:
+            p2 = (bx+bw-r, by+r)
+        elif br:
+            p2 = (bx+bw-r, by+bh-r)
+        dist = pythag_dist((x, y), p2)
+
+        aafac = 1 if dist <= r else r-dist+1
+        if aafac <= 0:
+            return PxType(empty=True)
+        return PxType(nfac=bounds(aafac, 0, 1))
+
     return PxType(empty=True)
 
 
