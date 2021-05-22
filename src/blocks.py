@@ -139,9 +139,19 @@ def px_info(settings, block_rect, loc) -> PxType:
     return PxType(empty=True)
 
 
-def col_from_info(settings, info: PxType):
-    #TODO
-    ncol = settings["blocks.color"]
+def col_from_info(settings, info: PxType, loc):
+    width, height = settings["output.resolution"]
+    x, y = loc
+
+    ncol_input = settings["blocks.color"]
+    ncol_type = settings["blocks.color_type"]
+    if ncol_type == "SOLID":
+        ncol = ncol_input
+    elif ncol_type == "VERTICAL_GRADIENT":
+        ncol = transform_gradient(y/(height/2), ncol_input)
+    elif ncol_type == "HORIZONTAL_GRADIENT":
+        ncol = transform_gradient(x/width, ncol_input)
+
     return [x*info.nfac for x in ncol]
 
 
@@ -152,7 +162,7 @@ def draw_block_normal(settings, surface, rect):
         for y in range(int(by)-1, int(by+bh)+3):
             info = px_info(settings, rect, (x, y))
             if not info.empty:
-                col = col_from_info(settings, info)
+                col = col_from_info(settings, info, (x, y))
                 surface.set_at((x, y), col)
 
 

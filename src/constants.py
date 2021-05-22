@@ -42,6 +42,7 @@ DEFAULT_SETTINGS = {
     "blocks.style": "SOLID_COLOR",
     "blocks.rounding": 6,
     "blocks.fade_top": True,
+    "blocks.color_type": "SOLID",
     "blocks.color": [200, 200, 210],
     "blocks.glow": True,
     "blocks.glow_color": [100, 110, 160],
