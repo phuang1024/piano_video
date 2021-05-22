@@ -21,7 +21,7 @@ import os
 import subprocess
 import shutil
 
-VERSION = "0.0-1"
+VERSION = "0.0-2"
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 SRC = os.path.join(os.path.dirname(PARENT), "src")
