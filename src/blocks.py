@@ -75,7 +75,7 @@ def load_images(settings):
 
 
 def get_image_path(name):
-    if os.path.isfile(p := os.path.expanduser(os.path.realpath(name))):
+    if os.path.isfile(p := os.path.realpath(os.path.expanduser(name))):
         return p
     elif os.path.isfile(p := os.path.join(PARENT, "assets", name)):
         return p
