@@ -81,6 +81,7 @@ def px_info(settings, block_rect, loc) -> PxType:
     bx, by, bw, bh = block_rect
     x, y = loc
     r = settings["blocks.rounding"]
+    b = settings["blocks.border"]
 
     if x < 0 or x > width or y < 0 or y > width:  # Out of screen
         return PxType(empty=True)
@@ -109,11 +110,10 @@ def px_info(settings, block_rect, loc) -> PxType:
         elif bottom:
             diff = y - (by+bh)
 
-        # Compute antialiasing color factor
-        aafac = 1 if diff <= 0 else 1-diff
-        if aafac <= 0:
-            return PxType(empty=True)
-        return PxType(nfac=bounds(aafac, 0, 1))
+        # Compute color factors
+        bfac = bounds(min(diff+b+1, 1-diff), 0, 1) if -b-1 <= diff <= 1 else 0
+        nfac = 1 if diff <= 0 else bounds(1-diff, 0, 1)
+        return PxType(nfac=nfac, bfac=bfac)
 
     # Check corners
     ul = (bx-1    <= x <= bx+r)    and (by-1    <= y <= by+r)
@@ -152,7 +152,9 @@ def col_from_info(settings, info: PxType, loc):
     elif ncol_type == "HORIZONTAL_GRADIENT":
         ncol = transform_gradient(x/width, ncol_input)
 
-    return [x*info.nfac for x in ncol]
+    ncol = np.array(ncol) * info.nfac
+    bcol = np.array(settings["blocks.border_color"]) * info.bfac
+    return (ncol+bcol) / 2
 
 
 def draw_block_normal(settings, surface, rect):
