@@ -47,7 +47,9 @@ def render(settings, piano_video, frame):
         note = 3
         while note < 88:
             x = int(key_position(settings, note)[0] + settings["blocks.x_offset"])
+            pygame.draw.line(surface, (20, 20, 20), (x-1, 0), (x-1, height))
             pygame.draw.line(surface, (75, 75, 75), (x, 0), (x, height))
+            pygame.draw.line(surface, (20, 20, 20), (x+1, 0), (x+1, height))
             note += 12
 
     render_dots(settings, surface, frame)
