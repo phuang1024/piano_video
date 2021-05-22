@@ -101,16 +101,19 @@ def px_info(settings, block_rect, loc) -> PxType:
 
     if left or right or top or bottom:
         if left:
-            diff = bx-x
+            diff = bx - x
         elif right:
-            diff = x-bx
+            diff = x - (bx+bw)
         elif top:
-            diff = by-y
+            diff = by - y
         elif bottom:
-            diff = y-by
+            diff = y - (by+bh)
+
+        # Compute antialiasing color factor
         aafac = 1 if diff <= 0 else 1-diff
-        aafac = bounds(aafac, 0, 1)
-        return PxType(nfac=aafac)
+        if aafac <= 0:
+            return PxType(empty=True)
+        return PxType(nfac=bounds(aafac, 0, 1))
 
     return PxType(empty=True)
 
