@@ -17,8 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
+import cv2
+import pygame
 import mido
 from utils import *
+pygame.init()
 
 GLOW_STEPS = 4
 TOP_FADE_HEIGHT = 250
@@ -39,6 +43,45 @@ class PxType:
 
 def init(settings):
     parse_midis(settings)
+    load_images(settings)
+
+
+def load_images(settings):
+    width, height = settings["output.resolution"]
+
+    if settings["blocks.style"] == "SOLID":
+        if settings["blocks.color_type"] == "IMAGE":
+            path = get_image_path(settings["blocks.image"])
+            grad = settings["blocks.image_gradient"]
+            print(f"Loading grayscale from {path}")
+
+            loaded_img = cv2.resize(cv2.imread(path), (width, height))
+            final_img = np.empty((height, width, 3), dtype=np.float32)
+            logger = ProgressLogger(f"Processing image, row", height)
+            for y in range(height):
+                logger.update(y)
+                logger.log()
+
+                for x in range(width):
+                    col = loaded_img[y][x]
+                    if len(grad) == 0:
+                        final_img[y][x] = col
+                    else:
+                        fac = np.sum(col) / (255*3)
+                        final_img[y][x] = transform_gradient(fac, grad)
+            logger.finish("Finished processing image in $TIMEs")
+
+            final_img = cv2.cvtColor(final_img, cv2.COLOR_BGR2RGB)
+            settings["blocks.image_final"] = final_img
+
+
+def get_image_path(name):
+    if os.path.isfile(p := os.path.expanduser(os.path.realpath(name))):
+        return p
+    elif os.path.isfile(p := os.path.join(PARENT, "assets", name)):
+        return p
+    else:
+        raise ValueError(f"No file or builtin image: {name}")
 
 
 def parse_midis(settings):

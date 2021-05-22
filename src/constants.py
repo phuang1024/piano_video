@@ -44,6 +44,8 @@ DEFAULT_SETTINGS = {
     "blocks.fade_top": True,
     "blocks.color_type": "SOLID",
     "blocks.color": [200, 200, 210],
+    "blocks.image": "",
+    "blocks.image_gradient": [],
     "blocks.glow": True,
     "blocks.glow_color": [100, 110, 160],
     "blocks.border": 1,
