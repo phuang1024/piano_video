@@ -71,7 +71,6 @@ def load_images(settings):
                         final_img[y][x] = transform_gradient(fac, grad)
             logger.finish("Finished processing image in $TIMEs")
 
-            final_img = cv2.cvtColor(final_img, cv2.COLOR_BGR2RGB)
             settings["blocks.image_final"] = final_img
 
 
@@ -156,6 +155,7 @@ def px_info(settings, block_rect, loc) -> PxType:
         # Compute color factors
         bfac = bounds(min(diff+b+1, 1-diff), 0, 1) if -b-1 <= diff <= 1 else 0
         nfac = 1 if diff <= 0 else bounds(1-diff, 0, 1)
+        nfac *= (1-bfac)  # Decrease normal as border goes up
         return PxType(nfac=nfac, bfac=bfac)
 
     # Check corners
@@ -178,13 +178,15 @@ def px_info(settings, block_rect, loc) -> PxType:
         # Compute color factors
         bfac = bounds(min(diff+b+1, 1-diff), 0, 1) if -b-1 <= diff <= 1 else 0
         nfac = 1 if diff <= 0 else bounds(1-diff, 0, 1)
+        nfac *= (1-bfac)  # Decrease normal as border goes up
         return PxType(nfac=nfac, bfac=bfac)
 
     return PxType(empty=True)
 
 
-def col_from_info(settings, info: PxType, loc):
+def col_from_info(settings, frame, info: PxType, loc):
     width, height = settings["output.resolution"]
+    fps = settings["output.fps"]
     x, y = loc
 
     ncol_input = settings["blocks.color"]
@@ -195,20 +197,24 @@ def col_from_info(settings, info: PxType, loc):
         ncol = transform_gradient(y/(height/2), ncol_input)
     elif ncol_type == "HORIZONTAL_GRADIENT":
         ncol = transform_gradient(x/width, ncol_input)
+    elif ncol_type == "IMAGE":
+        img_offset = settings["blocks.image_speed"] * height / fps * frame
+        img_y = int((y-img_offset) % (height-1))
+        ncol = settings["blocks.image_final"][img_y][x]
 
     ncol = np.array(ncol) * info.nfac
     bcol = np.array(settings["blocks.border_color"]) * info.bfac
     return (ncol+bcol) / 2
 
 
-def draw_block_normal(settings, surface, rect):
+def draw_block_normal(settings, surface, frame, rect):
     bx, by, bw, bh = rect
 
     for x in range(int(bx)-1, int(bx+bw)+3):
         for y in range(int(by)-1, int(by+bh)+3):
             info = px_info(settings, rect, (x, y))
             if not info.empty:
-                col = col_from_info(settings, info, (x, y))
+                col = col_from_info(settings, frame, info, (x, y))
                 surface.set_at((x, y), col)
 
 
@@ -230,4 +236,4 @@ def render_blocks(settings, surface, frame):
             if settings["blocks.style"] == "PREVIEW":
                 pygame.draw.rect(surface, (255, 255, 255), rect)
             elif settings["blocks.style"] == "SOLID":
-                draw_block_normal(settings, surface, rect)
+                draw_block_normal(settings, surface, frame, rect)

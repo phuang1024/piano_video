@@ -46,6 +46,7 @@ DEFAULT_SETTINGS = {
     "blocks.color": [200, 200, 210],
     "blocks.image": "",
     "blocks.image_gradient": [],
+    "blocks.image_speed": 0.15,
     "blocks.glow": True,
     "blocks.glow_color": [100, 110, 160],
     "blocks.border": 1,
