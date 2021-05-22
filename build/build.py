@@ -69,7 +69,7 @@ while len(dirs) > 0:
 
         dst = os.path.join(BIN, relpath)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        if os.path.isfile(abspath) and (".py" in abspath or "assets" in abspath):
+        if os.path.isfile(abspath) and (".py" in abspath or "assets" in abspath) and (not "__pycache__" in abspath):
             shutil.copy(abspath, dst)
         elif os.path.isdir(abspath):
             dirs.append(relpath)
