@@ -42,6 +42,7 @@ class PxType:
 
 
 def init(settings):
+    settings["blocks.border"] -= 1
     parse_midis(settings)
     load_images(settings)
 
