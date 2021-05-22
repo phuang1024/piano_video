@@ -130,11 +130,12 @@ def px_info(settings, block_rect, loc) -> PxType:
         elif br:
             p2 = (bx+bw-r, by+bh-r)
         dist = pythag_dist((x, y), p2)
+        diff = dist - r
 
-        aafac = 1 if dist <= r else r-dist+1
-        if aafac <= 0:
-            return PxType(empty=True)
-        return PxType(nfac=bounds(aafac, 0, 1))
+        # Compute color factors
+        bfac = bounds(min(diff+b+1, 1-diff), 0, 1) if -b-1 <= diff <= 1 else 0
+        nfac = 1 if diff <= 0 else bounds(1-diff, 0, 1)
+        return PxType(nfac=nfac, bfac=bfac)
 
     return PxType(empty=True)
 
