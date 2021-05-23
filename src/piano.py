@@ -139,8 +139,9 @@ def render_top(settings, surface, frame):
                 x = int(x_loc + key_width/2 + settings["blocks.x_offset"])
                 for i in range(LB_LIGHT_WIDTH):
                     curr_int = (LB_LIGHT_WIDTH-i) / LB_LIGHT_WIDTH
-                    intensity[x+i] += curr_int
-                    if i != 0:   # Don't increment center twice
+                    if 0 <= x+i < width:
+                        intensity[x+i] += curr_int
+                    if i != 0 and 0 <= x-i <= width:   # Don't increment center twice
                         intensity[x-i] += curr_int
 
         for x in range(width):
