@@ -59,7 +59,7 @@ def cache_glare(settings):
                 file.write(struct.pack("<H", int((height-glare_height)/2)))
 
                 glare = np.empty((glare_height, glare_width), dtype=np.float16)
-                glare_rays = [random.uniform(0, 2*math.pi) for _ in range(random.randint(1, 5))]
+                glare_rays = [random.uniform(0, 2*math.pi) for _ in range(random.randint(2, 5))]
                 for x in range(glare_width):
                     for y in range(glare_height):
                         x_fac = min(x, glare_width-x) / (glare_width/2)
