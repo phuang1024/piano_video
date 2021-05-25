@@ -28,37 +28,57 @@ def cache_dots(settings):
     if not settings["effects.dots"]:
         return
 
+    notes = settings["blocks.notes"]
     path = os.path.join(settings["files.cache"], "dots")
     os.makedirs(path, exist_ok=True)
 
-    width, height = settings["output.resolution"]
-    notes = settings["blocks.notes"]
-    dot_time_inc = settings["effects.dots.dps"] / settings["output.fps"]
-
-    logger = ProgressLogger("Caching dots", len(notes))
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
-        for i, (note, start, end) in enumerate(notes):
-            logger.update(i)
-            logger.log()
-
+        for i, note in enumerate(notes):
             infofile.write(struct.pack("<I", i))
 
-            with open(os.path.join(path, f"{i}.bin"), "wb") as file:
-                file.write(bytes([note]))
-                file.write(struct.pack("f", start))
-                file.write(struct.pack("f", end))
+    logger = ProgressLogger("Caching dots", len(notes))
+    if settings["other.use_mc"] and False:
+        portions = partition(range(len(notes)), settings["other.cores"])
+        processes = []
+        for portion in portions:
+            p = multiprocessing.Process(target=cache_portion, args=(settings, path, notes, portion))
+            p.start()
+            processes.append(p)
 
-                x_loc, key_width = key_position(settings, note)
-                x_loc += key_width/2
+        while any([p.is_alive() for p in processes]):
+            time.sleep(0.05)
+            done = len(os.listdir(path)) - 1    # Minus 1 so don't count "info.bin"
+            logger.update(done)
+            logger.log()
 
-                num_dots = int((end-start) * dot_time_inc)
-                file.write(struct.pack("<I", num_dots))
-
-                for j in range(num_dots):
-                    curr_time = start+1/dot_time_inc*j + random.randint(-2, 2)
-                    simulate_dot(settings, file, curr_time, x_loc, height/2, key_width)
+    else:
+        for i, note in enumerate(notes):
+            logger.update(i)
+            logger.log()
+            cache_single_note(settings, path, i, note)
 
     logger.finish(f"Finished caching {len(notes)} dots in $TIMEs")
+
+def cache_single_note(settings, path, i, note_info):
+    width, height = settings["output.resolution"]
+    dot_time_inc = settings["effects.dots.dps"] / settings["output.fps"]
+    note, start, end = note_info
+
+    with open(os.path.join(path, f"{i}.bin"), "wb") as file:
+        file.write(bytes([note]))
+        file.write(struct.pack("f", start))
+        file.write(struct.pack("f", end))
+
+        x_loc, key_width = key_position(settings, note)
+        x_loc += key_width/2
+
+        num_dots = int((end-start) * dot_time_inc)
+        file.write(struct.pack("<I", num_dots))
+
+        for j in range(num_dots):
+            curr_time = start+1/dot_time_inc*j + random.randint(-2, 2)
+            simulate_dot(settings, file, curr_time, x_loc, height/2, key_width)
+
 
 def simulate_dot(settings, file, frame, start_x, start_y, x_width):
     width, height = settings["output.resolution"]
