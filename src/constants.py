@@ -81,7 +81,7 @@ DEFAULT_SETTINGS = {
 
     "other.random_seed": 1,
     "other.use_mc": True,
-    "other.max_cores": multiprocessing.cpu_count(),
+    "other.cores": multiprocessing.cpu_count(),
 }
 
 PARENT = os.path.dirname(os.path.realpath(__file__))

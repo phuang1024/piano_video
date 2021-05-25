@@ -104,19 +104,29 @@ def transform_gradient(fac, gradient):
 
         return [i*255 for i in new_col]
 
-def in_surface(surf, loc):
-    x, y = loc
-    w, h = surf.get_size()
-    return 0 <= x < w and 0 <= y < h
-
 def bounds(v, lower=float("-inf"), upper=float("inf")):
     # TODO replace max(min(v, 1), 0) with this function
     return max(min(v, upper), lower)
 
-
 def distance(x1, y1, x2, y2):
     return ((x1-x2)**2 + (y1-y2)**2) ** 0.5
 
+def partition(elements, workers):
+    portions = [[] for _ in range(workers)]
+    elements = list(elements)
+
+    i = 0
+    while len(elements) > 0:
+        portions[i].append(elements.pop(0))
+        i = (i+1) % workers
+
+    return portions
+
+
+def in_surface(surf, loc):
+    x, y = loc
+    w, h = surf.get_size()
+    return 0 <= x < w and 0 <= y < h
 
 def surf_to_array(surf: pygame.Surface) -> np.ndarray:
     array = pygame.surfarray.array3d(surf).swapaxes(0, 1)

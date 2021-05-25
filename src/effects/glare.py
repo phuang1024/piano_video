@@ -20,6 +20,7 @@
 import os
 import math
 import struct
+import multiprocessing
 import random
 import numpy as np
 from constants import *
@@ -43,8 +44,20 @@ def cache_glare(settings):
             infofile.write(struct.pack("<I", i))
 
     logger = ProgressLogger("Caching glare", len(notes))
-    if settings["other.use_mc"] and False:
-        pass
+    if settings["other.use_mc"]:
+        portions = partition(range(len(notes)), settings["other.cores"])
+        processes = []
+        for portion in portions:
+            p = multiprocessing.Process(target=cache_portion, args=(settings, path, notes, portion))
+            p.start()
+            processes.append(p)
+
+        while any([p.is_alive() for p in processes]):
+            time.sleep(0.05)
+            done = len(os.listdir(path)) - 1    # Minus 1 so don't count "info.bin"
+            logger.update(done)
+            logger.log()
+
     else:
         for i, note_data in enumerate(notes):
             logger.update(i)
@@ -52,6 +65,10 @@ def cache_glare(settings):
             cache_single_glare(settings, path, i, *note_data)
 
     logger.finish(f"Finished caching {len(notes)} glares in $TIMEs")
+
+def cache_portion(settings, path, notes, frames):
+    for f in frames:
+        cache_single_glare(settings, path, f, *notes[f])
 
 def cache_single_glare(settings, path, i, note, start, end):
     width, height = settings["output.resolution"]
