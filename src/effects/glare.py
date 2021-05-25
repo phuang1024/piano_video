@@ -33,55 +33,62 @@ def cache_glare(settings):
     if not settings["effects.glare"]:
         return
 
+    notes = settings["blocks.notes"]
     path = os.path.join(settings["files.cache"], "glare")
     os.makedirs(path, exist_ok=True)
 
-    width, height = settings["output.resolution"]
-    glare_width, glare_height = settings["effects.glare_size"]
-    notes = settings["blocks.notes"]
 
-    logger = ProgressLogger("Caching glare", len(notes))
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
-        for i, (note, start, end) in enumerate(notes):
-            logger.update(i)
-            logger.log()
-
+        for i in range(len(notes)):
             infofile.write(struct.pack("<I", i))
 
-            with open(os.path.join(path, f"{i}.bin"), "wb") as file:
-                file.write(bytes([note]))
-                file.write(struct.pack("f", start))
-                file.write(struct.pack("f", end))
-
-                x_loc, key_width = key_position(settings, note)
-                x_loc += key_width/2
-                file.write(struct.pack("<H", int(x_loc-glare_width/2)))
-                file.write(struct.pack("<H", int((height-glare_height)/2)))
-
-                glare = np.empty((glare_height, glare_width), dtype=np.float16)
-                glare_rays = [random.uniform(0, 2*math.pi) for _ in range(random.randint(2, 5))]
-                for x in range(glare_width):
-                    for y in range(glare_height):
-                        x_fac = min(x, glare_width-x) / (glare_width/2)
-                        y_fac = min(y, glare_height-y) / (glare_height/2)
-
-                        dx = x - glare_width/2
-                        dy = y - glare_height/2
-                        angle = math.atan2(dy, dx)
-                        min_diff = float("inf")
-                        for ray in glare_rays:
-                            diff = min(abs(ray-angle), abs(ray-angle+360), abs(ray-angle-360))
-                            min_diff = min(min_diff, diff)
-                        ray_fac = RAY_FAC_MAX - (RAY_FAC_MAX-1)/RAY_DIST_MAX*min_diff
-                        ray_fac = max(ray_fac, 1)
-
-                        glare[y, x] = x_fac*y_fac*ray_fac
-
-                data = glare.tobytes()
-                file.write(struct.pack("<I", len(data)))
-                file.write(data)
+    logger = ProgressLogger("Caching glare", len(notes))
+    if settings["other.use_mc"] and False:
+        pass
+    else:
+        for i, note_data in enumerate(notes):
+            logger.update(i)
+            logger.log()
+            cache_single_glare(settings, path, i, *note_data)
 
     logger.finish(f"Finished caching {len(notes)} glares in $TIMEs")
+
+def cache_single_glare(settings, path, i, note, start, end):
+    width, height = settings["output.resolution"]
+    glare_width, glare_height = settings["effects.glare_size"]
+
+    with open(os.path.join(path, f"{i}.bin"), "wb") as file:
+        file.write(bytes([note]))
+        file.write(struct.pack("f", start))
+        file.write(struct.pack("f", end))
+
+        x_loc, key_width = key_position(settings, note)
+        x_loc += key_width/2
+        file.write(struct.pack("<H", int(x_loc-glare_width/2)))
+        file.write(struct.pack("<H", int((height-glare_height)/2)))
+
+        glare = np.empty((glare_height, glare_width), dtype=np.float16)
+        glare_rays = [random.uniform(0, 2*math.pi) for _ in range(random.randint(2, 5))]
+        for x in range(glare_width):
+            for y in range(glare_height):
+                x_fac = min(x, glare_width-x) / (glare_width/2)
+                y_fac = min(y, glare_height-y) / (glare_height/2)
+
+                dx = x - glare_width/2
+                dy = y - glare_height/2
+                angle = math.atan2(dy, dx)
+                min_diff = float("inf")
+                for ray in glare_rays:
+                    diff = min(abs(ray-angle), abs(ray-angle+360), abs(ray-angle-360))
+                    min_diff = min(min_diff, diff)
+                ray_fac = RAY_FAC_MAX - (RAY_FAC_MAX-1)/RAY_DIST_MAX*min_diff
+                ray_fac = max(ray_fac, 1)
+
+                glare[y, x] = x_fac*y_fac*ray_fac
+
+        data = glare.tobytes()
+        file.write(struct.pack("<I", len(data)))
+        file.write(data)
 
 
 def render_glare(settings, surface, frame):

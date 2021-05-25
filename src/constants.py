@@ -18,6 +18,7 @@
 #
 
 import os
+import multiprocessing
 
 # Using lists to keep consistent with json data
 DEFAULT_SETTINGS = {
@@ -79,6 +80,8 @@ DEFAULT_SETTINGS = {
     "text.ending": [],
 
     "other.random_seed": 1,
+    "other.use_mc": True,
+    "other.max_cores": multiprocessing.cpu_count(),
 }
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
