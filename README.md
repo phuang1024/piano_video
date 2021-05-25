@@ -2,9 +2,7 @@
 
 ![preview](http://54.241.110.86:8123/assets/ex.jpg)
 
-Piano MIDI visualizer.
-
-Piano Video takes MIDIs and a video, and makes a piano video with falling blocks and smoke effects.
+Piano visualizer with MIDI parsing, decorative blocks, and smoke simulations.
 
 ## Examples:
 
