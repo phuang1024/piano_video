@@ -123,7 +123,10 @@ def render_frame(settings, video, frame_num):
     fps = settings["output.fps"]
     video_frame = (frame_num + fps*settings["piano.video_offset"]) * video.fps/fps
 
-    return crop(settings, video.read(video_frame)) * settings["piano.mask"]
+    result = crop(settings, video.read(video_frame)) * settings["piano.mask"]
+    result = cv2.resize(result, dsize=(0, 0), fx=1, fy=settings["piano.height_fac"])
+
+    return result
 
 
 def render_top(settings, surface, frame):

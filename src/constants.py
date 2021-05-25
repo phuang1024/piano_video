@@ -54,6 +54,7 @@ DEFAULT_SETTINGS = {
 
     "piano.video_offset": 0,
     "piano.video_crop": [],
+    "piano.height_fac": 1,
     "piano.top": "LIGHT_BAR",
     "piano.octave_lines": True,
 

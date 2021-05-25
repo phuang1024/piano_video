@@ -36,6 +36,13 @@ def render_piano(settings, surface, piano_video, frame):
     y = settings["output.resolution"][1]/2
     if settings["piano.top"] == "LIGHT_BAR":
         y += LB_HEIGHT
+
+    width, height = settings["output.resolution"]
+    hfac = settings["piano.height_fac"]
+    if hfac != 1:
+        size = (width, int(hfac*height))
+        piano = pygame.transform.scale(piano, size)
+
     surface.blit(piano, (0, y))
 
 
