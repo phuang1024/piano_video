@@ -37,7 +37,7 @@ def cache_dots(settings):
             infofile.write(struct.pack("<I", i))
 
     logger = ProgressLogger("Caching dots", len(notes))
-    if settings["other.use_mc"] and False:
+    if settings["other.use_mc"]:
         portions = partition(range(len(notes)), settings["other.cores"])
         processes = []
         for portion in portions:
@@ -58,6 +58,10 @@ def cache_dots(settings):
             cache_single_note(settings, path, i, note)
 
     logger.finish(f"Finished caching {len(notes)} dots in $TIMEs")
+
+def cache_portion(settings, path, notes, frames):
+    for f in frames:
+        cache_single_note(settings, path, f, notes[f])
 
 def cache_single_note(settings, path, i, note_info):
     width, height = settings["output.resolution"]
