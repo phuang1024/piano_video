@@ -31,7 +31,7 @@ from piano import init as video_init, preview_crop, interactive_preview
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Creates a video from a piano MIDI.")
+    parser = argparse.ArgumentParser(description="Piano Video 0.0.4: Visualize a piano performance")
     parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=True)
     parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
     parser.add_argument("-o", "--output", help="output file path (WILL overwrite without prompt)", type=str, required=True)
