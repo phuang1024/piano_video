@@ -18,6 +18,7 @@
 #
 
 import os
+import multiprocessing
 import cv2
 import pygame
 import mido
@@ -242,5 +243,35 @@ def draw_all_blocks(settings, frame):
 
     return surface
 
+def cache_portion(settings, frames, path):
+    for f in frames:
+        img = draw_all_blocks(settings, f)
+        pygame.image.save(img, os.path.join(path, f"{f}.jpg"))
+
+def cache_blocks(settings, frames):
+    path = os.path.join(settings["files.cache"], "blocks")
+    os.makedirs(path, exist_ok=True)
+
+    portions = partition(frames, settings["other.cores"])
+    processes = []
+    for portion in portions:
+        p = multiprocessing.Process(target=cache_portion, args=(settings, portion, path))
+        p.start()
+        processes.append(p)
+
+    logger = ProgressLogger("Caching blocks", len(frames))
+    while any([p.is_alive() for p in processes]):
+        time.sleep(0.05)
+        done = len(os.listdir(path)) - 1    # Minus 1 so don't count "info.bin"
+        logger.update(done)
+        logger.log()
+
+    logger.finish(f"Finished caching {len(frames)} blocks in $TIMEs")
+
 def render_blocks(settings, surface, frame):
-    surface.blit(draw_all_blocks(settings, frame), (0, 0))
+    if settings["other.use_mc"]:
+        path = os.path.join(settings["files.cache"], "blocks", f"{frame}.jpg")
+        img = pygame.image.load(path)
+        surface.blit(img, (0, 0))
+    else:
+        surface.blit(draw_all_blocks(settings, frame), (0, 0))

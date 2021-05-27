@@ -21,7 +21,7 @@ import pygame
 import cv2
 from utils import *
 from text import add_text, blur_fade
-from blocks import compute_length, render_blocks
+from blocks import cache_blocks, compute_length, render_blocks
 from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
 from effects.glare import cache_glare, render_glare
 from effects.dots import cache_dots, render_dots
@@ -75,20 +75,21 @@ def export(settings, cache):
     res = settings["output.resolution"]
     fps = settings["output.fps"]
     shape = (*res[::-1], 3)
+    length = compute_length(settings)
+
+    video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
+        settings["output.fps"], tuple(settings["output.resolution"]))
+    piano_video = VideoReader(settings["files.video"])
 
     if cache:
         cache_glare(settings)
         cache_dots(settings)
         cache_stars(settings)
-
-    video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"),
-        settings["output.fps"], tuple(settings["output.resolution"]))
+        if settings["other.use_mc"]:
+            cache_blocks(settings, range(length))
 
     if settings["text.show_intro"]:
         add_text(video, fps, res, settings["text.intro"], settings["text.font"])
-
-    piano_video = VideoReader(settings["files.video"])
-    length = compute_length(settings)
 
     logger = ProgressLogger("Rendering", length)
     for frame in range(length):

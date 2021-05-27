@@ -24,7 +24,8 @@ import multiprocessing
 DEFAULT_SETTINGS = {
     "files.midis": [],
     "files.video": "",
-    "files.output": "",
+    "files.output": "",                   # Set internally
+    "files.cache": "piano_video_cache",   # Set internally
 
     "output.resolution": [1920, 1080],
     "output.fps": 30,

@@ -59,7 +59,7 @@ class ProgressLogger:
         total = self.total
 
         elapse = time.time() - self.start
-        per_second = (frame+1) / elapse
+        per_second = (frame+1) / elapse + 0.001
         percent = (frame+1) / total * 100
         remaining = (total-frame-1) / per_second
 
