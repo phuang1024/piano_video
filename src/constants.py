@@ -80,7 +80,7 @@ DEFAULT_SETTINGS = {
     "text.ending": [],
 
     "other.random_seed": 1,
-    "other.use_mc": True,
+    "other.use_mc": False,
     "other.cores": multiprocessing.cpu_count(),
 }
 

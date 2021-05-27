@@ -74,7 +74,6 @@ def load_images(settings):
 
             settings["blocks.image_final"] = final_img
 
-
 def get_image_path(name):
     if os.path.isfile(p := os.path.realpath(os.path.expanduser(name))):
         return p
@@ -112,7 +111,6 @@ def parse_midis(settings):
                     starts[note] = curr_frame
 
     settings["blocks.notes"] = notes
-
 
 def compute_length(settings):
     max_frame = max(settings["blocks.notes"], key=lambda x: x[2])
@@ -184,7 +182,6 @@ def px_info(settings, block_rect, loc) -> PxType:
 
     return PxType(empty=True)
 
-
 def col_from_info(settings, frame, info: PxType, loc):
     width, height = settings["output.resolution"]
     fps = settings["output.fps"]
@@ -209,18 +206,22 @@ def col_from_info(settings, frame, info: PxType, loc):
 
 
 def draw_block_normal(settings, surface, frame, rect):
+    width, height = settings["output.resolution"]
     bx, by, bw, bh = rect
 
     for x in range(int(bx)-1, int(bx+bw)+3):
         for y in range(int(by)-1, int(by+bh)+3):
-            info = px_info(settings, rect, (x, y))
-            if not info.empty:
-                col = col_from_info(settings, frame, info, (x, y))
-                surface.set_at((x, y), col)
+            if 0 <= x < width and 0 <= y < height//2:
+                info = px_info(settings, rect, (x, y))
+                if not info.empty:
+                    col = col_from_info(settings, frame, info, (x, y))
+                    surface.set_at((x, y), col)
 
+    return surface
 
-def render_blocks(settings, surface, frame):
+def draw_all_blocks(settings, frame):
     width, height = settings["output.resolution"]
+    surface = pygame.Surface((width, height//2), pygame.SRCALPHA)
     middle = height / 2
 
     px_per_frame = settings["blocks.speed"] * height / settings["output.fps"]
@@ -238,3 +239,8 @@ def render_blocks(settings, surface, frame):
                 pygame.draw.rect(surface, (255, 255, 255), rect)
             elif settings["blocks.style"] == "SOLID":
                 draw_block_normal(settings, surface, frame, rect)
+
+    return surface
+
+def render_blocks(settings, surface, frame):
+    surface.blit(draw_all_blocks(settings, frame), (0, 0))
