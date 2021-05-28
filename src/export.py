@@ -45,6 +45,16 @@ def render_piano(settings, surface, piano_video, frame):
 
     surface.blit(piano, (0, y))
 
+def render_octave_lines(settings, surface):
+    if settings["piano.octave_lines"]:
+        width, height = settings["output.resolution"]
+        note = 3
+        while note < 88:
+            x = int(key_position(settings, note)[0] + settings["blocks.x_offset"])
+            pygame.draw.line(surface, (20, 20, 20), (x-1, 0), (x-1, height/2))
+            pygame.draw.line(surface, (75, 75, 75), (x, 0), (x, height/2))
+            pygame.draw.line(surface, (20, 20, 20), (x+1, 0), (x+1, height/2))
+            note += 12
 
 def render(settings, piano_video, frame):
     width, height = settings["output.resolution"]
@@ -54,18 +64,10 @@ def render(settings, piano_video, frame):
     pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
     render_dots(settings, surface, frame)
     render_stars(settings, surface, frame)
+    render_octave_lines(settings, surface)
     render_piano(settings, surface, piano_video, frame)
     render_top(settings, surface, frame)
     render_glare(settings, surface, frame)
-
-    if settings["piano.octave_lines"]:
-        note = 3
-        while note < 88:
-            x = int(key_position(settings, note)[0] + settings["blocks.x_offset"])
-            pygame.draw.line(surface, (20, 20, 20), (x-1, 0), (x-1, height))
-            pygame.draw.line(surface, (75, 75, 75), (x, 0), (x, height))
-            pygame.draw.line(surface, (20, 20, 20), (x+1, 0), (x+1, height))
-            note += 12
 
     return surface
 
