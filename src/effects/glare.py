@@ -131,7 +131,7 @@ def render_glare(settings, surface, frame):
                 y_loc = struct.unpack("<H", file.read(2))[0]
 
                 if start <= frame <= end:
-                    fac = random.uniform(0.75, 0.9)
+                    fac = random.uniform(0.65, 0.8)
                     glare = np.frombuffer(file.read(struct.unpack("<I", file.read(4))[0]), dtype=np.float16).reshape((glare_height, glare_width))
                     for y_val in range(glare_height):
                         for x_val in range(glare_width):
