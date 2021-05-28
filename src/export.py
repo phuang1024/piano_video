@@ -17,6 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
+import os
+import time
 import pygame
 import cv2
 from utils import *
@@ -110,3 +113,11 @@ def export(settings, cache):
         add_text(video, fps, res, settings["text.ending"], settings["text.font"])
 
     video.release()
+
+    if settings["other.alert"]:
+        if sys.platform == "linux":
+            os.system("notify-send \"Piano Video\" \"Finished exporting\"")
+        for i in range(5):
+            sys.stdout.write("\x07")
+            sys.stdout.flush()
+            time.sleep(0.2)
