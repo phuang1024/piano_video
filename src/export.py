@@ -91,7 +91,7 @@ def export(settings, cache):
     if settings["text.show_intro"]:
         add_text(video, fps, res, settings["text.intro"], settings["text.font"])
 
-    logger = ProgressLogger("Rendering", length)
+    logger = ProgressLogger("Rendering final", length)
     for frame in range(length):
         logger.update(frame)
         logger.log()
