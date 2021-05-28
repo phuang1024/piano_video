@@ -40,7 +40,7 @@ def render_piano(settings, surface, piano_video, frame):
     width, height = settings["output.resolution"]
     hfac = settings["piano.height_fac"]
     if hfac != 1:
-        size = (width, int(hfac*height))
+        size = (width, int(hfac*piano.get_height()))
         piano = pygame.transform.scale(piano, size)
 
     surface.blit(piano, (0, y))
@@ -50,6 +50,14 @@ def render(settings, piano_video, frame):
     width, height = settings["output.resolution"]
     surface = pygame.Surface(settings["output.resolution"])
 
+    render_blocks(settings, surface, frame)
+    pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
+    render_dots(settings, surface, frame)
+    render_stars(settings, surface, frame)
+    render_piano(settings, surface, piano_video, frame)
+    render_top(settings, surface, frame)
+    render_glare(settings, surface, frame)
+
     if settings["piano.octave_lines"]:
         note = 3
         while note < 88:
@@ -58,14 +66,6 @@ def render(settings, piano_video, frame):
             pygame.draw.line(surface, (75, 75, 75), (x, 0), (x, height))
             pygame.draw.line(surface, (20, 20, 20), (x+1, 0), (x+1, height))
             note += 12
-
-    render_dots(settings, surface, frame)
-    render_stars(settings, surface, frame)
-    render_blocks(settings, surface, frame)
-    pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
-    render_piano(settings, surface, piano_video, frame)
-    render_top(settings, surface, frame)
-    render_glare(settings, surface, frame)
 
     return surface
 
