@@ -20,6 +20,8 @@
 import os
 import multiprocessing
 
+VERSION = "0.0.5"
+
 # Using lists to keep consistent with json data
 DEFAULT_SETTINGS = {
     "files.midis": [],

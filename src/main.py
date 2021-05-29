@@ -32,7 +32,7 @@ from compile import compile_cpp
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Piano Video 0.0.5: Visualize a piano performance")
+    parser = argparse.ArgumentParser(description=f"Piano Video {VERSION}: Visualize a piano performance")
     parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=False)
     parser.add_argument("-o", "--output", help="output file path (WILL overwrite without prompt)", type=str, required=False)
     parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
@@ -42,6 +42,10 @@ def main():
     parser.add_argument("--no-cache", help="don't re-cache", action="store_true")
     parser.add_argument("--random", help="manually set random seed (string)", type=str, required=False)
     args = parser.parse_args()
+
+    if args.settings is None and args.output is None:
+        print(f"Piano Video {VERSION}: Type \"pvid --help\" for help.")
+        return
 
     settings = DEFAULT_SETTINGS.copy()
     if args.settings:
