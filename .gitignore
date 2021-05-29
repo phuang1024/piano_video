@@ -1,9 +1,10 @@
 __pycache__
+piano_video_cache
 .vscode
 
-/build/*.deb
-/src/*.json
-/src/piano_video_cache
+*.deb
+*.json
+*.out
 
 *.mid
 *.mp3
