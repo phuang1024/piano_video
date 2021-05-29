@@ -1,4 +1,4 @@
-cv2
+opencv-python
 mido
 numpy
 pillow
