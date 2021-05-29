@@ -28,6 +28,7 @@ from constants import *
 from export import export
 from blocks import init as blocks_init
 from piano import init as video_init, preview_crop, interactive_preview
+from compile import compile_cpp
 
 
 def main():
@@ -61,11 +62,12 @@ def main():
     if settings["blocks.style"] in ("VERTICAL_GRADIENT", "HORIZONTAL_GRADIENT"):
         settings["blocks.color"].sort(key=lambda x: x[0])
 
-    random.seed(settings["other.random_seed"])
-    os.makedirs(settings["files.cache"], exist_ok=True)
 
-    video_init(settings)
-    blocks_init(settings)
+    if args.mode != "COMPILE":
+        random.seed(settings["other.random_seed"])
+        os.makedirs(settings["files.cache"], exist_ok=True)
+        video_init(settings)
+        blocks_init(settings)
 
     if args.mode is None or args.mode == "EXPORT":
         export(settings, (not args.no_cache))
@@ -75,6 +77,8 @@ def main():
         preview_crop(settings)
     elif args.mode == "INTERACTIVE_PREVIEW":
         interactive_preview(settings)
+    elif args.mode == "COMPILE":
+        compile_cpp()
 
 
 main()
