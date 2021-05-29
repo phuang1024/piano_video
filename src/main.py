@@ -62,7 +62,6 @@ def main():
     if settings["blocks.style"] in ("VERTICAL_GRADIENT", "HORIZONTAL_GRADIENT"):
         settings["blocks.color"].sort(key=lambda x: x[0])
 
-
     if args.mode != "COMPILE":
         random.seed(settings["other.random_seed"])
         os.makedirs(settings["files.cache"], exist_ok=True)
