@@ -7,7 +7,7 @@
 
 ![preview](/images/aeolian_harp.jpg)
 
-Piano visualizer with MIDI parsing, decorative blocks, and smoke simulations.
+Piano visualizer with MIDI parsing, decorative blocks, and particle simulations.
 
 ## Examples
 
