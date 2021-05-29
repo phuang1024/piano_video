@@ -136,7 +136,7 @@ def render_top(settings, surface, frame):
     # Calculate intensity array
     if settings["piano.top"] == "LIGHT_BAR":
         intensity = [0] * width
-        for note, start, end in settings["blocks.notes"]:
+        for note, start, end, special in settings["blocks.notes"]:
             if start <= frame <= end:
                 x_loc, key_width = key_position(settings, note)
                 x = int(x_loc + key_width/2 + settings["blocks.x_offset"])

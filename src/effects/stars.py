@@ -36,7 +36,7 @@ def cache_stars(settings):
 
     logger = ProgressLogger("Caching stars", len(notes))
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
-        for i, (note, start, end) in enumerate(notes):
+        for i, (note, start, end, special) in enumerate(notes):
             logger.update(i)
             logger.log()
 

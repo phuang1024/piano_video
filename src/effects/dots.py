@@ -33,7 +33,7 @@ def cache_dots(settings):
     os.makedirs(path, exist_ok=True)
 
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
-        for i, note in enumerate(notes):
+        for i in range(len(notes)):
             infofile.write(struct.pack("<I", i))
 
     logger = ProgressLogger("Caching dots", len(notes))
@@ -66,7 +66,7 @@ def cache_portion(settings, path, notes, frames):
 def cache_single_note(settings, path, i, note_info):
     width, height = settings["output.resolution"]
     dot_time_inc = settings["effects.dots.dps"] / settings["output.fps"]
-    note, start, end = note_info
+    note, start, end, special = note_info
 
     with open(os.path.join(path, f"{i}.bin"), "wb") as file:
         file.write(bytes([note]))

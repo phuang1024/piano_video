@@ -107,7 +107,7 @@ def parse_midis(settings):
                     end = curr_frame
                     if stabilize and curr_frame-starts[note] <= stabilize_max:  # Stabilize sixteenth notes
                             end = stabilize_new+starts[note]
-                    notes.append((note, starts[note], end))
+                    notes.append((note, starts[note], end, {}))
                 else:
                     starts[note] = curr_frame
 
@@ -227,7 +227,7 @@ def draw_all_blocks(settings, frame):
 
     px_per_frame = settings["blocks.speed"] * height / settings["output.fps"]
 
-    for note, start, end in settings["blocks.notes"]:
+    for note, start, end, special in settings["blocks.notes"]:
         start_y = middle - px_per_frame*(start-frame)
         end_y = middle - px_per_frame*(end-frame)
 
