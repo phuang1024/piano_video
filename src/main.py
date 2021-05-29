@@ -32,7 +32,7 @@ from compile import compile_cpp
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Piano Video 0.0.4: Visualize a piano performance")
+    parser = argparse.ArgumentParser(description="Piano Video 0.0.5: Visualize a piano performance")
     parser.add_argument("-s", "--settings", help="set the json settings file path", type=str, required=False)
     parser.add_argument("-o", "--output", help="output file path (WILL overwrite without prompt)", type=str, required=False)
     parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
