@@ -106,8 +106,17 @@ def parse_midis(settings):
                 if velocity == 0 or msg.type == "note_off":
                     end = curr_frame
                     if stabilize and curr_frame-starts[note] <= stabilize_max:  # Stabilize sixteenth notes
-                            end = stabilize_new+starts[note]
-                    notes.append((note, starts[note], end, {}))
+                        end = stabilize_new+starts[note]
+
+                    special = {}
+                    if settings["blocks.color_type"] == "RANDOM_PICK":
+                        colors = settings["blocks.color"]
+                        p = np.array([x[0] for x in colors])
+                        p = p / np.sum(p)
+                        i = np.random.choice(range(len(colors)), 1, p=p)[0]
+                        special["color"] = colors[i][1]
+                    notes.append((note, starts[note], end, special))
+
                 else:
                     starts[note] = curr_frame
 
@@ -183,7 +192,7 @@ def px_info(settings, block_rect, loc) -> PxType:
 
     return PxType(empty=True)
 
-def col_from_info(settings, frame, info: PxType, loc):
+def col_from_info(settings, frame, info: PxType, loc, special):
     width, height = settings["output.resolution"]
     fps = settings["output.fps"]
     x, y = loc
@@ -200,13 +209,15 @@ def col_from_info(settings, frame, info: PxType, loc):
         img_offset = settings["blocks.image_speed"] * height / fps * frame
         img_y = int((y-img_offset) % (height-1))
         ncol = settings["blocks.image_final"][img_y][x]
+    elif ncol_type == "RANDOM_PICK":
+        ncol = special["color"]
 
     ncol = np.array(ncol) * info.nfac
     bcol = np.array(settings["blocks.border_color"]) * info.bfac
     return (ncol+bcol) / 2
 
 
-def draw_block_normal(settings, surface, frame, rect):
+def draw_block_normal(settings, surface, frame, rect, special):
     width, height = settings["output.resolution"]
     bx, by, bw, bh = rect
 
@@ -215,7 +226,7 @@ def draw_block_normal(settings, surface, frame, rect):
             if 0 <= x < width and 0 <= y < height//2:
                 info = px_info(settings, rect, (x, y))
                 if not info.empty:
-                    col = col_from_info(settings, frame, info, (x, y))
+                    col = col_from_info(settings, frame, info, (x, y), special)
                     surface.set_at((x, y), col)
 
     return surface
@@ -239,7 +250,7 @@ def draw_all_blocks(settings, frame):
             if settings["blocks.style"] == "PREVIEW":
                 pygame.draw.rect(surface, (255, 255, 255), rect)
             elif settings["blocks.style"] == "SOLID":
-                draw_block_normal(settings, surface, frame, rect)
+                draw_block_normal(settings, surface, frame, rect, special)
 
     return surface
 
