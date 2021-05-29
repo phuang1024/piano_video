@@ -18,4 +18,15 @@ Piano visualizer with MIDI parsing, decorative blocks, and particle simulations.
 * [Liszt - Liebestraume 3](https://www.youtube.com/watch?v=ng9E2zNTN5Y)
 * [Chopin - Op 25 No 1](https://www.youtube.com/watch?v=GzIjygdvgAA)
 
+## System Requirements
+
+* Python3
+* One core is enough, but more will export the video faster.
+* Python packages:
+    * `opencv-python` for image/video input and output.
+    * `mido` for MIDI file parsing.
+    * `numpy` for fast internal image processing.
+    * `pillow` for fast blur effects.
+    * `pygame` for fast drawing of shapes.
+
 [docs]: https://github.com/HuangPatrick16777216/piano_video/wiki
