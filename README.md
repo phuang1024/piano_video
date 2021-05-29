@@ -1,5 +1,10 @@
 # Piano Video
 
+![](https://shields.io/github/repo-size/huangpatrick16777216/piano_video)
+![](https://shields.io/github/issues/huangpatrick16777216/piano_video)
+![](https://shields.io/github/issues-pr/huangpatrick16777216/piano_video)
+![](https://shields.io/github/license/huangpatrick16777216/piano_video)
+
 ![preview](/images/aeolian_harp.jpg)
 
 Piano visualizer with MIDI parsing, decorative blocks, and smoke simulations.
