@@ -70,7 +70,7 @@ def cache_portion(settings, path, notes, frames):
     for f in frames:
         cache_single_glare(settings, path, f, *notes[f])
 
-def cache_single_glare(settings, path, i, note, start, end):
+def cache_single_glare(settings, path, i, note, start, end, special):
     width, height = settings["output.resolution"]
     glare_width, glare_height = settings["effects.glare_size"]
 
