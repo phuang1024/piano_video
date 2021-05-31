@@ -63,10 +63,10 @@ def render(settings, piano_video, frame):
     width, height = settings["output.resolution"]
     surface = pygame.Surface(settings["output.resolution"])
 
+    render_dots(settings, surface, frame)
+    # render_stars(settings, surface, frame)
     render_blocks(settings, surface, frame)
     pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
-    render_dots(settings, surface, frame)
-    render_stars(settings, surface, frame)
     render_octave_lines(settings, surface)
     render_piano(settings, surface, piano_video, frame)
     render_top(settings, surface, frame)
