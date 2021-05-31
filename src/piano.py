@@ -125,6 +125,7 @@ def render_frame(settings, video, frame_num):
 
     result = crop(settings, video.read(video_frame)) * settings["piano.mask"]
     result = cv2.resize(result, dsize=(0, 0), fx=1, fy=settings["piano.height_fac"])
+    result *= settings["piano.brightness"]
 
     return result
 

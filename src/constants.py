@@ -61,6 +61,7 @@ DEFAULT_SETTINGS = {
     "piano.height_fac": 1,
     "piano.top": "LIGHT_BAR",
     "piano.octave_lines": True,
+    "piano.brightness": 1,
 
     "effects.glare": True,
     "effects.glare_size": [150, 150],
