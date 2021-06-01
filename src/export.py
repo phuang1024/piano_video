@@ -29,6 +29,7 @@ from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
 from effects.glare import cache_glare, render_glare
 from effects.dots import cache_dots, render_dots
 from effects.stars import cache_stars, render_stars
+from effects.geosmoke import cache_geosmoke
 pygame.init()
 
 
@@ -90,6 +91,7 @@ def export(settings, cache):
         cache_glare(settings)
         cache_dots(settings)
         cache_stars(settings)
+        cache_geosmoke(settings)
         if settings["other.use_mc"]:
             cache_blocks(settings, range(length))
 

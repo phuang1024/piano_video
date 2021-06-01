@@ -18,6 +18,7 @@
 #
 
 import os
+import math
 import struct
 import random
 from constants import *
@@ -82,23 +83,32 @@ def cache_single_note(settings, path, i, note_info):
         dots = []  # List of [x, y, x_vel, y_vel, frames_lived]
         frame = 0
         while True:
+            frame += 1
             if frame <= end-start:
                 # Add more dots
-                for _ in range(int(dpf*frame-len(dots))):
+                for _ in range(math.ceil(dpf*frame-len(dots))):
                     dots.append([x_loc+random.randint(-10, 10), height//2, random.uniform(-1.5, 1.5),
                         random.uniform(-7, -5), 0])
 
             dots = [d for d in dots if d[4] <= lifetime]
-            for d in dots:
+            if len(dots) == 0:
+                break
+
+            out_of_screen = []
+            for i, d in enumerate(dots):
                 d[0] += d[2]
                 d[1] += d[3]
                 d[4] += 1
+                if not (0 <= d[0] < width and 0 <= d[1] < height):
+                    out_of_screen.append(i)
+
+            out_of_screen.sort(reverse=True)
+            for i in out_of_screen:
+                dots.pop(i)
 
             # Write dots
             file.write(struct.pack(I32, len(dots)))
             for d in dots:
                 x, y = d[:2]
-                file.write(struct.pack(I16, x))
-                file.write(struct.pack(I16, y))
-
-            frame += 1
+                file.write(struct.pack(I16, int(x)))
+                file.write(struct.pack(I16, int(y)))
