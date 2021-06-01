@@ -79,6 +79,7 @@ def cache_single_note(settings, path, i, note_info):
 
         dpf = settings["effects.geosmoke.dps"] / fps
         lifetime = settings["effects.geosmoke.lifetime"] * fps
+        thres = settings["effects.geosmoke.threshold"] ** 2
 
         dots = []  # List of [x, y, x_vel, y_vel, frames_lived]
         frame = 0
@@ -112,3 +113,19 @@ def cache_single_note(settings, path, i, note_info):
                 x, y = d[:2]
                 file.write(struct.pack(I16, int(x)))
                 file.write(struct.pack(I16, int(y)))
+
+            # Compute connections
+            conns = set()
+            for i, d in enumerate(dots):
+                x, y = d[:2]
+                for j, d2 in enumerate(dots):
+                    if j != i:
+                        cx, cy = d2[:2]
+                        dist = (x-cx)**2 + (y-cy)**2
+                        if dist <= thres:
+                            conns.add(frozenset((i, j)))
+
+            file.write(struct.pack(I32, len(conns)))
+            for c in conns:
+                for i in c:
+                    file.write(struct.pack(I16, i))
