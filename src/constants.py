@@ -77,13 +77,18 @@ DEFAULT_SETTINGS = {
     "effects.stars.lifetime": 3,
     "effects.stars.size": 8,
 
+    "effects.geosmoke": False,
+    "effects.geosmoke.dps": 3,
+    "effects.geosmoke.lifetime": 4,
+    "effects.geosmoke.threshold": 20,
+
     "text.font": "",
     "text.show_intro": False,
     "text.intro": [],
     "text.show_ending": False,
     "text.ending": [],
 
-    "other.random_seed": 1,
+    "other.random_seed": 0,
     "other.use_mc": False,
     "other.cores": multiprocessing.cpu_count(),
     "other.alert": False,
@@ -91,6 +96,10 @@ DEFAULT_SETTINGS = {
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 DEFAULT_RANDOM = 0
+
+I16 = "<H"
+I32 = "<I"
+F32 = "f"
 
 WHITE_KEYS = 52
 BLACK_KEYS = 36

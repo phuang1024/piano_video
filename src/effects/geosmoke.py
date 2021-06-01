@@ -34,7 +34,7 @@ def cache_geosmoke(settings):
 
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
         for i in range(len(notes)):
-            infofile.write(struct.pack("<I", i))
+            infofile.write(struct.pack(I32, i))
 
     logger = ProgressLogger("Caching GeoSmoke", len(notes))
     if settings["other.use_mc"]:
@@ -65,12 +65,40 @@ def cache_portion(settings, path, notes, frames):
 
 def cache_single_note(settings, path, i, note_info):
     width, height = settings["output.resolution"]
+    fps = settings["output.fps"]
     note, start, end, special = note_info
 
     with open(os.path.join(path, f"{i}.bin"), "wb") as file:
         file.write(bytes([note]))
-        file.write(struct.pack("f", start))
-        file.write(struct.pack("f", end))
+        file.write(struct.pack(F32, start))
+        file.write(struct.pack(F32, end))
 
         x_loc, key_width = key_position(settings, note)
         x_loc += key_width/2
+
+        dpf = settings["effects.geosmoke.dps"] / fps
+        lifetime = settings["effects.geosmoke.lifetime"] * fps
+
+        dots = []  # List of [x, y, x_vel, y_vel, frames_lived]
+        frame = 0
+        while True:
+            if frame <= end-start:
+                # Add more dots
+                for _ in range(int(dpf*frame-len(dots))):
+                    dots.append([x_loc+random.randint(-10, 10), height//2, random.uniform(-1.5, 1.5),
+                        random.uniform(-7, -5), 0])
+
+            dots = [d for d in dots if d[4] <= lifetime]
+            for d in dots:
+                d[0] += d[2]
+                d[1] += d[3]
+                d[4] += 1
+
+            # Write dots
+            file.write(struct.pack(I32, len(dots)))
+            for d in dots:
+                x, y = d[:2]
+                file.write(struct.pack(I16, x))
+                file.write(struct.pack(I16, y))
+
+            frame += 1
