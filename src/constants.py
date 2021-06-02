@@ -82,6 +82,11 @@ DEFAULT_SETTINGS = {
     "effects.geosmoke.lifetime": 4,
     "effects.geosmoke.threshold": 45,
 
+    "effects.smoke": False,
+    "effects.smoke.dps": 100,
+    "effects.smoke.density": 1,
+    "effects.smoke.lifetime": 3.5,
+
     "text.font": "",
     "text.show_intro": False,
     "text.intro": [],
