@@ -55,7 +55,7 @@ def render_octave_lines(settings, surface):
         width, height = settings["output.resolution"]
         note = 3
         while note < 88:
-            x = int(key_position(settings, note)[0] + settings["blocks.x_offset"])
+            x = int(key_position(settings, note)[0])
             pygame.draw.line(surface, (20, 20, 20), (x-1, 0), (x-1, height/2))
             pygame.draw.line(surface, (75, 75, 75), (x, 0), (x, height/2))
             pygame.draw.line(surface, (20, 20, 20), (x+1, 0), (x+1, height/2))

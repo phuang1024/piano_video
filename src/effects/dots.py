@@ -192,7 +192,7 @@ def render_dots(settings, surface, frame):
                             if first_frame is None:
                                 first_frame = curr_frame
 
-                            x = struct.unpack("<H", file.read(2))[0] + settings["blocks.x_offset"]
+                            x = struct.unpack("<H", file.read(2))[0]
                             y = struct.unpack("<H", file.read(2))[0]
                             if curr_frame == frame:
                                 value = (first_frame+lifetime-curr_frame) / lifetime * 255

@@ -140,7 +140,7 @@ def render_top(settings, surface, frame):
         for note, start, end, special in settings["blocks.notes"]:
             if start <= frame <= end:
                 x_loc, key_width = key_position(settings, note)
-                x = int(x_loc + key_width/2 + settings["blocks.x_offset"])
+                x = int(x_loc + key_width/2)
                 for i in range(LB_LIGHT_WIDTH):
                     curr_int = (LB_LIGHT_WIDTH-i) / LB_LIGHT_WIDTH
                     if 0 <= x+i < width:

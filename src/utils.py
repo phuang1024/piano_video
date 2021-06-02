@@ -151,6 +151,7 @@ def key_position(settings, key):
     num_white_before = [is_white_key(k) for k in range(key)].count(True)
 
     loc = num_white_before * white_width
+    loc += settings["blocks.x_offset"]
     is_white = is_white_key(key)
     if not is_white:
         loc -= white_width * settings["blocks.black_width_fac"] / 1.75

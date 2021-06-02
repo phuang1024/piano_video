@@ -244,7 +244,6 @@ def draw_all_blocks(settings, frame):
 
         if not (start_y < 0 or end_y > height):   # Don't draw block if out of bounds
             x, curr_width = key_position(settings, note)
-            x += settings["blocks.x_offset"]
             rect = (x, end_y, curr_width, start_y-end_y)
 
             if settings["blocks.style"] == "PREVIEW":
