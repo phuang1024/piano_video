@@ -29,7 +29,7 @@ from piano import LB_HEIGHT, VideoReader, render_frame as crop_piano, render_top
 from effects.glare import cache_glare, render_glare
 from effects.dots import cache_dots, render_dots
 from effects.stars import cache_stars, render_stars
-from effects.geosmoke import cache_geosmoke
+from effects.geosmoke import cache_geosmoke, render_geosmoke
 pygame.init()
 
 
@@ -64,9 +64,10 @@ def render(settings, piano_video, frame):
     width, height = settings["output.resolution"]
     surface = pygame.Surface(settings["output.resolution"])
 
+    render_blocks(settings, surface, frame)
     render_dots(settings, surface, frame)
     # render_stars(settings, surface, frame)
-    render_blocks(settings, surface, frame)
+    render_geosmoke(settings, surface, frame)
     pygame.draw.rect(surface, (0, 0, 0), (0, height/2, width, height))
     render_octave_lines(settings, surface)
     render_piano(settings, surface, piano_video, frame)

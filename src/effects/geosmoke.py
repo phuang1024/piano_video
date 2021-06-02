@@ -88,8 +88,8 @@ def cache_single_note(settings, path, i, note_info):
             if frame <= end-start:
                 # Add more dots
                 for _ in range(math.ceil(dpf*frame-len(dots))):
-                    dots.append([x_loc+random.randint(-10, 10), height//2, random.uniform(-1.5, 1.5),
-                        random.uniform(-7, -5), 0])
+                    dots.append([x_loc+random.randint(-10, 10), height//2, random.uniform(-0.4, 0.4),
+                        random.uniform(-3, -1.5), 0])
 
             dots = [d for d in dots if d[4] <= lifetime]
             if len(dots) == 0:
@@ -106,6 +106,8 @@ def cache_single_note(settings, path, i, note_info):
             out_of_screen.sort(reverse=True)
             for i in out_of_screen:
                 dots.pop(i)
+
+            file.write(struct.pack(I32, int(frame+start)))
 
             # Write dots
             file.write(struct.pack(I32, len(dots)))
@@ -129,3 +131,61 @@ def cache_single_note(settings, path, i, note_info):
             for c in conns:
                 for i in c:
                     file.write(struct.pack(I16, i))
+
+
+def render_geosmoke(settings, surface, frame):
+    if not settings["effects.geosmoke"]:
+        return
+
+    cache_path = os.path.join(settings["files.cache"], "geosmoke")
+    with open(os.path.join(cache_path, "info.bin"), "rb") as infofile:
+        while True:
+            num = infofile.read(4)
+            if len(num) < 4:
+                break
+
+            num = struct.unpack(I32, num)[0]
+            path = os.path.join(cache_path, f"{num}.bin")
+            with open(path, "rb") as file:
+                file.read(1)   # Read not needed data
+                start = struct.unpack("f", file.read(4))[0]
+                end = struct.unpack("f", file.read(4))[0]
+                if frame < start:
+                    continue
+
+                while True:
+                    d = file.read(4)
+                    if len(d) < 4:
+                        break
+                    f = struct.unpack(I32, d)[0]
+
+                    if f >= frame:
+                        num_dots = struct.unpack(I32, file.read(4))[0]
+                        locs = []
+                        for _ in range(num_dots):
+                            x = struct.unpack(I16, file.read(2))[0]
+                            y = struct.unpack(I16, file.read(2))[0]
+                            locs.append((x, y))
+
+                            surface.set_at((x, y), (255, 255, 255))
+                            for i in (-1, 1):
+                                surface.set_at((x, y+i), (140, 140, 140))
+                                surface.set_at((x+i, y), (140, 140, 140))
+                            for i in (-1, 1):
+                                for j in (-1, 1):
+                                    surface.set_at((x+i, y+j), (90, 90, 90))
+
+                        num_conns = struct.unpack(I32, file.read(4))[0]
+                        for _ in range(num_conns):
+                            i = struct.unpack(I16, file.read(2))[0]
+                            j = struct.unpack(I16, file.read(2))[0]
+                            pygame.draw.line(surface, (64, 64, 64), locs[i], locs[j], 2)
+                            pygame.draw.line(surface, (128, 128, 128), locs[i], locs[j])
+
+                        break
+
+                    # Read not needed data
+                    num_dots = struct.unpack(I32, file.read(4))[0]
+                    file.read(4*num_dots)
+                    num_conns = struct.unpack(I32, file.read(4))[0]
+                    file.read(4*num_conns)

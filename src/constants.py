@@ -80,7 +80,7 @@ DEFAULT_SETTINGS = {
     "effects.geosmoke": False,
     "effects.geosmoke.dps": 3,
     "effects.geosmoke.lifetime": 4,
-    "effects.geosmoke.threshold": 20,
+    "effects.geosmoke.threshold": 45,
 
     "text.font": "",
     "text.show_intro": False,
