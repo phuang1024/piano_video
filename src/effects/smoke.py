@@ -78,6 +78,7 @@ def cache_single_note(settings, path, i, note_info):
         x_loc += key_width/2
 
         dpf = settings["effects.smoke.dps"] / fps
+        density = settings["effects.smoke.density"]
         lifetime = settings["effects.smoke.lifetime"] * fps
 
         dots = []  # List of [x, y, x_vel, y_vel, frames_lived]
@@ -103,10 +104,10 @@ def cache_single_note(settings, path, i, note_info):
                 d[0] += d[2]
                 d[1] += d[3]
                 d[4] += 1
-                x_min = min(x_min, d[0])
-                x_max = max(x_max, d[0])
-                y_min = min(y_min, d[1])
-                y_max = max(y_max, d[1])
+                x_min = int(min(x_min, d[0]))
+                x_max = int(max(x_max, d[0]))
+                y_min = int(min(y_min, d[1]))
+                y_max = int(max(y_max, d[1]))
                 if not (0 <= d[0] < width and 0 <= d[1] < height):
                     out_of_screen.append(i)
 
@@ -115,8 +116,26 @@ def cache_single_note(settings, path, i, note_info):
                 dots.pop(i)
 
             file.write(struct.pack(I32, int(frame+start)))
+            file.write(struct.pack(I16, x_min))
+            file.write(struct.pack(I16, x_max))
+            file.write(struct.pack(I16, y_min))
+            file.write(struct.pack(I16, y_max))
 
             # Write
+            for x in range(x_min, x_max+1):
+                for y in range(y_min, y_max+1):
+                    file.write(struct.pack(I16, x))
+                    file.write(struct.pack(I16, y))
+
+                    count = 0
+                    for d in dots:
+                        cx, cy = d[:2]
+                        dist = (cx-x)**2 + (cy-y)**2
+                        if dist < 2:
+                            count += 1
+
+                    color = int(min(density*count, 255))
+                    file.write(bytes([color]))
 
 
 def render_smoke(settings, surface, frame):

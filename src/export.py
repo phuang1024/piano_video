@@ -30,6 +30,7 @@ from effects.glare import cache_glare, render_glare
 from effects.dots import cache_dots, render_dots
 from effects.stars import cache_stars, render_stars
 from effects.geosmoke import cache_geosmoke, render_geosmoke
+from effects.smoke import cache_smoke, render_smoke
 pygame.init()
 
 
@@ -64,6 +65,7 @@ def render(settings, piano_video, frame):
     width, height = settings["output.resolution"]
     surface = pygame.Surface(settings["output.resolution"])
 
+    render_smoke(settings, surface, frame)
     render_blocks(settings, surface, frame)
     render_dots(settings, surface, frame)
     # render_stars(settings, surface, frame)
@@ -93,6 +95,7 @@ def export(settings, cache):
         cache_dots(settings)
         cache_stars(settings)
         cache_geosmoke(settings)
+        cache_smoke(settings)
         if settings["other.use_mc"]:
             cache_blocks(settings, range(length))
 
