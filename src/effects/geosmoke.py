@@ -179,8 +179,8 @@ def render_geosmoke(settings, surface, frame):
                         for _ in range(num_conns):
                             i = struct.unpack(I16, file.read(2))[0]
                             j = struct.unpack(I16, file.read(2))[0]
-                            pygame.draw.line(surface, (64, 64, 64), locs[i], locs[j], 2)
-                            pygame.draw.line(surface, (128, 128, 128), locs[i], locs[j])
+                            pygame.draw.line(surface, (48, 48, 48), locs[i], locs[j], 2)
+                            pygame.draw.line(surface, (92, 92, 92), locs[i], locs[j])
 
                         break
 
