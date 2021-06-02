@@ -34,7 +34,7 @@ def cache_smoke(settings):
     os.makedirs(path, exist_ok=True)
 
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
-        for i in range(len(notes)):
+        for i in range(len(notes[:1])):
             infofile.write(struct.pack(I32, i))
 
     logger = ProgressLogger("Caching smoke", len(notes))
@@ -53,7 +53,7 @@ def cache_smoke(settings):
             logger.log()
 
     else:
-        for i, note in enumerate(notes):
+        for i, note in enumerate(notes[:1]):
             logger.update(i)
             logger.log()
             cache_single_note(settings, path, i, note)
@@ -124,14 +124,11 @@ def cache_single_note(settings, path, i, note_info):
             # Write
             for x in range(x_min, x_max+1):
                 for y in range(y_min, y_max+1):
-                    file.write(struct.pack(I16, x))
-                    file.write(struct.pack(I16, y))
-
                     count = 0
                     for d in dots:
                         cx, cy = d[:2]
                         dist = (cx-x)**2 + (cy-y)**2
-                        if dist < 2:
+                        if dist <= 3:
                             count += 1
 
                     color = int(min(density*count, 255))
@@ -163,11 +160,18 @@ def render_smoke(settings, surface, frame):
                     if len(d) < 4:
                         break
                     f = struct.unpack(I32, d)[0]
+                    x_min = struct.unpack(I16, file.read(2))[0]
+                    x_max = struct.unpack(I16, file.read(2))[0]
+                    y_min = struct.unpack(I16, file.read(2))[0]
+                    y_max = struct.unpack(I16, file.read(2))[0]
 
                     if f >= frame:
-                        # TODO
+                        for x in range(x_min, x_max+1):
+                            for y in range(y_min, y_max+1):
+                                color = file.read(1)[0]
+                                surface.set_at((x, y), (color,)*3)
 
                         break
 
                     # Read not needed data
-                    # TODO
+                    file.read((x_max-x_min+1) * (y_max-y_min+1))
