@@ -34,7 +34,7 @@ def cache_smoke(settings):
     os.makedirs(path, exist_ok=True)
 
     with open(os.path.join(path, "info.bin"), "wb") as infofile:
-        for i in range(len(notes[:1])):
+        for i in range(len(notes)):
             infofile.write(struct.pack(I32, i))
 
     logger = ProgressLogger("Caching smoke", len(notes))
@@ -53,7 +53,7 @@ def cache_smoke(settings):
             logger.log()
 
     else:
-        for i, note in enumerate(notes[:1]):
+        for i, note in enumerate(notes):
             logger.update(i)
             logger.log()
             cache_single_note(settings, path, i, note)
@@ -92,8 +92,8 @@ def cache_single_note(settings, path, i, note_info):
             if frame <= end-start:
                 # Add more dots
                 for _ in range(math.ceil(dpf*frame-len(dots))):
-                    dots.append([x_loc+random.randint(-10, 10), height//2, random.uniform(-0.4, 0.4),
-                        random.uniform(-3, -1.5), 0])
+                    dots.append([x_loc+random.randint(-10, 10), height//2, random.uniform(-0.3, 0.3),
+                        random.uniform(-2, -1), 0])
 
             dots = [d for d in dots if d[4] <= lifetime]
             if len(dots) == 0:
