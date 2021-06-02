@@ -20,7 +20,7 @@
 import os
 import multiprocessing
 
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 # Using lists to keep consistent with json data
 DEFAULT_SETTINGS = {
