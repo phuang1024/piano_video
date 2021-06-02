@@ -19,8 +19,30 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::string;
+
+typedef  unsigned char  UCH;
+typedef  unsigned int   UINT;
 
 
-int main() {
-    std::cout << "hi" << std::endl;
+/*
+Pass arguments through stdin
+$ ./smoke.out
+cache_dir
+pathsep
+width height fps
+*/
+
+
+int main(const int argc, const char** argv) {
+    string cache_dir, pathsep;
+    UINT width, height, fps;
+    getline(cin, cache_dir);
+    getline(cin, pathsep);
+    cin >> width >> height >> fps;
 }
