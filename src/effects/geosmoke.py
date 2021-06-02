@@ -167,6 +167,14 @@ def render_geosmoke(settings, surface, frame):
                             y = struct.unpack(I16, file.read(2))[0]
                             locs.append((x, y))
 
+                        num_conns = struct.unpack(I32, file.read(4))[0]
+                        for _ in range(num_conns):
+                            i = struct.unpack(I16, file.read(2))[0]
+                            j = struct.unpack(I16, file.read(2))[0]
+                            pygame.draw.line(surface, (48, 48, 48), locs[i], locs[j], 2)
+                            pygame.draw.line(surface, (92, 92, 92), locs[i], locs[j])
+
+                        for x, y in locs:
                             surface.set_at((x, y), (255, 255, 255))
                             for i in (-1, 1):
                                 surface.set_at((x, y+i), (140, 140, 140))
@@ -174,13 +182,6 @@ def render_geosmoke(settings, surface, frame):
                             for i in (-1, 1):
                                 for j in (-1, 1):
                                     surface.set_at((x+i, y+j), (90, 90, 90))
-
-                        num_conns = struct.unpack(I32, file.read(4))[0]
-                        for _ in range(num_conns):
-                            i = struct.unpack(I16, file.read(2))[0]
-                            j = struct.unpack(I16, file.read(2))[0]
-                            pygame.draw.line(surface, (48, 48, 48), locs[i], locs[j], 2)
-                            pygame.draw.line(surface, (92, 92, 92), locs[i], locs[j])
 
                         break
 
