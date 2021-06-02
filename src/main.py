@@ -38,7 +38,7 @@ def main():
     parser.add_argument("-m", "--mode", help="mode of usage", type=str, required=False)
     parser.add_argument("-f", "--frame", help="frame to use in modes where applicable", type=int, required=False)
     parser.add_argument("--no-copy", help="don't backup copy output video", action="store_true")
-    parser.add_argument("--cache-path", help="set the cache path (default \"piano_video_cache\")", type=str, required=False)
+    parser.add_argument("--cache-path", help="set the cache path (default \".pvcache\")", type=str, required=False)
     parser.add_argument("--no-cache", help="don't re-cache", action="store_true")
     parser.add_argument("--random", help="manually set random seed (string)", type=str, required=False)
     args = parser.parse_args()
@@ -60,7 +60,7 @@ def main():
 
     output = os.path.realpath(args.output) if args.output is not None else ""
     settings["files.output"] = output
-    settings["files.cache"] = os.path.realpath("piano_video_cache") if args.cache_path is None else os.path.realpath(args.cache_path)
+    settings["files.cache"] = os.path.realpath(".pvcache") if args.cache_path is None else os.path.realpath(args.cache_path)
     settings["other.frame"] = args.frame if args.frame is not None else 0
     settings["other.random"] = DEFAULT_RANDOM if args.random is None else args.random
     if settings["blocks.style"] in ("VERTICAL_GRADIENT", "HORIZONTAL_GRADIENT"):

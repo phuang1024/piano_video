@@ -27,7 +27,7 @@ DEFAULT_SETTINGS = {
     "files.midis": [],
     "files.video": "",
     "files.output": "",                   # Set internally
-    "files.cache": "piano_video_cache",   # Set internally
+    "files.cache": ".pvcache",            # Set internally
 
     "output.resolution": [1920, 1080],
     "output.fps": 30,
