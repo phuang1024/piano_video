@@ -22,7 +22,7 @@ import subprocess
 from constants import *
 
 PATHS = [
-    "effects/glare"
+    "effects/smoke"
 ]
 
 
