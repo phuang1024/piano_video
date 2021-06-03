@@ -31,18 +31,37 @@ typedef  unsigned int   UINT;
 
 
 /*
-Pass arguments through stdin
+Pass arguments through stdin.
+Don't pass any extra blank lines when using.
+They are added here for formatting.
+
 $ ./smoke.out
 cache_dir
 pathsep
+
 width height fps
+
+num_notes
+note1_x note1_width note1_start_frame note1_end_frame
+...
+
 */
 
 
 int main(const int argc, const char** argv) {
     string cache_dir, pathsep;
-    UINT width, height, fps;
+    UINT width, height, fps, num_notes;
+
     getline(cin, cache_dir);
     getline(cin, pathsep);
-    cin >> width >> height >> fps;
+    cin >> width >> height >> fps >> num_notes;
+
+    UINT** notes = new UINT*[4];
+    for (UINT i = 0; i < num_notes; i++)
+        notes[i] = new UINT[4];
+
+    for (UINT i = 0; i < num_notes; i++) {
+        delete[] notes[i];
+    }
+    delete[] notes;
 }
