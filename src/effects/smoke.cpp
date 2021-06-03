@@ -42,10 +42,15 @@ pathsep
 width height fps
 
 num_notes
-note1_x note1_width note1_start_frame note1_end_frame
+note1_num note1_x note1_width note1_start_frame note1_end_frame
 ...
 
 */
+
+
+void cache_note(const UINT i, const UINT x_loc, const UINT width, const UINT start, const UINT end) {
+    std::ofstream file;
+}
 
 
 int main(const int argc, const char** argv) {
@@ -56,15 +61,16 @@ int main(const int argc, const char** argv) {
     getline(cin, pathsep);
     cin >> width >> height >> fps >> num_notes;
 
-    UINT** notes = new UINT*[4];
+    UINT** notes = new UINT*[5];
     for (UINT i = 0; i < num_notes; i++) {
-        notes[i] = new UINT[4];
-        UINT x, width, start, end;
-        cin >> x >> width >> start >> end;
-        notes[i][0] = x;
-        notes[i][1] = width;
-        notes[i][2] = start;
-        notes[i][3] = end;
+        notes[i] = new UINT[5];
+        UINT n, x, width, start, end;
+        cin >> n >> x >> width >> start >> end;
+        notes[i][0] = n;
+        notes[i][1] = x;
+        notes[i][2] = width;
+        notes[i][3] = start;
+        notes[i][4] = end;
     }
 
     for (UINT i = 0; i < num_notes; i++) {
