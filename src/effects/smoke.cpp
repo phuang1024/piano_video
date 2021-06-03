@@ -57,8 +57,15 @@ int main(const int argc, const char** argv) {
     cin >> width >> height >> fps >> num_notes;
 
     UINT** notes = new UINT*[4];
-    for (UINT i = 0; i < num_notes; i++)
+    for (UINT i = 0; i < num_notes; i++) {
         notes[i] = new UINT[4];
+        UINT x, width, start, end;
+        cin >> x >> width >> start >> end;
+        notes[i][0] = x;
+        notes[i][1] = width;
+        notes[i][2] = start;
+        notes[i][3] = end;
+    }
 
     for (UINT i = 0; i < num_notes; i++) {
         delete[] notes[i];
