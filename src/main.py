@@ -31,6 +31,9 @@ def main():
     pygame.display.set_caption(f"Piano Video {VERSION}")
     pygame.display.set_icon(IMAGES["icon"])
 
+    width, height = WIDTH, HEIGHT
+    resized = True
+
     while True:
         clock.tick(FPS)
         pygame.display.update()
@@ -39,6 +42,11 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
+
+            elif event.type == pygame.VIDEORESIZE:
+                surface.fill(BLACK)
+                width, height = event.w, event.h
+                resized = True
 
 
 main()

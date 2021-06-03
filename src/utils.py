@@ -31,3 +31,5 @@ FPS = 60
 IMAGES = {
     "icon": pygame.image.load(os.path.join(PARENT, "assets", "icon.jpg")),
 }
+
+BLACK = (0, 0, 0)
