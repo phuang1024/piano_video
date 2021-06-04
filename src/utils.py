@@ -25,6 +25,12 @@ pygame.init()
 VERSION = "0.1.0"
 PARENT = os.path.dirname(os.path.realpath(__file__))
 
+# Useful values
+I32 = "<i"
+I64 = "<q"
+F32 = "f"
+F64 = "d"
+
 # GUI
 WIDTH, HEIGHT = 1280, 720
 FPS = 60
