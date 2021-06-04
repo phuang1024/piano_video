@@ -29,8 +29,6 @@ class PropertyGroup:
     props: List[Property]
 
     def dump(self, stream: io.BytesIO) -> None:
-        stream.write(struct.pack(UI32, len(self.idname)))
-        stream.write(self.idname.encode())
         stream.write(struct.pack(UI32, len(self.props)))
         for prop in self.props:
             prop.dump(stream)
@@ -47,3 +45,7 @@ class PropertyGroup:
                             f"Expected {prop.type_id}, got {type_id} from stream.")
                     prop.load(stream)
                     break
+
+
+class Scene:
+    pass
