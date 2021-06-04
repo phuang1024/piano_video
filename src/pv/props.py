@@ -156,7 +156,7 @@ class EnumProp(Property):
 
     default: str
     value: str
-    items: List[List[str, str, str]]
+    items: List[List[str]]
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
             default: str = None, value: str = None, items: List = []) -> None:
