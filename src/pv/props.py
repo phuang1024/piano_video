@@ -20,7 +20,7 @@
 import io
 import struct
 from typing import List, Literal
-from .utils import *
+from .utils import UI32, I64, F64
 
 
 class Property:
@@ -39,10 +39,6 @@ class Property:
         stream.write(bytes([self.type_id]))
         stream.write(struct.pack(UI32, len(self.idname)))
         stream.write(self.idname.encode())
-
-    def check_type_id(self, stream: io.BytesIO) -> None:
-        if not stream.read(1)[0] == self.type_id:
-            raise ValueError(f"Type ID for BoolProp must be {self.type_id}")
 
     def dump(self, stream: io.BytesIO) -> None:...
 
@@ -66,7 +62,6 @@ class BoolProp(Property):
         stream.write(bytes([self.value]))
 
     def load(self, stream: io.BytesIO) -> None:
-        self.check_type_id(stream)
         self.value = (stream.read(1) == b"\x01")
 
 
@@ -95,7 +90,6 @@ class IntProp(Property):
         stream.write(struct.pack(I64, self.value))
 
     def load(self, stream: io.BytesIO) -> None:
-        self.check_type_id(stream)
         self.value = struct.unpack(I64, stream.read(8))[0]
 
 
@@ -124,7 +118,6 @@ class FloatProp(Property):
         stream.write(struct.pack(F64, self.value))
 
     def load(self, stream: io.BytesIO) -> None:
-        self.check_type_id(stream)
         self.value = struct.unpack(F64, stream.read(8))[0]
 
 
@@ -154,7 +147,6 @@ class StringProp(Property):
         stream.write(self.value.encode())
 
     def load(self, stream: io.BytesIO) -> None:
-        self.check_type_id(stream)
         length = struct.unpack(UI32, stream.read(4))[0]
         self.value = stream.read(length).decode()
 
@@ -180,6 +172,5 @@ class EnumProp(Property):
         stream.write(self.value.encode())
 
     def load(self, stream: io.BytesIO) -> None:
-        self.check_type_id(stream)
         length = struct.unpack(UI32, stream.read(4))[0]
         self.value = stream.read(length).decode()

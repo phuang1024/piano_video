@@ -17,9 +17,33 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import io
+import struct
 from typing import List
+from .utils import UI32
 from .props import Property
 
 
 class PropertyGroup:
+    idname: str
     props: List[Property]
+
+    def dump(self, stream: io.BytesIO) -> None:
+        stream.write(struct.pack(UI32, len(self.idname)))
+        stream.write(self.idname.encode())
+        stream.write(struct.pack(UI32, len(self.props)))
+        for prop in self.props:
+            prop.dump(stream)
+
+    def load(self, stream: io.BytesIO) -> None:
+        num_props = struct.unpack(UI32, stream.read(4))[0]
+        for _ in range(num_props):
+            type_id = stream.read(1)[0]
+            idname = stream.read(struct.unpack(UI32, stream.read(4))[0]).decode()
+            for prop in self.props:
+                if prop.idname == idname:
+                    if prop.type_id != type_id:
+                        raise ValueError(f"Incorrect type ID on {self.idname}.{idname}:" + \
+                            f"Expected {prop.type_id}, got {type_id} from stream.")
+                    prop.load(stream)
+                    break
