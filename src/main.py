@@ -17,7 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 import os
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
 import pygame
