@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+UI32 = "<I"
 I32 = "<i"
 I64 = "<q"
 F32 = "f"

@@ -101,7 +101,7 @@ class FloatProp(Property):
     step: float
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: float = False, value: float = None, min: float = None, max: float = None,
+            default: float = 0, value: float = None, min: float = None, max: float = None,
             step: float = 0.001) -> None:
         super().__init__(idname, label, description)
         self.default = default
@@ -117,3 +117,33 @@ class FloatProp(Property):
     def load(self, stream: io.BytesIO) -> None:
         self.check_type_id(stream)
         self.value = struct.unpack(F64, stream.read(8))[0]
+
+
+class StringProp(Property):
+    type_id: Literal[3] = 3
+
+    default: str
+    value: str
+    max_len: int
+    password: bool
+    subtype: str
+
+    def __init__(self, idname: str = "", label: str = "", description: str = "",
+            default: str = "", value: str = None, max_len: int = 200,
+            password: bool = False, subtype: str = "") -> None:
+        super().__init__(idname, label, description)
+        self.default = default
+        self.value = default if value is None else value
+        self.max_len = max_len
+        self.password = password
+        self.subtype = subtype
+
+    def dump(self, stream: io.BytesIO) -> None:
+        stream.write(bytes([self.type_id]))
+        stream.write(struct.pack(UI32, len(self.value)))
+        stream.write(self.value.encode())
+
+    def load(self, stream: io.BytesIO) -> None:
+        self.check_type_id(stream)
+        length = struct.unpack(UI32, stream.read(4))[0]
+        self.value = stream.read(length).decode()
