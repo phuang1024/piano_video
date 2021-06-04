@@ -19,7 +19,7 @@
 
 import io
 import struct
-from typing import Literal
+from typing import List, Literal
 from .utils import *
 
 
@@ -137,6 +137,31 @@ class StringProp(Property):
         self.max_len = max_len
         self.password = password
         self.subtype = subtype
+
+    def dump(self, stream: io.BytesIO) -> None:
+        stream.write(bytes([self.type_id]))
+        stream.write(struct.pack(UI32, len(self.value)))
+        stream.write(self.value.encode())
+
+    def load(self, stream: io.BytesIO) -> None:
+        self.check_type_id(stream)
+        length = struct.unpack(UI32, stream.read(4))[0]
+        self.value = stream.read(length).decode()
+
+
+class EnumProp(Property):
+    type_id: Literal[4] = 4
+
+    default: str
+    value: str
+    items: List[List[str, str, str]]
+
+    def __init__(self, idname: str = "", label: str = "", description: str = "",
+            default: str = None, value: str = None, items: List = []) -> None:
+        super().__init__(idname, label, description)
+        self.default = items[0] if default is None else default
+        self.value = self.default if value is None else value
+        self.items = items
 
     def dump(self, stream: io.BytesIO) -> None:
         stream.write(bytes([self.type_id]))
