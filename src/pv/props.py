@@ -172,7 +172,3 @@ class EnumProp(Property):
         self.check_type_id(stream)
         length = struct.unpack(UI32, stream.read(4))[0]
         self.value = stream.read(length).decode()
-
-
-class PropertyGroup:
-    props: List[Property]

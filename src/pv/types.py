@@ -17,6 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import props
-from . import types
-from . import utils
+from typing import List
+from .props import Property
+
+
+class PropertyGroup:
+    props: List[Property]
