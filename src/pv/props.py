@@ -35,8 +35,14 @@ class Property:
         self.label = label
         self.description = description
 
+    def dump_header(self, stream: io.BytesIO) -> None:
+        stream.write(bytes([self.type_id]))
+        stream.write(struct.pack(UI32, len(self.idname)))
+        stream.write(self.idname.encode())
+
     def check_type_id(self, stream: io.BytesIO) -> None:
-        assert stream.read(1)[0] == self.type_id, f"Type ID for BoolProp must be {self.type_id}"
+        if not stream.read(1)[0] == self.type_id:
+            raise ValueError(f"Type ID for BoolProp must be {self.type_id}")
 
     def dump(self, stream: io.BytesIO) -> None:...
 
@@ -56,7 +62,8 @@ class BoolProp(Property):
         self.value = default if value is None else value
 
     def dump(self, stream: io.BytesIO) -> None:
-        stream.write(bytes([self.type_id, self.value]))
+        self.dump_header(stream)
+        stream.write(bytes([self.value]))
 
     def load(self, stream: io.BytesIO) -> None:
         self.check_type_id(stream)
@@ -83,6 +90,7 @@ class IntProp(Property):
         self.step = step
 
     def dump(self, stream: io.BytesIO) -> None:
+        self.dump_header(stream)
         stream.write(bytes([self.type_id]))
         stream.write(struct.pack(I64, self.value))
 
@@ -111,6 +119,7 @@ class FloatProp(Property):
         self.step = step
 
     def dump(self, stream: io.BytesIO) -> None:
+        self.dump_header(stream)
         stream.write(bytes([self.type_id]))
         stream.write(struct.pack(F64, self.value))
 
@@ -139,6 +148,7 @@ class StringProp(Property):
         self.subtype = subtype
 
     def dump(self, stream: io.BytesIO) -> None:
+        self.dump_header(stream)
         stream.write(bytes([self.type_id]))
         stream.write(struct.pack(UI32, len(self.value)))
         stream.write(self.value.encode())
@@ -164,6 +174,7 @@ class EnumProp(Property):
         self.items = items
 
     def dump(self, stream: io.BytesIO) -> None:
+        self.dump_header(stream)
         stream.write(bytes([self.type_id]))
         stream.write(struct.pack(UI32, len(self.value)))
         stream.write(self.value.encode())
