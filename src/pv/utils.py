@@ -17,5 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import props
-from . import utils
+I32 = "<i"
+I64 = "<q"
+F32 = "f"
+F64 = "d"

@@ -18,7 +18,9 @@
 #
 
 import io
+import struct
 from typing import Literal
+from .utils import *
 
 
 class Property:
@@ -33,19 +35,22 @@ class Property:
         self.label = label
         self.description = description
 
+    def check_type_id(self, stream: io.BytesIO) -> None:
+        assert stream.read(1)[0] == self.type_id, f"Type ID for BoolProp must be {self.type_id}"
+
     def dump(self, stream: io.BytesIO) -> None:...
 
     def load(self, stream: io.BytesIO) -> None:...
 
 
 class BoolProp(Property):
-    type_id: Literal[0] = 0
+    type_id: Literal[1] = 1
 
     default: bool
     value: bool
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: bool = False, value: bool = False) -> None:
+            default: bool = False, value: bool = None) -> None:
         super().__init__(idname, label, description)
         self.default = default
         self.value = default if value is None else value
@@ -54,5 +59,61 @@ class BoolProp(Property):
         stream.write(bytes([self.type_id, self.value]))
 
     def load(self, stream: io.BytesIO) -> None:
-        assert stream.read(1)[0] == self.type_id, f"Type ID for BoolProp must be {self.type_id}"
+        self.check_type_id(stream)
         self.value = (stream.read(1) == b"\x01")
+
+
+class IntProp(Property):
+    type_id: Literal[2] = 2
+
+    default: int
+    value: int
+    min: int
+    max: int
+    step: int
+
+    def __init__(self, idname: str = "", label: str = "", description: str = "",
+            default: int = False, value: int = None, min: int = None, max: int = None,
+            step: int = 1) -> None:
+        super().__init__(idname, label, description)
+        self.default = default
+        self.value = default if value is None else value
+        self.max = max
+        self.min = min
+        self.step = step
+
+    def dump(self, stream: io.BytesIO) -> None:
+        stream.write(bytes([self.type_id]))
+        stream.write(struct.pack(I64, self.value))
+
+    def load(self, stream: io.BytesIO) -> None:
+        self.check_type_id(stream)
+        self.value = struct.unpack(I64, stream.read(8))[0]
+
+
+class FloatProp(Property):
+    type_id: Literal[2] = 2
+
+    default: float
+    value: float
+    min: float
+    max: float
+    step: float
+
+    def __init__(self, idname: str = "", label: str = "", description: str = "",
+            default: float = False, value: float = None, min: float = None, max: float = None,
+            step: float = 0.001) -> None:
+        super().__init__(idname, label, description)
+        self.default = default
+        self.value = default if value is None else value
+        self.max = max
+        self.min = min
+        self.step = step
+
+    def dump(self, stream: io.BytesIO) -> None:
+        stream.write(bytes([self.type_id]))
+        stream.write(struct.pack(F64, self.value))
+
+    def load(self, stream: io.BytesIO) -> None:
+        self.check_type_id(stream)
+        self.value = struct.unpack(F64, stream.read(8))[0]
