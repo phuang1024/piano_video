@@ -73,7 +73,7 @@ class IntProp(Property):
     step: int
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: int = False, value: int = None, min: int = None, max: int = None,
+            default: int = False, value: int = None, min: int = -1000000, max: int = 1000000,
             step: int = 1) -> None:
         super().__init__(idname, label, description)
         self.default = default
@@ -101,7 +101,7 @@ class FloatProp(Property):
     step: float
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: float = 0, value: float = None, min: float = None, max: float = None,
+            default: float = 0, value: float = None, min: float = 1000000, max: float = 1000000,
             step: float = 0.001) -> None:
         super().__init__(idname, label, description)
         self.default = default
