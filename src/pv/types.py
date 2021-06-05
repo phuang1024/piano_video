@@ -66,29 +66,6 @@ class PropertyGroup:
                     break
 
 
-class Scene:
-    pgroups: List[PropertyGroup]
-
-    def __init__(self) -> None:
-        self.pgroups = []
-
-    def __getattr__(self, attr: str) -> PropertyGroup:
-        if hasattr(self, attr):
-            return getattr(self, attr)
-
-        for group in self.pgroups:
-            if group.idname == attr:
-                return group
-        raise ValueError(f"Scene has no PropertyGroup {attr}")
-
-
-class Context:
-    scene: Scene
-
-    def __init__(self) -> None:
-        self.scene = Scene()
-
-
 class UILayout:
     """
     A layout class, which can be drawn on to show props, operators, etc.
@@ -126,7 +103,7 @@ class UIPanel:
     def __init__(self) -> None:
         self.layout = UILayout()
 
-    def draw(self, context: Context) -> None:...
+    def draw(self) -> None:...
 
 
 class UISection:
@@ -136,3 +113,30 @@ class UISection:
     icon: str
 
     panels: List[UIPanel]
+
+
+class Scene:
+    pgroups: List[PropertyGroup]
+
+    def __init__(self) -> None:
+        self.pgroups = []
+
+    def __getattr__(self, attr: str) -> PropertyGroup:
+        if hasattr(self, attr):
+            return getattr(self, attr)
+
+        for group in self.pgroups:
+            if group.idname == attr:
+                return group
+        raise ValueError(f"Scene has no PropertyGroup {attr}")
+
+
+class Context:
+    scene: Scene
+    ui_sections: List[UISection]
+    ui_panels: List[UIPanel]
+
+    def __init__(self) -> None:
+        self.scene = Scene()
+        self.ui_sections = []
+        self.ui_panels = []
