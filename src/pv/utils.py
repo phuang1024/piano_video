@@ -17,8 +17,31 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from . import types
+
 UI32 = "<I"
 I32 = "<i"
 I64 = "<q"
 F32 = "f"
 F64 = "d"
+
+
+def register_class(cls):
+    import pv
+    scene = pv.context.scene
+
+    if issubclass(cls, types.PropertyGroup):
+        scene.pgroups.append(cls)
+
+
+def unregister_class(cls):
+    import pv
+    scene = pv.context.scene
+
+    if issubclass(cls, types.PropertyGroup):
+        for i in range(len(scene.pgroups)):
+            if scene.pgroups[i].idname == cls.idname:
+                scene.pgroups.pop(i)
+                break
+        else:
+            raise ValueError(f"No registered PropertyGroup: {cls.idname}")
