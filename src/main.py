@@ -27,7 +27,7 @@ from gui import gui
 from gui_utils import *
 
 
-def register_addons():
+def setup_addons(action):
     for directory in ADDON_PATHS:
         if os.path.isdir(directory):
             sys.path.insert(0, directory)
@@ -36,7 +36,7 @@ def register_addons():
                 if os.path.isfile(path) and path.endswith(".py"):
                     mod = __import__(os.path.splitext(file)[0])
                     if hasattr(mod, "register"):
-                        mod.register()
+                        getattr(mod, action)()
 
             sys.path.pop(0)
 
@@ -54,8 +54,9 @@ def main():
 
     mode = args.mode if args.mode is not None else "GUI"
     if mode == "GUI":
-        register_addons()
+        setup_addons("register")
         gui()
+        setup_addons("unregister")
 
 
 main()
