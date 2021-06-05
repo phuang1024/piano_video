@@ -35,7 +35,7 @@ def register_class(cls):
     scene = pv.context.scene
 
     if issubclass(cls, pv.types.PropertyGroup):
-        setattr(scene, cls.idname, cls)
+        scene.pgroups.append(cls)
 
 
 def unregister_class(cls):

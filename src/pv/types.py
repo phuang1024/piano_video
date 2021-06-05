@@ -67,7 +67,19 @@ class PropertyGroup:
 
 
 class Scene:
-    pass
+    pgroups: List[PropertyGroup]
+
+    def __init__(self) -> None:
+        self.pgroups = []
+
+    def __getattr__(self, attr: str) -> PropertyGroup:
+        if hasattr(self, attr):
+            return getattr(self, attr)
+
+        for group in self.pgroups:
+            if group.idname == attr:
+                return group
+        raise ValueError(f"Scene has no PropertyGroup {attr}")
 
 
 class Context:
