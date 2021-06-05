@@ -71,3 +71,10 @@ class Scene:
             if group.idname == attr:
                 return group
         raise ValueError(f"Scene has no PropertyGroup {attr}")
+
+
+class Context:
+    scene: Scene
+
+    def __init__(self) -> None:
+        scene = Scene()
