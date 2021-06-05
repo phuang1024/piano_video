@@ -19,7 +19,7 @@
 
 import io
 import struct
-from typing import List
+from typing import Dict, List
 from .utils import UI32
 from .props import Property
 
@@ -67,7 +67,29 @@ class PropertyGroup:
 
 
 class UILayout:
-    pass
+    """
+    A layout class, which can be drawn on to show props, operators, etc.
+    """
+    elements: List[Dict]
+
+    def __init__(self):
+        self.elements = []
+
+    def label(self, text: str = "") -> None:
+        """
+        Adds text.
+        """
+        self.elements.append({"type": "LABEL", "text": text})
+
+    def prop(self, idpath: str) -> None:
+        """
+        Adds a property.
+        :param idpath: ID name path of property (ex. "my_group.my_prop")
+        """
+        if not idpath.count(".") == 1:
+            raise ValueError(f"ID path must have exactly 1 period: {idpath}")
+        group, name = idpath.split(".")
+        self.elements.append({"type": "PROP", "group": group, "name": name})
 
 
 class UIPanel:
