@@ -17,7 +17,11 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import types
+"""
+Global utilities and constants for the module.
+Used by components both inside the module and in third-party add-ons.
+Avoid importing here, as it will likely result in a circular import.
+"""
 
 UI32 = "<I"
 I32 = "<i"
@@ -30,7 +34,7 @@ def register_class(cls):
     import pv
     scene = pv.context.scene
 
-    if issubclass(cls, types.PropertyGroup):
+    if issubclass(cls, pv.types.PropertyGroup):
         scene.pgroups.append(cls)
 
 
@@ -38,7 +42,7 @@ def unregister_class(cls):
     import pv
     scene = pv.context.scene
 
-    if issubclass(cls, types.PropertyGroup):
+    if issubclass(cls, pv.types.PropertyGroup):
         for i in range(len(scene.pgroups)):
             if scene.pgroups[i].idname == cls.idname:
                 scene.pgroups.pop(i)
