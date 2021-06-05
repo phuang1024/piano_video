@@ -32,14 +32,18 @@ F64 = "d"
 
 def register_class(cls):
     import pv
-    scene = pv.context.scene
 
     if issubclass(cls, pv.types.PropertyGroup):
-        scene.pgroups.append(cls)
+        pv.context.scene.pgroups.append(cls)
+    elif issubclass(cls, pv.types.UISection):
+        pv.context.ui_sections.append(cls)
+    elif issubclass(cls, pv.types.UIPanel):
+        pv.context.ui_panels.append(cls)
 
 
 def unregister_class(cls):
     import pv
+    context = pv.context
     scene = pv.context.scene
 
     if issubclass(cls, pv.types.PropertyGroup):
@@ -49,3 +53,19 @@ def unregister_class(cls):
                 break
         else:
             raise ValueError(f"No registered PropertyGroup: {cls.idname}")
+
+    elif issubclass(cls, pv.types.UISection):
+        for i in range(len(context.ui_sections)):
+            if context.ui_sections[i].idname == cls.idname:
+                context.ui_sections.pop(i)
+                break
+        else:
+            raise ValueError(f"No registered UISection: {cls.idname}")
+
+    elif issubclass(cls, pv.types.UIPanel):
+        for i in range(len(context.ui_panels)):
+            if context.ui_panels[i].idname == cls.idname:
+                context.ui_panels.pop(i)
+                break
+        else:
+            raise ValueError(f"No registered UIPanel: {cls.idname}")
