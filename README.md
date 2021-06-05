@@ -10,6 +10,8 @@
 
 Piano visualizer with MIDI parsing, decorative blocks, and particle simulations.
 
+**Piano Video is currently being re-written as a GUI. The latest commit will likely be unstable.**
+
 ## System Requirements
 
 * Python3
