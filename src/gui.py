@@ -17,33 +17,30 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
-
-import argparse
-from gui import gui
+import pygame
 from gui_utils import *
+pygame.init()
 
 
-def register_addons():
-    for directory in ADDON_PATHS:
-        if os.path.isdir(directory):
-            sys.path.insert(0, directory)
-            for file in os.listdir(directory):
-                path = os.path.join(directory, file)
-                if os.path.isfile(path) and path.endswith(".py"):
-                    mod = __import__(os.path.splitext(file)[0])
-                    if hasattr(mod, "register"):
-                        mod.register()
+def gui():
+    surface = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+    clock = pygame.time.Clock()
+    pygame.display.set_caption(f"Piano Video {VERSION}")
+    pygame.display.set_icon(IMAGES["icon"])
 
-            sys.path.pop(0)
+    width, height = WIDTH, HEIGHT
+    resized = True
 
+    while True:
+        clock.tick(FPS)
+        pygame.display.update()
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
 
-def main():
-    register_addons()
-    gui()
-
-
-main()
+            elif event.type == pygame.VIDEORESIZE:
+                surface.fill(BLACK)
+                width, height = event.w, event.h
+                resized = True

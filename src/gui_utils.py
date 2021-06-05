@@ -17,24 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import sys
 import os
 import pygame
 pygame.init()
-
-
-def register_addons():
-    for directory in ADDON_PATHS:
-        if os.path.isdir(directory):
-            sys.path.insert(0, directory)
-            for file in os.listdir(directory):
-                path = os.path.join(directory, file)
-                if os.path.isfile(path) and path.endswith(".py"):
-                    mod = __import__(os.path.splitext(file)[0])
-                    if hasattr(mod, "register"):
-                        mod.register()
-
-            sys.path.pop(0)
 
 
 # Global constants
