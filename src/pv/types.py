@@ -66,6 +66,30 @@ class PropertyGroup:
                     break
 
 
+class UILayout:
+    pass
+
+
+class UIPanel:
+    idname: str
+    label: str
+    description: str
+
+    layout: UILayout
+
+    def __init__(self):
+        self.layout = UILayout()
+
+
+class UISection:
+    idname: str
+    label: str
+    description: str
+    icon: str
+
+    panels: List[UIPanel]
+
+
 class Scene:
     pgroups: List[PropertyGroup]
 
