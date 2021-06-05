@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
 import pygame
-from utils import *
+from gui_utils import *
 pygame.init()
 
 
