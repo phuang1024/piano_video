@@ -29,6 +29,9 @@ class PropertyGroup:
     props: List[Property]
 
     def __getattr__(self, attr: str) -> Property:
+        if hasattr(self, attr):
+            return getattr(self, attr)
+
         for prop in self.props:
             if prop.idname == attr:
                 return prop
@@ -64,17 +67,11 @@ class PropertyGroup:
 
 
 class Scene:
-    pgroups: List[PropertyGroup]
-
-    def __getattr__(self, attr: str) -> PropertyGroup:
-        for group in self.pgroups:
-            if group.idname == attr:
-                return group
-        raise ValueError(f"Scene has no PropertyGroup {attr}")
+    pass
 
 
 class Context:
     scene: Scene
 
     def __init__(self) -> None:
-        scene = Scene()
+        self.scene = Scene()
