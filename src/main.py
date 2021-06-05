@@ -42,8 +42,20 @@ def register_addons():
 
 
 def main():
-    register_addons()
-    gui()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--version", action="store_true")
+    parser.add_argument("-m", "--mode")
+    args = parser.parse_args()
+
+    if args.version:
+        print(f"Piano Video v{VERSION}")
+        print("Licensed under GNU GPL v3")
+        return
+
+    mode = args.mode if args.mode is not None else "GUI"
+    if mode == "GUI":
+        register_addons()
+        gui()
 
 
 main()
