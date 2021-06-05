@@ -53,8 +53,29 @@ class OUTPUT_PT_Props(pv.types.PropertyGroup):
     ]
 
 
+class OUTPUT_UT_Section(pv.types.UISection):
+    idname = "output"
+    label = "Output"
+    description = "Output parameters"
+
+
+class OUTPUT_UT_Dimensions(pv.types.UIPanel):
+    idname = "dimensions"
+    label = "Dimensions"
+    description = "Dimensions of the output (both spatial and temporal)"
+    section_id = "output"
+
+    def draw(self, context: pv.types.Context) -> None:
+        layout = self.layout
+        layout.prop("output.res_x")
+        layout.prop("output.res_y")
+        layout.prop("output.fps")
+
+
 classes = (
     OUTPUT_PT_Props,
+    OUTPUT_UT_Section,
+    OUTPUT_UT_Dimensions,
 )
 
 def register():
