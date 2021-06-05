@@ -19,16 +19,23 @@
 
 import io
 import struct
-from typing import List, Literal
+from typing import Any, List, Literal
 from .utils import UI32, I64, F64
 
 
 class Property:
+    """
+    Base property class.
+    All props (BoolProp, IntProp, etc...) inherit from this.
+    """
     type_id: int
 
     idname: str
     label: str
     description: str
+
+    default: Any
+    value: Any
 
     def __init__(self, idname: str = "", label: str = "", description: str = "") -> None:
         self.idname = idname
@@ -46,6 +53,10 @@ class Property:
 
 
 class BoolProp(Property):
+    """
+    Boolean property.
+    Type ID: 1
+    """
     type_id: Literal[1] = 1
 
     default: bool
@@ -58,7 +69,9 @@ class BoolProp(Property):
         self.value = default if value is None else value
 
     def dump(self, stream: io.BytesIO) -> None:
-        self.dump_header(stream)
+        """
+        Writes value as a byte (b"\\x00" or b"\\x01")
+        """
         stream.write(bytes([self.value]))
 
     def load(self, stream: io.BytesIO) -> None:
@@ -66,6 +79,15 @@ class BoolProp(Property):
 
 
 class IntProp(Property):
+    """
+    Integer property.
+    The value is packed as a signed 64 bit integer (long long)
+    Type ID: 2
+
+    min: Minimum value (inclusive)
+    max: Maximum value (inclusive)
+    step: Value step (offset from default)
+    """
     type_id: Literal[2] = 2
 
     default: int
@@ -75,7 +97,7 @@ class IntProp(Property):
     step: int
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: int = False, value: int = None, min: int = -1000000, max: int = 1000000,
+            default: int = False, value: int = None, min: int = -(2**32), max: int = (2**32),
             step: int = 1) -> None:
         super().__init__(idname, label, description)
         self.default = default
@@ -85,8 +107,9 @@ class IntProp(Property):
         self.step = step
 
     def dump(self, stream: io.BytesIO) -> None:
-        self.dump_header(stream)
-        stream.write(bytes([self.type_id]))
+        """
+        Writes value as a signed 64 bit integer.
+        """
         stream.write(struct.pack(I64, self.value))
 
     def load(self, stream: io.BytesIO) -> None:
@@ -94,6 +117,15 @@ class IntProp(Property):
 
 
 class FloatProp(Property):
+    """
+    Floating point property.
+    The value is packed as a signed 64 bit float (double)
+    Type ID: 2
+
+    min: Minimum value (inclusive)
+    max: Maximum value (inclusive)
+    step: Value step (offset from default)
+    """
     type_id: Literal[2] = 2
 
     default: float
@@ -103,7 +135,7 @@ class FloatProp(Property):
     step: float
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: float = 0, value: float = None, min: float = 1000000, max: float = 1000000,
+            default: float = 0, value: float = None, min: float = (2**32), max: float = (2**32),
             step: float = 0.001) -> None:
         super().__init__(idname, label, description)
         self.default = default
@@ -113,8 +145,9 @@ class FloatProp(Property):
         self.step = step
 
     def dump(self, stream: io.BytesIO) -> None:
-        self.dump_header(stream)
-        stream.write(bytes([self.type_id]))
+        """
+        Writes value as a signed 64 bit float.
+        """
         stream.write(struct.pack(F64, self.value))
 
     def load(self, stream: io.BytesIO) -> None:
@@ -122,6 +155,14 @@ class FloatProp(Property):
 
 
 class StringProp(Property):
+    """
+    String property.
+    Type ID: 3
+
+    max_len: Maximum length.
+    password: Whether to display the string as asterisks (*)
+    subtype: "" (normal), "FILE_PATH" (choose a file), "DIR_PATH" (choose a directory)
+    """
     type_id: Literal[3] = 3
 
     default: str
@@ -141,8 +182,10 @@ class StringProp(Property):
         self.subtype = subtype
 
     def dump(self, stream: io.BytesIO) -> None:
-        self.dump_header(stream)
-        stream.write(bytes([self.type_id]))
+        """
+        Writes length as a unsigned 32 bit integer.
+        Then writes value as bytes.
+        """
         stream.write(struct.pack(UI32, len(self.value)))
         stream.write(self.value.encode())
 
@@ -152,6 +195,12 @@ class StringProp(Property):
 
 
 class EnumProp(Property):
+    """
+    Enumerate Property (like a dropdown list).
+    Type ID: 4
+
+    items: List of (value, name, description) to show in the list.
+    """
     type_id: Literal[4] = 4
 
     default: str
@@ -166,8 +215,10 @@ class EnumProp(Property):
         self.items = items
 
     def dump(self, stream: io.BytesIO) -> None:
-        self.dump_header(stream)
-        stream.write(bytes([self.type_id]))
+        """
+        Writes length of current value as a unsigned 32 bit integer.
+        Then writes value as bytes.
+        """
         stream.write(struct.pack(UI32, len(self.value)))
         stream.write(self.value.encode())
 

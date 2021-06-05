@@ -29,11 +29,21 @@ class PropertyGroup:
     props: List[Property]
 
     def dump(self, stream: io.BytesIO) -> None:
+        """
+        Writes number of props as unsigned 32 bit integer.
+        Then, writes header and data for each prop.
+        """
         stream.write(struct.pack(UI32, len(self.props)))
         for prop in self.props:
+            prop.dump_header(stream)
             prop.dump(stream)
 
     def load(self, stream: io.BytesIO) -> None:
+        """
+        Loads number of props.
+        Then reads header and calls load on each corresponding prop.
+        Will raise ValueError if a type ID is incorrect.
+        """
         num_props = struct.unpack(UI32, stream.read(4))[0]
         for _ in range(num_props):
             type_id = stream.read(1)[0]
