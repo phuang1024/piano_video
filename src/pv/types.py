@@ -28,6 +28,12 @@ class PropertyGroup:
     idname: str
     props: List[Property]
 
+    def __getattr__(self, attr: str) -> Property:
+        for prop in self.props:
+            if prop.idname == attr:
+                return prop
+        raise ValueError(f"PropertyGroup {self.idname} has no property {attr}")
+
     def dump(self, stream: io.BytesIO) -> None:
         """
         Writes number of props as unsigned 32 bit integer.
@@ -58,4 +64,10 @@ class PropertyGroup:
 
 
 class Scene:
-    pass
+    pgroups: List[PropertyGroup]
+
+    def __getattr__(self, attr: str) -> PropertyGroup:
+        for group in self.pgroups:
+            if group.idname == attr:
+                return group
+        raise ValueError(f"Scene has no PropertyGroup {attr}")
