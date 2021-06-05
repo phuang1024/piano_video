@@ -97,7 +97,7 @@ class IntProp(Property):
     step: int
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: int = False, value: int = None, min: int = -(2**32), max: int = (2**32),
+            default: int = 0, value: int = None, min: int = -(2**32), max: int = (2**32),
             step: int = 1) -> None:
         super().__init__(idname, label, description)
         self.default = default
