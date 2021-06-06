@@ -72,10 +72,18 @@ class OUTPUT_UT_Dimensions(pv.types.UIPanel):
         layout.prop("output.fps")
 
 
+class KEYBOARD_UT_Section(pv.types.UISection):
+    idname = "keyboard"
+    label = "Keyboard"
+    description = "Settings for the keyboard"
+
+
 classes = (
     OUTPUT_PT_Props,
     OUTPUT_UT_Section,
     OUTPUT_UT_Dimensions,
+
+    KEYBOARD_UT_Section,
 )
 
 def register():
