@@ -76,6 +76,7 @@ class KEYBOARD_UT_Section(pv.types.UISection):
     idname = "keyboard"
     label = "Keyboard"
     description = "Settings for the keyboard"
+    icon="piano.png"
 
 
 classes = (
