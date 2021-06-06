@@ -19,15 +19,42 @@
 
 import pygame
 import pv
+import shared
 from gui_utils import *
 pygame.init()
 
 
 class Properties:
+    tab_size = 30
+    tab_spacing = 3
+    tab_col_idle = 42
+    tab_col_selected = 96
+    tab_col_hovered = 60
+
     def __init__(self):
-        pass
+        self.tab = 0
 
     def draw(self, surface, rect):
         x, y, w, h = rect
+        mx, my = shared.mouse_pos
 
-        pygame.draw.rect(surface, GRAY_DARK, rect)
+        pygame.draw.rect(surface, (28, 28, 28), rect)
+
+        # Draw tabs
+        spacing = self.tab_spacing
+        size = self.tab_size
+        hovering = None
+        if (x+spacing <= mx <= x+spacing+size):
+            tmp_y = my
+            while (tmp_y > 2*spacing+size):
+                tmp_y -= (spacing+size)
+            if tmp_y < spacing+size:
+                hovering = (my-spacing) // (spacing+size)
+
+        cy = y + spacing
+        for i, section in enumerate(pv.context.ui_sections):
+            color = self.tab_col_selected if self.tab == i else \
+                (self.tab_col_hovered if hovering == i else self.tab_col_idle)
+            pygame.draw.rect(surface, (color,)*3, (x+spacing, cy, size, size),
+                border_top_left_radius=5, border_bottom_left_radius=5)
+            cy += size + spacing
