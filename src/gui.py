@@ -35,7 +35,11 @@ class WindowManager:
         self.properties.draw(surface, (sep, 0, width-sep, height))
 
 
-def gui():
+def gui(verbose=False):
+    printer = VerbosePrinter(verbose)
+    printer("Starting GUI")
+
+    printer("  Setting up window")
     surface = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
     clock = pygame.time.Clock()
     pygame.display.set_caption(f"Piano Video {VERSION}")
@@ -46,6 +50,7 @@ def gui():
 
     wm = WindowManager()
 
+    printer("  Starting GUI loop")
     while True:
         clock.tick(FPS)
         pygame.display.update()
@@ -61,3 +66,6 @@ def gui():
                 resized = True
 
         wm.draw(surface)
+
+    # TODO have run variable
+    printer("  Exiting GUI")

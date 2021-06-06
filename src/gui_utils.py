@@ -42,6 +42,20 @@ class ContextCompare:
             self.prev[a] = deepcopy(getattr(obj, a))
 
 
+class VerbosePrinter:
+    """
+    Takes "verbose" argument at init, and won't do anything if verbose is False.
+    This will make the code cleaner (no "if verbose: print()" required)
+    """
+
+    def __init__(self, verbose):
+        self.verbose = verbose
+
+    def __call__(self, msg):
+        if self.verbose:
+            print(msg)
+
+
 # Global constants
 VERSION = "0.1.0"
 PARENT = os.path.dirname(os.path.realpath(__file__))

@@ -27,23 +27,39 @@ from gui import gui
 from gui_utils import *
 
 
-def setup_addons(action):
+def setup_addons(action, verbose=False):
+    printer = VerbosePrinter(verbose)
+    if verbose:
+        printer(f"Setup add-ons: {action}")
+
     for directory in ADDON_PATHS:
         if os.path.isdir(directory):
+            printer(f"  Searching directory {directory}")
             sys.path.insert(0, directory)
+
             for file in os.listdir(directory):
+                printer(f"    Found {file}")
                 path = os.path.join(directory, file)
-                if os.path.isfile(path) and path.endswith(".py"):
+
+                valid = (os.path.isfile(path) and path.endswith(".py")) or \
+                    (os.path.isdir(path) and "__init__.py" in os.listdir(path))
+                if valid:
+                    printer(f"      Setting up {file}")
                     mod = __import__(os.path.splitext(file)[0])
                     if hasattr(mod, "register"):
                         getattr(mod, action)()
+                else:
+                    printer(f"      Skipping {file}")
 
             sys.path.pop(0)
+
+    printer(f"  Exiting add-on setup")
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", action="store_true", help="Show the version of the program.")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Display more information to stdout.")
     parser.add_argument("--test", action="store_true", help="Test API and modules. No GUI window will open.")
     args = parser.parse_args()
 
@@ -52,10 +68,11 @@ def main():
         print("Licensed under GNU GPL v3")
         return
 
-    setup_addons("register")
+    vb = args.verbose
+    setup_addons("register", verbose=vb)
     if not args.test:
-        gui()
-    setup_addons("unregister")
+        gui(verbose=vb)
+    setup_addons("unregister", verbose=vb)
 
 
 main()
