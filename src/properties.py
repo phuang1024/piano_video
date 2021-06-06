@@ -53,10 +53,19 @@ class Properties:
 
         cy = y + spacing
         for i, section in enumerate(pv.context.ui_sections):
+            # Draw tab
             color = self.tab_col_selected if self.tab == i else \
                 (self.tab_col_hovered if hovering == i else self.tab_col_idle)
             pygame.draw.rect(surface, (color,)*3, (x+spacing, cy, size, size),
                 border_top_left_radius=5, border_bottom_left_radius=5)
+
+            # Draw icon
+            if section.icon_img is not None:
+                icon = pygame.transform.scale(array_to_surf(section.icon_img), (size-6,)*2)
+                icon.set_colorkey((0, 0, 0))
+                surface.blit(icon, (x+spacing+3, cy+3))
+
             cy += size + spacing
+
         if shared.mouse_pressed[0] and hovering is not None:
             self.tab = hovering
