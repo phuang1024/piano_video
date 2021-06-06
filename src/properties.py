@@ -30,4 +30,4 @@ class Properties:
     def draw(self, surface, rect):
         x, y, w, h = rect
 
-        pygame.draw.rect(surface, rect, GRAY_DARK)
+        pygame.draw.rect(surface, GRAY_DARK, rect)

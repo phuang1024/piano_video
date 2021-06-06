@@ -19,7 +19,20 @@
 
 import pygame
 from gui_utils import *
+from properties import Properties
 pygame.init()
+
+
+class WindowManager:
+    def __init__(self) -> None:
+        self.properties = Properties()
+
+    def draw(self, surface):
+        width, height = surface.get_size()
+        sep = int(width * 0.8)
+
+        # Draw properties
+        self.properties.draw(surface, (sep, 0, width-sep, height))
 
 
 def gui():
@@ -30,6 +43,8 @@ def gui():
 
     width, height = WIDTH, HEIGHT
     resized = True
+
+    wm = WindowManager()
 
     while True:
         clock.tick(FPS)
@@ -44,3 +59,5 @@ def gui():
                 surface.fill(BLACK)
                 width, height = event.w, event.h
                 resized = True
+
+        wm.draw(surface)
