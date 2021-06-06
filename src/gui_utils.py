@@ -73,6 +73,14 @@ ADDON_PATHS = (
     os.path.join(PARENT, "addons_installed"),
 )
 
+DEPENDENCIES = (
+    "cv2",
+    "mido",
+    "numpy",
+    "PIL",
+    "pygame",
+)
+
 # GUI
 WIDTH, HEIGHT = 1280, 720
 FPS = 60

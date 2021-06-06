@@ -56,6 +56,14 @@ def setup_addons(action, verbose=False):
     printer(f"  Exiting add-on setup")
 
 
+def test_modules(verbose=False):
+    printer = VerbosePrinter(verbose)
+    printer("Testing dependent modules")
+    for mod in DEPENDENCIES:
+        printer(f"  Importing \"{mod}\"")
+        __import__(mod)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", action="store_true", help="Show the version of the program.")
@@ -70,7 +78,9 @@ def main():
 
     vb = args.verbose
     setup_addons("register", verbose=vb)
-    if not args.test:
+    if args.test:
+        test_modules(verbose=vb)
+    else:
         gui(verbose=vb)
     setup_addons("unregister", verbose=vb)
 
