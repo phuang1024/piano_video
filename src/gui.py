@@ -18,6 +18,7 @@
 #
 
 import pygame
+import shared
 from gui_utils import *
 from properties import Properties
 pygame.init()
@@ -64,6 +65,9 @@ def gui(verbose=False):
                 width, height = event.w, event.h
                 resized = True
 
+        shared.mouse_pos = pygame.mouse.get_pos()
+        shared.mouse_pressed = pygame.mouse.get_pressed()
+        shared.keys_pressed = pygame.key.get_pressed()
         wm.draw(surface)
 
     pygame.quit()
