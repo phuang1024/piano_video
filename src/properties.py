@@ -26,7 +26,7 @@ pygame.init()
 
 class Properties:
     tab_size = 30
-    tab_spacing = 3
+    tab_spacing = 5
     tab_col_idle = 42
     tab_col_selected = 96
     tab_col_hovered = 60
@@ -58,3 +58,5 @@ class Properties:
             pygame.draw.rect(surface, (color,)*3, (x+spacing, cy, size, size),
                 border_top_left_radius=5, border_bottom_left_radius=5)
             cy += size + spacing
+        if shared.mouse_pressed[0] and hovering is not None:
+            self.tab = hovering
