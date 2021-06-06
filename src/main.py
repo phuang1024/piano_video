@@ -43,8 +43,8 @@ def setup_addons(action):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--version", action="store_true")
-    parser.add_argument("-m", "--mode")
+    parser.add_argument("--version", action="store_true", help="Show the version of the program.")
+    parser.add_argument("--test", action="store_true", help="Test API and modules. No GUI window will open.")
     args = parser.parse_args()
 
     if args.version:
@@ -52,11 +52,10 @@ def main():
         print("Licensed under GNU GPL v3")
         return
 
-    mode = args.mode if args.mode is not None else "GUI"
-    if mode == "GUI":
-        setup_addons("register")
+    setup_addons("register")
+    if not args.test:
         gui()
-        setup_addons("unregister")
+    setup_addons("unregister")
 
 
 main()

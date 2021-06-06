@@ -15,3 +15,5 @@ jobs:
       - name: Formatting
         run: |
           python3 ./tests/formatting_check.py
+          cd src
+          python3 ./main.py --test
