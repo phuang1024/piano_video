@@ -56,6 +56,15 @@ class VerbosePrinter:
             print(msg)
 
 
+def get_run():
+    return RUN
+
+
+def set_run(v):
+    global RUN
+    RUN = v
+
+
 # Global constants
 VERSION = "0.1.0"
 PARENT = os.path.dirname(os.path.realpath(__file__))
@@ -70,6 +79,8 @@ FPS = 60
 IMAGES = {
     "icon": pygame.image.load(os.path.join(PARENT, "assets", "icon.jpg")),
 }
+
+RUN = True   # Whether still running. Threads end when this is false. Access with get_run(), set_run()
 
 BLACK = (0, 0, 0)
 GRAY_DARK = (64, 64, 64)

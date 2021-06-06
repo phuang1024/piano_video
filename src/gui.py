@@ -51,14 +51,13 @@ def gui(verbose=False):
     wm = WindowManager()
 
     printer("  Starting GUI loop")
-    while True:
+    while get_run():
         clock.tick(FPS)
         pygame.display.update()
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
-                pygame.quit()
-                return
+                set_run(False)
 
             elif event.type == pygame.VIDEORESIZE:
                 surface.fill(BLACK)
@@ -67,5 +66,5 @@ def gui(verbose=False):
 
         wm.draw(surface)
 
-    # TODO have run variable
+    pygame.quit()
     printer("  Exiting GUI")
