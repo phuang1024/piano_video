@@ -28,6 +28,6 @@ import pygame
 from typing import Dict, Tuple
 pygame.init()
 
-mouse_pos: Tuple[int]
-mouse_pressed: Tuple[bool]
+mouse_pos: Tuple[int, int]
+mouse_pressed: Tuple[bool, bool, bool]
 keys_pressed: Dict[int, bool]    # Actually is pygame.key.ScancodeWrapper
