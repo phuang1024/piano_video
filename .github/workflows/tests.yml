@@ -9,12 +9,14 @@ on:
 jobs:
   ubuntu-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
     steps:
       - uses: actions/checkout@v2
-
       - name: Install packages
         run: pip3 install -r ./requirements.txt
-
       - name: Run test
         run: |
           cd ./src
@@ -22,12 +24,14 @@ jobs:
 
   windows-test:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
     steps:
       - uses: actions/checkout@v2
-
       - name: Install packages
         run: pip install -r ./requirements.txt
-
       - name: Run test
         run: |
           cd ./src
@@ -35,9 +39,12 @@ jobs:
 
   formatting-check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
     steps:
       - uses: actions/checkout@v2
-
       - name: Formatting
         run: |
           python3 ./tests/formatting_check.py
