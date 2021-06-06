@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ubuntu-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install packages
+        run: pip3 install -r ./requirements.txt
+
+      - name: Run test
+        run: |
+          cd ./src
+          python3 ./main.py --test -v
+
+  windows-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install packages
+        run: pip install -r ./requirements.txt
+
+      - name: Run test
+        run: |
+          cd ./src
+          python ./main.py --test -v
+
+  formatting-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Formatting
+        run: |
+          python3 ./tests/formatting_check.py
