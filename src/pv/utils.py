@@ -23,6 +23,14 @@ Used by components both inside the module and in third-party add-ons.
 Avoid importing here, as it will likely result in a circular import.
 """
 
+import os
+import cv2
+
+PARENT = os.path.dirname(os.path.realpath(__file__))
+BUILTIN_ICON_PATHS = (
+    os.path.join(PARENT, "icons"),
+)
+
 UI32 = "<I"
 I32 = "<i"
 I64 = "<q"
@@ -36,8 +44,21 @@ def register_class(cls):
     inst = cls()
     if issubclass(cls, pv.types.PropertyGroup):
         pv.context.scene.pgroups.append(inst)
+
     elif issubclass(cls, pv.types.UISection):
+        icon_path = None
+        if hasattr(cls, "icon") and cls.icon:
+            for directory in BUILTIN_ICON_PATHS:
+                for file in directory:
+                    if cls.icon == file:
+                        icon_path = os.path.join(directory, file)
+            if os.path.isfile(cls.icon):
+                icon_path = cls.icon
+
+        if icon_path is not None and os.path.isfile(icon_path):
+            inst.icon_img = cv2.imread(icon_path)
         pv.context.ui_sections.append(inst)
+
     elif issubclass(cls, pv.types.UIPanel):
         pv.context.ui_panels.append(inst)
 

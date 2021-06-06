@@ -19,7 +19,8 @@
 
 import io
 import struct
-from typing import Dict, List
+import numpy as np
+from typing import Dict, List, Union
 from .utils import UI32
 from .props import Property
 
@@ -112,7 +113,12 @@ class UISection:
     description: str
     icon: str
 
+    icon_img: Union[np.ndarray, None]
     panels: List[UIPanel]
+
+    def __init__(self):
+        self.icon = ""
+        self.icon_img = None
 
 
 class Scene:
