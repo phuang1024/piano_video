@@ -19,7 +19,27 @@
 
 import os
 import pygame
+from copy import deepcopy
 pygame.init()
+
+
+class ContextCompare:
+    def __init__(self, attrs):
+        self.attrs = attrs
+        self.prev = {a: None for a in attrs}
+
+    def compare(self, obj):
+        """
+        Returns whether they are a match.
+        """
+        for a in self.attrs:
+            if self.prev[a] != getattr(obj, a):
+                return False
+        return True
+
+    def update(self, obj):
+        for a in self.attrs:
+            self.prev[a] = deepcopy(getattr(obj, a))
 
 
 # Global constants
@@ -38,3 +58,7 @@ IMAGES = {
 }
 
 BLACK = (0, 0, 0)
+GRAY_DARK = (64, 64, 64)
+GRAY = (128, 128, 128)
+GRAY_LIGHT = (192, 192, 192)
+WHITE = (255, 255, 255)
