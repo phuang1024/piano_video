@@ -19,6 +19,8 @@
 
 import os
 import pygame
+import cv2
+import numpy as np
 from copy import deepcopy
 pygame.init()
 
@@ -59,10 +61,21 @@ class VerbosePrinter:
 def get_run():
     return RUN
 
-
 def set_run(v):
     global RUN
     RUN = v
+
+
+def surf_to_array(surf: pygame.Surface) -> np.ndarray:
+    array = pygame.surfarray.array3d(surf).swapaxes(0, 1)
+    array = cv2.cvtColor(array, cv2.COLOR_BGR2RGB)
+    return array
+
+def array_to_surf(array: np.ndarray) -> pygame.Surface:
+    array = array.astype(np.float32)
+    array = cv2.cvtColor(array, cv2.COLOR_BGR2RGB)
+    array = array.astype(np.int8)
+    return pygame.image.frombuffer(array.tobytes(), array.shape[1::-1], "RGB")
 
 
 # Global constants
