@@ -49,7 +49,7 @@ def register_class(cls):
         icon_path = None
         if hasattr(cls, "icon") and cls.icon:
             for directory in BUILTIN_ICON_PATHS:
-                for file in directory:
+                for file in os.listdir(directory):
                     if cls.icon == file:
                         icon_path = os.path.join(directory, file)
             if os.path.isfile(cls.icon):
