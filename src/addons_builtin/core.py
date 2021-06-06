@@ -57,6 +57,7 @@ class OUTPUT_UT_Section(pv.types.UISection):
     idname = "output"
     label = "Output"
     description = "Output parameters"
+    icon = "output.png"
 
 
 class OUTPUT_UT_Dimensions(pv.types.UIPanel):
@@ -76,7 +77,7 @@ class KEYBOARD_UT_Section(pv.types.UISection):
     idname = "keyboard"
     label = "Keyboard"
     description = "Settings for the keyboard"
-    icon="piano.png"
+    icon = "piano.png"
 
 
 classes = (
