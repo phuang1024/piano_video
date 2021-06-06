@@ -33,12 +33,13 @@ F64 = "d"
 def register_class(cls):
     import pv
 
+    inst = cls()
     if issubclass(cls, pv.types.PropertyGroup):
-        pv.context.scene.pgroups.append(cls)
+        pv.context.scene.pgroups.append(inst)
     elif issubclass(cls, pv.types.UISection):
-        pv.context.ui_sections.append(cls)
+        pv.context.ui_sections.append(inst)
     elif issubclass(cls, pv.types.UIPanel):
-        pv.context.ui_panels.append(cls)
+        pv.context.ui_panels.append(inst)
 
 
 def unregister_class(cls):
