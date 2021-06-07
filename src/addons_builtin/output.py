@@ -44,7 +44,28 @@ class OUTPUT_PT_Props(pv.types.PropertyGroup):
             label="FPS",
             description="Output frames per second",
             default=30, min=1, max=1000,
-        )
+        ),
+
+        IntProp(
+            idname="frame_start",
+            label="Start Frame",
+            description="Starting frame of video",
+            default=0, min=0,
+        ),
+
+        IntProp(
+            idname="frame_end",
+            label="End Frame",
+            description="Ending frame of video",
+            default=1000, min=0,
+        ),
+
+        IntProp(
+            idname="frame_current",
+            label="Current Frame",
+            description="Current frame of video",
+            default=0, min=0
+        ),
     ]
 
 

@@ -18,11 +18,27 @@
 #
 
 """
-Output properties
+Keyboard properties
 """
 
 import pv
 from pv.props import *
+
+
+class KEYBOARD_PT_Props(pv.types.PropertyGroup):
+    idname = "keyboard"
+
+    props = [
+        EnumProp(
+            idname="type",
+            label="Keyboard Type",
+            description="Controls how the keyboard is rendered",
+            items=[
+                ("SIMPLE", "Simple", "Computer generated keys"),
+                ("VIDEO", "Video", "Crop the keyboard from a video file"),
+            ],
+        ),
+    ]
 
 
 class KEYBOARD_UT_Section(pv.types.UISection):
