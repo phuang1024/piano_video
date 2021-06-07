@@ -18,39 +18,36 @@
 #
 
 """
-Keyboard properties
+MIDI properties
 """
 
 import pv
 from pv.props import *
 
 
-class KEYBOARD_PT_Props(pv.types.PropertyGroup):
-    idname = "keyboard"
+class MIDI_PT_Props(pv.types.PropertyGroup):
+    idname = "midi"
 
     props = [
-        EnumProp(
-            idname="type",
-            label="Keyboard Type",
-            description="Controls how the keyboard is rendered",
-            items=[
-                ("SIMPLE", "Simple", "Computer generated keys"),
-                ("VIDEO", "Video", "Crop the keyboard from a video file"),
-            ],
+        IntProp(
+            idname="offset",
+            label="Offset",
+            description="Offset in frames of MIDI. Increase this value to make MIDI play later.",
+            default=0,
         ),
     ]
 
 
-class KEYBOARD_UT_Section(pv.types.UISection):
-    idname = "keyboard"
-    label = "Keyboard"
-    description = "Settings for the keyboard"
-    icon = "piano.png"
+class MIDI_UT_Section(pv.types.UISection):
+    idname = "midi"
+    label = "MIDI"
+    description = "Settings for MIDI"
+    icon = "midi.png"
 
 
 classes = (
-    KEYBOARD_PT_Props,
-    KEYBOARD_UT_Section,
+    MIDI_PT_Props,
+    MIDI_UT_Section,
 )
 
 def register():
