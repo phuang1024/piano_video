@@ -17,11 +17,6 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-Contains core properties, operators, and UI,
-such as output properties.
-"""
-
 import pv
 from pv.props import *
 
@@ -73,19 +68,10 @@ class OUTPUT_UT_Dimensions(pv.types.UIPanel):
         layout.prop("output.fps")
 
 
-class KEYBOARD_UT_Section(pv.types.UISection):
-    idname = "keyboard"
-    label = "Keyboard"
-    description = "Settings for the keyboard"
-    icon = "piano.png"
-
-
 classes = (
     OUTPUT_PT_Props,
     OUTPUT_UT_Section,
     OUTPUT_UT_Dimensions,
-
-    KEYBOARD_UT_Section,
 )
 
 def register():
