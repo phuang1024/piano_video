@@ -19,7 +19,7 @@
 
 import io
 import struct
-from typing import Any, List, Literal
+from typing import Any, List
 from .utils import UI32, I64, F64
 
 
@@ -57,7 +57,7 @@ class BoolProp(Property):
     Boolean property.
     Type ID: 1
     """
-    type_id: Literal[1] = 1
+    type_id: int = 1
 
     default: bool
     value: bool
@@ -88,7 +88,7 @@ class IntProp(Property):
     max: Maximum value (inclusive)
     step: Value step (offset from default)
     """
-    type_id: Literal[2] = 2
+    type_id: int = 2
 
     default: int
     value: int
@@ -126,7 +126,7 @@ class FloatProp(Property):
     max: Maximum value (inclusive)
     step: Value step (offset from default)
     """
-    type_id: Literal[2] = 2
+    type_id: int = 3
 
     default: float
     value: float
@@ -163,7 +163,7 @@ class StringProp(Property):
     password: Whether to display the string as asterisks (*)
     subtype: "" (normal), "FILE_PATH" (choose a file), "DIR_PATH" (choose a directory)
     """
-    type_id: Literal[3] = 3
+    type_id: int = 4
 
     default: str
     value: str
@@ -201,7 +201,7 @@ class EnumProp(Property):
 
     items: List of (value, name, description) to show in the list.
     """
-    type_id: Literal[4] = 4
+    type_id: int = 5
 
     default: str
     value: str
