@@ -59,3 +59,12 @@ def gen_output(color=(160, 30, 45)):
     pygame.draw.polygon(img, (0, 0, 0, 0), ((64+d/2, 64), (64-d/2, 64+c*d), (64-d/2, 64-c*d)))
 
     return img
+
+
+def gen_midi(color=(100, 180, 80)):
+    img = pygame.Surface((128, 128), pygame.SRCALPHA)
+
+    for i in range(3):
+        pygame.draw.rect(img, color, (20+20*i, 30+25*i, 50, 15))
+
+    return img
