@@ -35,8 +35,8 @@ A Python api for https://github.com/HuangPatrick16777216/piano_video
 Inspired by Blender's API.
 
 This module is provided on PyPI for autocomplete and type hinting when developing,
-and does not need to be installed by pip to run Pymixer.
-The latest API module is included in every release of the video editor.
+and does not need to be installed by pip to run Piano Video.
+The latest API module is included in every release of the program.
 """.strip()
 
 if os.path.isdir(DEST):
