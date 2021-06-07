@@ -1,0 +1,23 @@
+name: PyPI Upload
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: pip install setuptools wheel twine
+      - name: Upload
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_UNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PWD }}
+          PYPI_VERSION: ${{ github.ref }}
+        run: |
+          cd ./build
+          python ./setup.py bdist_wheel sdist
+          twine upload ./dist/*
