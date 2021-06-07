@@ -28,7 +28,7 @@ import cv2
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 BUILTIN_ICON_PATHS = (
-    os.path.join(PARENT, "icons"),
+    os.path.join(PARENT, "assets"),
 )
 
 UI32 = "<I"
