@@ -210,7 +210,7 @@ class EnumProp(Property):
     def __init__(self, idname: str = "", label: str = "", description: str = "",
             default: str = None, value: str = None, items: List = []) -> None:
         super().__init__(idname, label, description)
-        self.default = items[0] if default is None else default
+        self.default = items[0][0] if default is None else default
         self.value = self.default if value is None else value
         self.items = items
 
