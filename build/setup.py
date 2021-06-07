@@ -48,7 +48,7 @@ shutil.copytree(SRC, DEST)
 
 setuptools.setup(
     name="piano_video",
-    version=input("Version: "),
+    version=os.path.basename(os.environ["PYPI_VERSION"]),
     author="Patrick Huang",
     author_email="huangpatrick16777216@gmail.com",
     description="Python API for https://github.com/HuangPatrick16777216/piano_video",
