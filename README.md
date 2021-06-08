@@ -14,6 +14,8 @@ Piano visualizer with MIDI parsing, decorative blocks, and particle simulations.
 
 **Piano Video is currently being re-written as a GUI. The latest commit will likely be unstable.**
 
+[Documentation on Read The Docs](https://piano-video.readthedocs.io/en/latest/)
+
 ## System Requirements
 
 * Python3
