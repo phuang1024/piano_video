@@ -44,6 +44,8 @@ def register_class(cls: type) -> None:
 
     inst = cls()
     if issubclass(cls, pv.types.PropertyGroup):
+        if cls.idname.count(".") != 0:
+            raise ValueError(f"PropertyGroup idname must not contain periods: {cls.idname}")
         pv.context.scene.pgroups.append(inst)
 
     elif issubclass(cls, pv.types.UISection):
