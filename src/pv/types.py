@@ -113,6 +113,7 @@ class UISection:
     def __init__(self):
         self.icon = ""
         self.icon_img = None
+        self.panels = []
 
 
 class Scene:
@@ -128,9 +129,7 @@ class Scene:
 class Context:
     scene: Scene
     ui_sections: List[UISection]
-    ui_panels: List[UIPanel]
 
     def __init__(self) -> None:
         self.scene = Scene()
         self.ui_sections = []
-        self.ui_panels = []

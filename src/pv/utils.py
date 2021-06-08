@@ -61,8 +61,7 @@ def register_class(cls: type) -> None:
         pv.context.ui_sections.append(inst)
 
     elif issubclass(cls, pv.types.UIPanel):
-        pv.context.ui_panels.append(inst)
-        get(pv.context.ui_sections, cls.section_id).pgroups.append(inst)
+        get(pv.context.ui_sections, cls.section_id).panels.append(inst)
 
 
 def unregister_class(cls: type) -> None:
@@ -75,13 +74,19 @@ def unregister_class(cls: type) -> None:
     elif issubclass(cls, pv.types.UISection):
         context.ui_sections.pop(get(context.ui_sections, cls.idname, True))
     elif issubclass(cls, pv.types.UIPanel):
-        context.ui_panels.pop(get(context.ui_panels, cls.idname, True))
-        section = get(pv.context.ui_sections, cls.section_id)
-        section.pop(get(section.pgroups, cls.idname, True))
+        section = get(pv.context.ui_sections, cls.section_id, raise_error=False)
+        if section is not None:
+            # Need to account for possibility that section is already unregistered
+            section.pop(get(section.pgroups, cls.idname, True))
 
 
-def get(items, idname, idx=False) -> Any:
+def get(items, idname, idx=False, raise_error=True, not_found_rval=None) -> Any:
     for i, item in enumerate(items):
         if item.idname == idname:
             return i if idx else item
-    raise ValueError(f"No object with idname {idname} in list of {items[0].__class__.__name__}")
+
+    if raise_error:
+        raise ValueError(f"No object with idname {idname} in {items}")
+    else:
+        return not_found_rval
+
