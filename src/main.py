@@ -66,9 +66,9 @@ def test_modules(verbose=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--version", action="store_true", help="Show the version of the program.")
+    parser.add_argument("-V", "--version", action="store_true", help="Show the version of the program.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Display more information to stdout.")
-    parser.add_argument("--test", action="store_true", help="Test API and modules. No GUI window will open.")
+    parser.add_argument("-T", "--test", action="store_true", help="Test API and modules. No GUI window will open.")
     args = parser.parse_args()
 
     if args.version:
