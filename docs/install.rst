@@ -12,6 +12,7 @@ release on `GitHub <https://github.com/HuangPatrick16777216/piano_video>`.
 To install the Debian package (version number may vary):
 
 .. code-block:: bash
+
     sudo dpkg -i pvid_0.1.0.deb
 
 

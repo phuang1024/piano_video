@@ -9,3 +9,4 @@ A free and open source piano performance visualizer
 
    install
    support
+   manual
