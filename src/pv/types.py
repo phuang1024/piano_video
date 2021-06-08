@@ -65,7 +65,7 @@ class UILayout:
     """
     A layout class, which can be drawn on to show props, operators, etc.
     """
-    elements: List[Dict[str, str]]
+    elements: List[Dict[str, Union[str, None]]]
 
     def __init__(self) -> None:
         self.elements = []
@@ -76,15 +76,18 @@ class UILayout:
         """
         self.elements.append({"type": "LABEL", "text": text})
 
-    def prop(self, idpath: str) -> None:
+    def prop(self, idpath: str, text: str = None, on_set: str = None) -> None:
         """
         Adds a property.
         :param idpath: ID name path of property (ex. "my_group.my_prop")
+        :param text: Display this text next to the prop (set to None to use prop default)
+        :param on_set: Operator path to run when this value is changed (ex. "my_group.my_op")
         """
-        if not idpath.count(".") == 1:
+        if idpath.count(".") != 1:
             raise ValueError(f"ID path must have exactly 1 period: {idpath}")
-        group, name = idpath.split(".")
-        self.elements.append({"type": "PROP", "group": group, "name": name})
+        if on_set is not None and on_set.count(".") != 1:
+            raise ValueError(f"Operator path must have exactly 1 period: {on_set}")
+        self.elements.append({"type": "PROP", "idpath": idpath, "text": text, "on_set": on_set})
 
 
 class UIPanel:
