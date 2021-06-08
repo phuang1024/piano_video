@@ -1,6 +1,7 @@
 Installation
 ============
 
+
 Linux Systems
 -------------
 
@@ -12,3 +13,11 @@ To install the Debian package (version number may vary):
 
 .. code-block:: bash
     sudo dpkg -i pvid_0.1.0.deb
+
+
+Requirements
+============
+
+You will need Python at least version 3.7 on your system,
+as well as `these <https://github.com/HuangPatrick16777216/piano_video/blob/main/requirements.txt>`__
+python packages.
