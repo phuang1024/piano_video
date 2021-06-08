@@ -5,6 +5,7 @@
 ![](https://shields.io/github/issues-pr/huangpatrick16777216/piano_video)
 ![](https://shields.io/github/license/huangpatrick16777216/piano_video)
 ![](https://shields.io/github/commit-activity/m/huangpatrick16777216/piano_video)
+![](https://readthedocs.org/projects/piano-video/badge/?version=latest)
 
 [![preview](https://github.com/HuangPatrick16777216/piano_video/blob/main/images/aeolian_harp.jpg)](https://www.youtube.com/watch?v=GzIjygdvgAA)
 <sub><sup>Chopin Etude Op 25 No 1 "Aeolian Harp"</sup></sub>
