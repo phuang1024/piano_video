@@ -39,6 +39,9 @@ and does not need to be installed by pip to run Piano Video.
 The latest API module is included in every release of the program.
 """.strip()
 
+with open(os.path.join(os.path.dirname(PARENT), "requirements.txt"), "r") as file:
+    requirements = file.read().strip().split("\n")
+
 if os.path.isdir(DEST):
     if input(f"Destination {DEST} exists. Remove permanently? (y/N) ").lower().strip() == "y":
         shutil.rmtree(DEST)
@@ -57,8 +60,7 @@ setuptools.setup(
     url="https://github.com/HuangPatrick16777216/piano_video",
     py_modules=["pv"],
     packages=setuptools.find_packages(),
-    install_requires=[
-    ],
+    install_requires=requirements,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
