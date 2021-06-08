@@ -69,32 +69,15 @@ def unregister_class(cls):
     scene = pv.context.scene
 
     if issubclass(cls, pv.types.PropertyGroup):
-        for i in range(len(scene.pgroups)):
-            if scene.pgroups[i].idname == cls.idname:
-                scene.pgroups.pop(i)
-                break
-        else:
-            raise ValueError(f"No registered PropertyGroup: {cls.idname}")
-
+        scene.pgroups.pop(get(scene.pgroups, cls.idname, True))
     elif issubclass(cls, pv.types.UISection):
-        for i in range(len(context.ui_sections)):
-            if context.ui_sections[i].idname == cls.idname:
-                context.ui_sections.pop(i)
-                break
-        else:
-            raise ValueError(f"No registered UISection: {cls.idname}")
-
+        context.ui_sections.pop(get(context.ui_sections, cls.idname, True))
     elif issubclass(cls, pv.types.UIPanel):
-        for i in range(len(context.ui_panels)):
-            if context.ui_panels[i].idname == cls.idname:
-                context.ui_panels.pop(i)
-                break
-        else:
-            raise ValueError(f"No registered UIPanel: {cls.idname}")
+        context.ui_panels.pop(get(context.ui_panels, cls.idname, True))
 
 
-def get(items, idname):
-    for item in items:
+def get(items, idname, idx=False):
+    for i, item in enumerate(items):
         if item.idname == idname:
-            return item
+            return i if idx else item
     raise ValueError(f"No object with idname {idname} in list of {items[0].__class__.__name__}")
