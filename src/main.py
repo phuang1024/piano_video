@@ -72,9 +72,11 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print(f"Piano Video v{VERSION}")
-        print("Running in Python " + ".".join(map(str, sys.version_info[:3])))
+        print(f"Piano Video v{VERSION}  Copyright (C) 2021  Patrick Huang")
         print("Licensed under GNU General Public License v3")
+        print("This program comes with ABSOLUTELY NO WARRANTY.")
+        print("This is free software, and you are welcome to redistribute it under certain conditions.")
+        print("Running in Python " + ".".join(map(str, sys.version_info[:3])))
         return
 
     vb = args.verbose
