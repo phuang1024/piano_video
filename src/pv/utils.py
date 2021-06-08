@@ -25,6 +25,7 @@ Avoid importing here, as it will likely result in a circular import.
 
 import os
 import cv2
+from typing import Any, Union
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 BUILTIN_ICON_PATHS = (
@@ -38,7 +39,7 @@ F32 = "f"
 F64 = "d"
 
 
-def register_class(cls):
+def register_class(cls: type) -> None:
     import pv
 
     inst = cls()
@@ -61,9 +62,10 @@ def register_class(cls):
 
     elif issubclass(cls, pv.types.UIPanel):
         pv.context.ui_panels.append(inst)
+        get(pv.context.ui_sections, cls.section_id).pgroups.append(inst)
 
 
-def unregister_class(cls):
+def unregister_class(cls: type) -> None:
     import pv
     context = pv.context
     scene = pv.context.scene
@@ -74,9 +76,11 @@ def unregister_class(cls):
         context.ui_sections.pop(get(context.ui_sections, cls.idname, True))
     elif issubclass(cls, pv.types.UIPanel):
         context.ui_panels.pop(get(context.ui_panels, cls.idname, True))
+        section = get(pv.context.ui_sections, cls.section_id)
+        section.pop(get(section.pgroups, cls.idname, True))
 
 
-def get(items, idname, idx=False):
+def get(items, idname, idx=False) -> Any:
     for i, item in enumerate(items):
         if item.idname == idname:
             return i if idx else item
