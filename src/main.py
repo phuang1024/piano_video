@@ -27,7 +27,7 @@ from gui import gui
 from gui_utils import *
 
 
-def setup_addons(action, verbose=False):
+def setup_addons(action: str, verbose: bool = False):
     printer = VerbosePrinter(verbose)
     if verbose:
         printer(f"Setup add-ons: {action}")
@@ -46,7 +46,7 @@ def setup_addons(action, verbose=False):
                 if valid:
                     printer(f"      Setting up {file}")
                     mod = __import__(os.path.splitext(file)[0])
-                    if hasattr(mod, "register"):
+                    if hasattr(mod, action):
                         getattr(mod, action)()
                 else:
                     printer(f"      Skipping {file}")
@@ -73,7 +73,8 @@ def main():
 
     if args.version:
         print(f"Piano Video v{VERSION}")
-        print("Licensed under GNU GPL v3")
+        print("Running in Python " + ".".join(map(str, sys.version_info[:3])))
+        print("Licensed under GNU General Public License v3")
         return
 
     vb = args.verbose
