@@ -5,7 +5,7 @@ Running the Program
 System Requirements
 -------------------
 
-Please read the `requirements <install.html#Requirements>`__ section.
+Please read the `requirements <install.html>`__ section.
 
 
 Debian Package

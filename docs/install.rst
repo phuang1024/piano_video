@@ -7,7 +7,7 @@ Linux Systems
 
 All releases of Piano Video have a Debian package
 pre-built along with it. You can download the latest
-release on `GitHub <https://github.com/HuangPatrick16777216/piano_video>`.
+release on `GitHub <https://github.com/HuangPatrick16777216/piano_video>`__
 
 To install the Debian package (version number may vary):
 
@@ -17,7 +17,7 @@ To install the Debian package (version number may vary):
 
 
 Requirements
-============
+------------
 
 You will need Python at least version 3.7 on your system,
 as well as `these <https://github.com/HuangPatrick16777216/piano_video/blob/main/requirements.txt>`__
