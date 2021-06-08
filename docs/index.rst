@@ -10,6 +10,9 @@ Welcome to Piano Video's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   install
+   support
+
 
 
 Indices and tables
