@@ -9,4 +9,8 @@ __pycache__
 *.mp3
 *.mp4
 
+/docs/_build
+/docs/_static
+/docs/_templates
+
 /src/addons_installed
