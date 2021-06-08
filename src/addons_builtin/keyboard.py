@@ -38,6 +38,20 @@ class KEYBOARD_PT_Props(pv.types.PropertyGroup):
                 ("VIDEO", "Video", "Crop the keyboard from a video file"),
             ],
         ),
+
+        IntProp(
+            idname="x_offset",
+            label="X Offset",
+            description="Horizontal offset in pixels",
+            default=0,
+        ),
+
+        FloatProp(
+            idname="y_scale",
+            label="Y Scale",
+            description="Vertical scale",
+            default=1, min=0, max=20,
+        ),
     ]
 
 
@@ -46,6 +60,19 @@ class KEYBOARD_UT_Section(pv.types.UISection):
     label = "Keyboard"
     description = "Settings for the keyboard"
     icon = "piano.png"
+
+
+class KEYBOARD_UT_Appearance(pv.types.UIPanel):
+    idname = "appearance"
+    label = "Appearance"
+    description = "How the keyboard looks (position, size, etc)"
+    section_id = "keyboard"
+
+    def draw(self):
+        layout = self.layout
+        layout.prop("keyboard.type")
+        layout.prop("keyboard.x_offset")
+        layout.prop("keyboard.y_scale")
 
 
 classes = (
