@@ -21,7 +21,7 @@ import io
 import struct
 import numpy as np
 from typing import Dict, List, Union
-from .utils import UI32
+from .utils import UI32, get
 from .props import Property
 
 
@@ -30,13 +30,7 @@ class PropertyGroup:
     props: List[Property]
 
     def __getattr__(self, attr: str) -> Property:
-        if hasattr(self, attr):
-            return getattr(self, attr)
-
-        for prop in self.props:
-            if prop.idname == attr:
-                return prop
-        raise ValueError(f"PropertyGroup {self.idname} has no property {attr}")
+        return get(self.props, attr)
 
     def dump(self, stream: io.BytesIO) -> None:
         """
@@ -71,7 +65,7 @@ class UILayout:
     """
     A layout class, which can be drawn on to show props, operators, etc.
     """
-    elements: List[Dict]
+    elements: List[Dict[str, str]]
 
     def __init__(self) -> None:
         self.elements = []
@@ -128,13 +122,7 @@ class Scene:
         self.pgroups = []
 
     def __getattr__(self, attr: str) -> PropertyGroup:
-        if hasattr(self, attr):
-            return getattr(self, attr)
-
-        for group in self.pgroups:
-            if group.idname == attr:
-                return group
-        raise ValueError(f"Scene has no PropertyGroup {attr}")
+        return get(self.pgroups, attr)
 
 
 class Context:

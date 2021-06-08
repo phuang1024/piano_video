@@ -91,3 +91,10 @@ def unregister_class(cls):
                 break
         else:
             raise ValueError(f"No registered UIPanel: {cls.idname}")
+
+
+def get(items, idname):
+    for item in items:
+        if item.idname == idname:
+            return item
+    raise ValueError(f"No object with idname {idname} in list of {items[0].__class__.__name__}")
