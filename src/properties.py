@@ -40,7 +40,7 @@ class Properties:
 
         pygame.draw.rect(surface, (28, 28, 28), rect)
 
-        # Draw tabs
+        # Calculate tab hovering
         spacing = self.tab_spacing
         size = self.tab_size
         hovering = None
@@ -50,7 +50,10 @@ class Properties:
                 tmp_y -= (spacing+size)
             if tmp_y < spacing+size:
                 hovering = (my-spacing) // (spacing+size)
+        if shared.mouse_pressed[0] and hovering is not None:
+            self.tab = hovering
 
+        # Draw tabs
         cy = y + spacing
         for i, section in enumerate(pv.context.ui_sections):
             # Draw tab
@@ -66,6 +69,3 @@ class Properties:
                 surface.blit(icon, (x+spacing+3, cy+3))
 
             cy += size + spacing
-
-        if shared.mouse_pressed[0] and hovering is not None:
-            self.tab = hovering
