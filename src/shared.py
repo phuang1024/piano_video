@@ -25,7 +25,7 @@ You can import this and access these values.
 """
 
 import pygame
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 pygame.init()
 
 mpos: Tuple[int, int]             # Mouse pos
@@ -35,3 +35,7 @@ mtime: float                      # Seconds the mouse has been in the current po
 
 kdowns: List[int]                 # KEYDOWN events
 kpress: Dict[int, bool]           # Keys pressed, actually is pygame.key.ScancodeWrapper
+
+tooltip: Union[Tuple[Tuple[int, int], str, str], None]   # [[mx, my], header, text]
+
+tooltip = None

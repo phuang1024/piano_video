@@ -26,6 +26,9 @@ pygame.init()
 
 
 class WindowManager:
+    tooltip_padding = 10
+    tooltip_text_height = 18
+
     def __init__(self) -> None:
         self.properties = Properties()
         self.prev_size = (None, None)
@@ -42,6 +45,34 @@ class WindowManager:
 
         # Draw properties
         self.properties.draw(surface, props_rect)
+
+        self.draw_tooltip(surface)
+
+    def draw_tooltip(self, surface):
+        width, height = surface.get_size()
+        padding = self.tooltip_padding
+        text_height = self.tooltip_text_height
+        text_padding = (text_height-14) // 2
+
+        if shared.tooltip is not None:
+            # TODO split text by \n and render separately
+            # TODO word wrap
+            (x, y), header, text = shared.tooltip
+            header_surf = FONT_SMALL.render(header, 1, WHITE)
+            text_surf = FONT_SMALL.render(text, 1, GRAY)
+            w = max(header_surf.get_width(), text_surf.get_width()) + 2*padding
+            h = 2*text_height + 2*padding
+            x = min(max(x, 0), width-w)
+            y = min(max(y, 0), height-h)
+
+            rect = pygame.Surface((w, h))
+            rect.set_alpha(100)
+            rect.fill(BLACK)
+            surface.blit(rect, (x, y))
+            pygame.draw.rect(surface, GRAY, (x, y, w, h), 1)
+
+            surface.blit(header_surf, (x+padding, y+padding+text_padding))
+            surface.blit(text_surf, (x+padding, y+padding+text_padding+text_height))
 
 
 def gui(verbose=False):

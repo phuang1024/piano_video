@@ -175,6 +175,7 @@ WHITE = (255, 255, 255)
 
 FONT_FAMILY = "ubuntu"
 FONT = pygame.font.SysFont(FONT_FAMILY, 16)
+FONT_SMALL = pygame.font.SysFont(FONT_FAMILY, 14)
 
 # Other
 colors = Colors()
