@@ -33,17 +33,49 @@ class Properties:
 
     def __init__(self):
         self.tab = 0
+        self.hovering = None
+        self.queue = []
 
     def draw(self, surface, rect):
+        # pygame.draw.rect(surface, (28, 28, 28), rect)
+
+        self.update(rect)
+
+        while len(self.queue) > 0:
+            task = self.queue.pop(0)
+            if task["type"] == "DRAW_TAB":
+                num = task["num"]
+                if num is not None and 0 <= num < len(pv.context.ui_sections):
+                    self.draw_tab(surface, rect, num)
+
+    def draw_tab(self, surface, rect, num):
         x, y, w, h = rect
-        mx, my = shared.mouse_pos
-
-        pygame.draw.rect(surface, (28, 28, 28), rect)
-
-        # Calculate tab hovering
         spacing = self.tab_spacing
         size = self.tab_size
+
+        # Draw tab
+        cy = (y+spacing) + num*(size+spacing)
+        color = self.tab_col_selected if self.tab == num else \
+            (self.tab_col_hovered if self.hovering == num else self.tab_col_idle)
+        pygame.draw.rect(surface, (color,)*3, (x+spacing, cy, size, size),
+            border_top_left_radius=5, border_bottom_left_radius=5)
+
+        # Draw icon
+        section = pv.context.ui_sections[num]
+        if section.icon_img is not None:
+            icon = pygame.transform.scale(array_to_surf(section.icon_img), (size-6,)*2)
+            icon.set_colorkey((0, 0, 0))
+            surface.blit(icon, (x+spacing+3, cy+3))
+
+    def update(self, rect):
+        x, y, w, h = rect
+        mx, my = shared.mouse_pos
+        spacing = self.tab_spacing
+        size = self.tab_size
+
+        # Calculate tab hovering
         hovering = None
+        tab = self.tab
         if (x+spacing <= mx <= x+spacing+size):
             tmp_y = my
             while (tmp_y > 2*spacing+size):
@@ -51,21 +83,14 @@ class Properties:
             if tmp_y < spacing+size:
                 hovering = (my-spacing) // (spacing+size)
         if shared.mouse_pressed[0] and hovering is not None:
-            self.tab = hovering
+            tab = hovering
 
-        # Draw tabs
-        cy = y + spacing
-        for i, section in enumerate(pv.context.ui_sections):
-            # Draw tab
-            color = self.tab_col_selected if self.tab == i else \
-                (self.tab_col_hovered if hovering == i else self.tab_col_idle)
-            pygame.draw.rect(surface, (color,)*3, (x+spacing, cy, size, size),
-                border_top_left_radius=5, border_bottom_left_radius=5)
+        if hovering != self.hovering:
+            self.queue.append({"type": "DRAW_TAB", "num": self.hovering})
+            self.queue.append({"type": "DRAW_TAB", "num": hovering})
+        if tab != self.tab:
+            self.queue.append({"type": "DRAW_TAB", "num": self.tab})
+            self.queue.append({"type": "DRAW_TAB", "num": tab})
 
-            # Draw icon
-            if section.icon_img is not None:
-                icon = pygame.transform.scale(array_to_surf(section.icon_img), (size-6,)*2)
-                icon.set_colorkey((0, 0, 0))
-                surface.blit(icon, (x+spacing+3, cy+3))
-
-            cy += size + spacing
+        self.hovering = hovering
+        self.tab = tab
