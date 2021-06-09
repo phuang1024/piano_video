@@ -113,7 +113,6 @@ def manage_addons(cmds):
 
 
 def main():
-    init()
     parser = argparse.ArgumentParser()
     parser.add_argument("-S", "--safe", action="store_true", help="Safe mode (protects accidental SIGINT or KeyboardInterrupt)")
     parser.add_argument("-V", "--version", action="store_true", help="Show the version of the program.")
