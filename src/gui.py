@@ -27,13 +27,20 @@ pygame.init()
 class WindowManager:
     def __init__(self) -> None:
         self.properties = Properties()
+        self.prev_size = (None, None)
 
     def draw(self, surface):
         width, height = surface.get_size()
         sep = int(width * 0.8)
+        props_rect = (sep, 0, width-sep, height)
+
+        if width != self.prev_size[0] or height != self.prev_size[1]:
+            self.properties.redraw(surface, props_rect)
+
+            self.prev_size = (width, height)
 
         # Draw properties
-        self.properties.draw(surface, (sep, 0, width-sep, height))
+        self.properties.draw(surface, props_rect)
 
 
 def gui(verbose=False):
@@ -45,9 +52,6 @@ def gui(verbose=False):
     clock = pygame.time.Clock()
     pygame.display.set_caption(f"Piano Video {VERSION}")
     pygame.display.set_icon(IMAGES["icon"])
-
-    width, height = WIDTH, HEIGHT
-    resized = True
 
     wm = WindowManager()
 
@@ -62,8 +66,6 @@ def gui(verbose=False):
 
             elif event.type == pygame.VIDEORESIZE:
                 surface.fill(BLACK)
-                width, height = event.w, event.h
-                resized = True
 
         shared.mouse_pos = pygame.mouse.get_pos()
         shared.mouse_pressed = pygame.mouse.get_pressed()
