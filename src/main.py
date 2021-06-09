@@ -44,8 +44,10 @@ class SIGINT_Handler:
         if t - self.last_int < self.threshold:
             raise KeyboardInterrupt(f"Interrupted twice in {self.threshold} seconds. Exiting.")
 
+        colors.red
         print("SIGINT received. Continuing because Safe Mode is activated.")
         print(f"Send SIGINT again in the next {self.threshold} seconds to exit.")
+        colors.reset
 
         self.last_int = t
 

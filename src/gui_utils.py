@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 import os
 import pygame
 import cv2
@@ -56,6 +57,52 @@ class VerbosePrinter:
     def __call__(self, msg):
         if self.verbose:
             print(msg)
+
+
+class Colors:
+    """
+    Colored text in the terminal. Instance named "colors" created in this file.
+    Usage:
+    >>> colors.red      # Don't need parentheses. Accessing it sets the color
+    >>> f"{colors.red}hi{colors.reset}"
+    """
+    BLACK = "\x1b[30m"
+    BLUE = "\x1b[34m"
+    CYAN = "\x1b[36m"
+    GREEN = "\x1b[32m"
+    MAGENTA = "\x1b[35m"
+    RED = "\x1b[31m"
+    RESET = "\x1b[39m"
+    WHITE = "\x1b[37m"
+    YELLOW = "\x1b[33m"
+
+    @property
+    def black(self):
+        sys.stdout.write(self.BLACK); return ""
+    @property
+    def blue(self):
+        sys.stdout.write(self.BLUE); return ""
+    @property
+    def cyan(self):
+        sys.stdout.write(self.CYAN); return ""
+    @property
+    def green(self):
+        sys.stdout.write(self.GREEN); return ""
+    @property
+    def magenta(self):
+        sys.stdout.write(self.MAGENTA); return ""
+    @property
+    def red(self):
+        sys.stdout.write(self.RED); return ""
+    @property
+    def reset(self):
+        sys.stdout.write(self.RESET); return ""
+    @property
+    def white(self):
+        sys.stdout.write(self.WHITE); return ""
+    @property
+    def yellow(self):
+        sys.stdout.write(self.YELLOW); return ""
 
 
 def get_run():
@@ -124,3 +171,6 @@ GRAY_DARK = (64, 64, 64)
 GRAY = (128, 128, 128)
 GRAY_LIGHT = (192, 192, 192)
 WHITE = (255, 255, 255)
+
+# Other
+colors = Colors()
