@@ -52,10 +52,18 @@ class SIGINT_Handler:
         self.last_int = t
 
 
+def init(verbose=False):
+    printer = VerbosePrinter(verbose)
+    printer("Initializing")
+
+    for directory in ADDON_PATHS:
+        printer(f"  Making add-on directory {directory}")
+        os.makedirs(directory, exist_ok=True)
+
+
 def setup_addons(action: str, verbose: bool = False):
     printer = VerbosePrinter(verbose)
-    if verbose:
-        printer(f"Setup add-ons: {action}")
+    printer(f"Setup add-ons: {action}")
 
     for directory in ADDON_PATHS:
         if os.path.isdir(directory):
@@ -99,12 +107,19 @@ def run(args):
     setup_addons("unregister", verbose=vb)
 
 
+def manage_addons(cmds):
+    if cmds[0] == "list":
+        pass
+
+
 def main():
+    init()
     parser = argparse.ArgumentParser()
     parser.add_argument("-S", "--safe", action="store_true", help="Safe mode (protects accidental SIGINT or KeyboardInterrupt)")
     parser.add_argument("-V", "--version", action="store_true", help="Show the version of the program.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Display more information to stdout.")
     parser.add_argument("-T", "--test", action="store_true", help="Test API and modules. No GUI window will open.")
+    parser.add_argument("cmds", nargs="*")
     args = parser.parse_args()
 
     if args.version:
@@ -113,6 +128,16 @@ def main():
         print("This program comes with ABSOLUTELY NO WARRANTY.")
         print("This is free software, and you are welcome to redistribute it under certain conditions.")
         print("Running in Python " + ".".join(map(str, sys.version_info[:3])))
+        return
+
+    if len(args.cmds) > 0:
+        if args.cmds[0] == "addons":
+            manage_addons(args.cmds[1:])
+        else:
+            print(f"Unrecognized option: {args.cmds[0]}")
+            print("Please see docs for more info:")
+            print("  https://piano-video.readthedocs.io/en/latest/cli-args.html")
+
         return
 
     if args.safe:
