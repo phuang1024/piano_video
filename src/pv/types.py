@@ -97,9 +97,11 @@ class UIPanel:
     section_id: str
 
     layout: UILayout
+    expanded: bool
 
     def __init__(self) -> None:
         self.layout = UILayout()
+        self.expanded = False
 
     def draw(self) -> None:...
 
