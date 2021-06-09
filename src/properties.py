@@ -34,6 +34,7 @@ class Properties:
 
     props_height = 24
     props_bg = 42
+    props_expanded_bg = 54
     props_header = 72
 
     def __init__(self):
@@ -86,6 +87,7 @@ class Properties:
 
         height = self.props_height
         bg = self.props_bg
+        ex_bg = self.props_expanded_bg
         header = self.props_header
         self.elements = []
 
@@ -95,7 +97,7 @@ class Properties:
         for panel in pv.context.ui_sections[self.tab].panels:
             # Draw header
             cy = grid_y*height + y
-            pygame.draw.rect(surface, (header,)*3, (x, cy, w, height))
+            pygame.draw.rect(surface, (header,)*3, (x, cy, w, height-1))
             pygame.draw.circle(surface, (255,)*3, (x+height/2, cy+height/2), 7, (0 if panel.expanded else 1))
             self.draw_text(surface, rect, panel.label, grid_y, x_offset=height)
             self.elements.append({"type": "HEADER", "idname": panel.idname})
@@ -103,7 +105,16 @@ class Properties:
 
             if panel.expanded:
                 # Draw panel elements
-                pass
+                for element in panel.layout.elements:
+                    cy = grid_y*height + y
+                    pygame.draw.rect(surface, (ex_bg,)*3, (x, cy, w, height))
+
+                    if element["type"] == "LABEL":
+                        surf = FONT.render(element["text"], 1, GRAY_LIGHT)
+                        padding = (height-surf.get_height()) / 2
+                        surface.blit(surf, (x+padding, cy+padding))
+
+                    grid_y += 1
 
     def draw_text(self, surface, rect, text, grid_y, color=240, x_offset=0, y_offset=0):
         height = self.props_height
