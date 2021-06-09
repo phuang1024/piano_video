@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install packages
-        run: pip install sphinx
+        run: pip install sphinx sphinx-rtd-theme
       - name: Build docs
         run: |
           cd ./docs
