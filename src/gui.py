@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import time
 import pygame
 import shared
 from gui_utils import *
@@ -54,6 +55,8 @@ def gui(verbose=False):
     pygame.display.set_icon(IMAGES["icon"])
 
     wm = WindowManager()
+    mouse_time_start = time.time()
+    mouse_prev_pos = None
 
     printer("  Starting GUI loop")
     while get_run():
@@ -78,6 +81,11 @@ def gui(verbose=False):
         shared.mpos = pygame.mouse.get_pos()
         shared.mpress = pygame.mouse.get_pressed()
         shared.kpress = pygame.key.get_pressed()
+        shared.mtime = time.time() - mouse_time_start
+
+        if shared.mpos != mouse_prev_pos:
+            mouse_time_start = time.time()
+        mouse_prev_pos = shared.mpos
 
         if kmod(pygame.K_q, True):
             set_run(False)

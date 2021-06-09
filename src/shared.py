@@ -31,5 +31,7 @@ pygame.init()
 mpos: Tuple[int, int]             # Mouse pos
 mdowns: List[int]                 # MOUSEBUTTONDOWN events
 mpress: Tuple[bool, bool, bool]   # Mouse pressed
+mtime: float                      # Seconds the mouse has been in the current pos
+
 kdowns: List[int]                 # KEYDOWN events
 kpress: Dict[int, bool]           # Keys pressed, actually is pygame.key.ScancodeWrapper
