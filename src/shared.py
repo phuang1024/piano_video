@@ -25,9 +25,11 @@ You can import this and access these values.
 """
 
 import pygame
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 pygame.init()
 
 mpos: Tuple[int, int]             # Mouse pos
+mdowns: List[int]                 # MOUSEBUTTONDOWN events
 mpress: Tuple[bool, bool, bool]   # Mouse pressed
-kpress: Dict[int, bool]           # Keys pressed, Actually is pygame.key.ScancodeWrapper
+kdowns: List[int]                 # KEYDOWN events
+kpress: Dict[int, bool]           # Keys pressed, actually is pygame.key.ScancodeWrapper

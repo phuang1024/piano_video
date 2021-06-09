@@ -59,23 +59,29 @@ def gui(verbose=False):
     while get_run():
         clock.tick(FPS)
         pygame.display.update()
+
+        shared.kdowns = []
+        shared.mdowns = []
+
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 set_run(False)
-
             elif event.type == pygame.VIDEORESIZE:
                 surface.fill(BLACK)
-
             elif event.type == pygame.KEYDOWN:
-                # TODO list of keydowns in shared with repeat
-                key = event.key
-                if kmod(key, pygame.K_q, True):
-                    set_run(False)
+                # TODO key repeat when hold down
+                shared.kdowns.append(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                shared.mdowns.append(event.button)
 
         shared.mpos = pygame.mouse.get_pos()
         shared.mpress = pygame.mouse.get_pressed()
         shared.kpress = pygame.key.get_pressed()
+
+        if kmod(pygame.K_q, True):
+            set_run(False)
+
         wm.draw(surface)
 
     pygame.quit()

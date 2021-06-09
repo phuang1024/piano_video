@@ -22,6 +22,7 @@ import os
 import pygame
 import cv2
 import numpy as np
+import shared
 from copy import deepcopy
 pygame.init()
 
@@ -125,8 +126,8 @@ def array_to_surf(array: np.ndarray) -> pygame.Surface:
     return pygame.image.frombuffer(array.tobytes(), array.shape[1::-1], "RGB")
 
 
-def kmod(key, target_key, ctrl=False, shift=False, alt=False):
-    keys = pygame.key.get_pressed()
+def kmod(target_key, ctrl=False, shift=False, alt=False):
+    keys = shared.kpress
     ctrl_pressed = (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL])
     shift_pressed = (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT])
     alt_pressed = (keys[pygame.K_LALT] or keys[pygame.K_RALT])
@@ -138,7 +139,7 @@ def kmod(key, target_key, ctrl=False, shift=False, alt=False):
     if alt != alt_pressed:
         return False
 
-    return (key == target_key)
+    return (target_key in shared.kdowns)
 
 
 # Global constants
