@@ -18,7 +18,6 @@
 #
 
 import pygame
-import pygame.gfxdraw
 import pv
 import shared
 from gui_utils import *
@@ -39,24 +38,31 @@ class Properties:
 
     def __init__(self):
         self.tab = 0
-        self.hovering = None
+        self.tab_hovering = None
+        self.prop_hovering = None
+
         self.queue = []
         self.elements = []   # List of elements that have been drawed as props
 
     def redraw(self, surface, rect):
         pygame.draw.rect(surface, (28, 28, 28), rect)
-        self.draw_tabs(surface, rect)
-        self.draw_props(surface, rect)
+        self.queue.append({"type": "DRAW_TABS"})
+        self.queue.append({"type": "DRAW_PROPS"})
+        self.draw(surface, rect)
 
     def draw(self, surface, rect):
-        self.update(rect)
+        spacing = self.tab_spacing
+        size = self.tab_size
+        x, y, w, h = rect
+        props_rect = (x+spacing+size, y, w-spacing-size, h)
 
+        self.update(rect, props_rect)
         while len(self.queue) > 0:
             task = self.queue.pop(0)
             if task["type"] == "DRAW_TABS":
                 self.draw_tabs(surface, rect)
             elif task["type"] == "DRAW_PROPS":
-                self.draw_props(surface, rect)
+                self.draw_props(surface, props_rect)
 
     def draw_tabs(self, surface, rect):
         x, y, w, h = rect
@@ -67,7 +73,7 @@ class Properties:
             # Draw tab
             cy = (y+spacing) + num*(size+spacing)
             color = self.tab_col_selected if self.tab == num else \
-                (self.tab_col_hovered if self.hovering == num else self.tab_col_idle)
+                (self.tab_col_hovered if self.tab_hovering == num else self.tab_col_idle)
             pygame.draw.rect(surface, (color,)*3, (x+spacing, cy, size, size),
                 border_top_left_radius=5, border_bottom_left_radius=5)
 
@@ -81,10 +87,6 @@ class Properties:
 
     def draw_props(self, surface, rect):
         x, y, w, h = rect
-        x += self.tab_spacing+self.tab_size   # Account for tab margin
-        w -= self.tab_spacing+self.tab_size
-        rect = (x, y, w, h)
-
         height = self.props_height
         bg = self.props_bg
         ex_bg = self.props_expanded_bg
@@ -126,9 +128,9 @@ class Properties:
 
         surface.blit(surf, (rect[0]+margin+x_offset, y+margin/2+y_offset))
 
-    def update(self, rect):
+    def update(self, rect, props_rect):
         self.update_tabs(rect)
-        self.update_props(rect)
+        self.update_props(props_rect)
 
     def update_tabs(self, rect):
         x, y, w, h = rect
@@ -148,20 +150,27 @@ class Properties:
         if shared.mpress[0] and hovering is not None:
             tab = hovering
 
-        if hovering != self.hovering:
+        if hovering != self.tab_hovering:
             self.queue.append({"type": "DRAW_TABS"})
         if tab != self.tab:
             self.queue.append({"type": "DRAW_TABS"})
             self.queue.append({"type": "DRAW_PROPS"})
 
-        self.hovering = hovering
+        self.tab_hovering = hovering
         self.tab = tab
 
     def update_props(self, rect):
         x, y, w, h = rect
-
-        grid = (shared.mpos[1]-y) // self.props_height
+        mx, my = shared.mpos
+        grid = (my-y) // self.props_height
         edited = False
+
+        hovering = grid if (x <= mx <= x+w) else None
+        if hovering != self.prop_hovering:
+            self.prop_hovering = hovering
+            if hovering is not None:
+                edited = True
+
         if 0 <= grid < len(self.elements):
             element = self.elements[grid]
             if element["type"] == "HEADER":
