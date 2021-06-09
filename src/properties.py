@@ -25,11 +25,15 @@ pygame.init()
 
 
 class Properties:
-    tab_size = 30
+    tab_size = 35
     tab_spacing = 5
     tab_col_idle = 42
-    tab_col_selected = 96
-    tab_col_hovered = 60
+    tab_col_selected = 72
+    tab_col_hovered = 54
+
+    props_height = 24
+    props_bg = 42
+    props_header = 72
 
     def __init__(self):
         self.tab = 0
@@ -39,6 +43,7 @@ class Properties:
     def redraw(self, surface, rect):
         pygame.draw.rect(surface, (28, 28, 28), rect)
         self.draw_tabs(surface, rect)
+        self.draw_props(surface, rect)
 
     def draw(self, surface, rect):
         self.update(rect)
@@ -47,6 +52,8 @@ class Properties:
             task = self.queue.pop(0)
             if task["type"] == "DRAW_TABS":
                 self.draw_tabs(surface, rect)
+            elif task["type"] == "DRAW_PROPS":
+                self.draw_props(surface, rect)
 
     def draw_tabs(self, surface, rect):
         x, y, w, h = rect
@@ -64,9 +71,40 @@ class Properties:
             # Draw icon
             section = pv.context.ui_sections[num]
             if section.icon_img is not None:
-                icon = pygame.transform.scale(array_to_surf(section.icon_img), (size-6,)*2)
+                icon = cv2.resize(section.icon_img, (size-6,)*2, interpolation=cv2.INTER_AREA)
+                icon = array_to_surf(icon)
                 icon.set_colorkey((0, 0, 0))
                 surface.blit(icon, (x+spacing+3, cy+3))
+
+    def draw_props(self, surface, rect):
+        print("DRAW")
+        x, y, w, h = rect
+        x += self.tab_spacing+self.tab_size   # Account for tab margin
+        w -= self.tab_spacing+self.tab_size
+        rect = (x, y, w, h)
+
+        height = self.props_height
+        bg = self.props_bg
+        header = self.props_header
+
+        pygame.draw.rect(surface, (bg,)*3, rect)
+
+        grid_y = 0
+        for panel in pv.context.ui_sections[self.tab].panels:
+            cy = grid_y * height
+            pygame.draw.rect(surface, (header,)*3, (x, cy, w, height))
+            self.draw_text(surface, rect, panel.label, grid_y)
+            cy += 1
+
+    def draw_text(self, surface, rect, text, grid_y, color=255):
+        height = self.props_height
+
+        surf = FONT.render(text, 1, (color,)*3)
+        y = grid_y*height + rect[1]
+        w, h = surf.get_size()
+        margin = height - h
+
+        surface.blit(surf, (rect[0]+margin, y+margin/2))
 
     def update(self, rect):
         self.update_tabs(rect)
@@ -89,8 +127,11 @@ class Properties:
         if shared.mpress[0] and hovering is not None:
             tab = hovering
 
-        if hovering != self.hovering or tab != self.tab:
+        if hovering != self.hovering:
             self.queue.append({"type": "DRAW_TABS"})
+        if tab != self.tab:
+            self.queue.append({"type": "DRAW_TABS"})
+            self.queue.append({"type": "DRAW_PROPS"})
 
         self.hovering = hovering
         self.tab = tab
