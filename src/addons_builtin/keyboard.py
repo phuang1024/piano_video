@@ -78,6 +78,7 @@ class KEYBOARD_UT_Appearance(pv.types.UIPanel):
 classes = (
     KEYBOARD_PT_Props,
     KEYBOARD_UT_Section,
+    KEYBOARD_UT_Appearance,
 )
 
 def register():

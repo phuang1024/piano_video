@@ -18,6 +18,7 @@
 #
 
 import pygame
+import pygame.gfxdraw
 import pv
 import shared
 from gui_utils import *
@@ -77,7 +78,6 @@ class Properties:
                 surface.blit(icon, (x+spacing+3, cy+3))
 
     def draw_props(self, surface, rect):
-        print("DRAW")
         x, y, w, h = rect
         x += self.tab_spacing+self.tab_size   # Account for tab margin
         w -= self.tab_spacing+self.tab_size
@@ -93,10 +93,11 @@ class Properties:
         for panel in pv.context.ui_sections[self.tab].panels:
             cy = grid_y * height
             pygame.draw.rect(surface, (header,)*3, (x, cy, w, height))
-            self.draw_text(surface, rect, panel.label, grid_y)
-            cy += 1
+            pygame.draw.circle(surface, (255,)*3, (x+height/2, cy+height/2), 7, (0 if panel.expanded else 1))
+            self.draw_text(surface, rect, panel.label, grid_y, x_offset=height)
+            grid_y += 1
 
-    def draw_text(self, surface, rect, text, grid_y, color=255):
+    def draw_text(self, surface, rect, text, grid_y, color=240, x_offset=0, y_offset=0):
         height = self.props_height
 
         surf = FONT.render(text, 1, (color,)*3)
@@ -104,7 +105,7 @@ class Properties:
         w, h = surf.get_size()
         margin = height - h
 
-        surface.blit(surf, (rect[0]+margin, y+margin/2))
+        surface.blit(surf, (rect[0]+margin+x_offset, y+margin/2+y_offset))
 
     def update(self, rect):
         self.update_tabs(rect)
