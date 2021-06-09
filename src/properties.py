@@ -155,9 +155,10 @@ class Properties:
             element = self.elements[grid]
             if element["type"] == "HEADER":
                 if 1 in shared.mdowns:
-                    panel = pv.utils.get(pv.context.ui_sections[self.tab].panels, element["idname"])
-                    panel.expanded = (not panel.expanded)
-                    edited = True
+                    panel = pv.utils.get(pv.context.ui_sections[self.tab].panels, element["idname"], raise_error=False)
+                    if panel is not None:
+                        panel.expanded = (not panel.expanded)
+                        edited = True
 
         if edited:
             self.queue.append({"type": "DRAW_PROPS"})
