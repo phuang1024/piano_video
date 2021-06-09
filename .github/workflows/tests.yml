@@ -33,6 +33,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Formatting
+      - name: Run check
         run: |
           python3 ./tests/formatting_check.py
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: pip install sphinx
+      - name: Build docs
+        run: |
+          cd ./docs
+          make html SPHINXOPTS="-W --keep-going"
