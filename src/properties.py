@@ -40,6 +40,7 @@ class Properties:
         self.tab = 0
         self.hovering = None
         self.queue = []
+        self.elements = []   # List of elements that have been drawed as props
 
     def redraw(self, surface, rect):
         pygame.draw.rect(surface, (28, 28, 28), rect)
@@ -86,16 +87,23 @@ class Properties:
         height = self.props_height
         bg = self.props_bg
         header = self.props_header
+        self.elements = []
 
         pygame.draw.rect(surface, (bg,)*3, rect)
 
         grid_y = 0
         for panel in pv.context.ui_sections[self.tab].panels:
-            cy = grid_y * height
+            # Draw header
+            cy = grid_y*height + y
             pygame.draw.rect(surface, (header,)*3, (x, cy, w, height))
             pygame.draw.circle(surface, (255,)*3, (x+height/2, cy+height/2), 7, (0 if panel.expanded else 1))
             self.draw_text(surface, rect, panel.label, grid_y, x_offset=height)
+            self.elements.append({"type": "HEADER", "idname": panel.idname})
             grid_y += 1
+
+            if panel.expanded:
+                # Draw panel elements
+                pass
 
     def draw_text(self, surface, rect, text, grid_y, color=240, x_offset=0, y_offset=0):
         height = self.props_height
@@ -109,6 +117,7 @@ class Properties:
 
     def update(self, rect):
         self.update_tabs(rect)
+        self.update_props(rect)
 
     def update_tabs(self, rect):
         x, y, w, h = rect
@@ -136,3 +145,19 @@ class Properties:
 
         self.hovering = hovering
         self.tab = tab
+
+    def update_props(self, rect):
+        x, y, w, h = rect
+
+        grid = (shared.mpos[1]-y) // self.props_height
+        edited = False
+        if 0 <= grid < len(self.elements):
+            element = self.elements[grid]
+            if element["type"] == "HEADER":
+                if 1 in shared.mdowns:
+                    panel = pv.utils.get(pv.context.ui_sections[self.tab].panels, element["idname"])
+                    panel.expanded = (not panel.expanded)
+                    edited = True
+
+        if edited:
+            self.queue.append({"type": "DRAW_PROPS"})
