@@ -33,8 +33,6 @@ class Properties:
 
     props_height = 24
     props_bg = 42
-    props_expanded_bg = 54
-    props_header = 72
 
     def __init__(self):
         self.tab = 0
@@ -89,8 +87,6 @@ class Properties:
         x, y, w, h = rect
         height = self.props_height
         bg = self.props_bg
-        ex_bg = self.props_expanded_bg
-        header = self.props_header
         self.elements = []
 
         pygame.draw.rect(surface, (bg,)*3, rect)
@@ -99,7 +95,7 @@ class Properties:
         for panel in pv.context.ui_sections[self.tab].panels:
             # Draw header
             cy = grid_y*height + y
-            pygame.draw.rect(surface, (header,)*3, (x, cy, w, height-1))
+            pygame.draw.rect(surface, (72,)*3, (x, cy, w, height-1))
             pygame.draw.circle(surface, (255,)*3, (x+height/2, cy+height/2), 7, (0 if panel.expanded else 1))
             self.draw_text(surface, rect, panel.label, grid_y, x_offset=height)
             self.elements.append({"type": "HEADER", "idname": panel.idname})
@@ -112,12 +108,26 @@ class Properties:
                 # Draw panel elements
                 for element in panel.layout.elements:
                     cy = grid_y*height + y
-                    pygame.draw.rect(surface, (ex_bg,)*3, (x, cy, w, height))
+                    hov = (self.prop_hovering == grid_y)
+                    pygame.draw.rect(surface, (54,)*3, (x, cy, w, height))
 
                     if element["type"] == "LABEL":
-                        surf = FONT.render(element["text"], 1, GRAY_LIGHT)
-                        padding = (height-surf.get_height()) / 2
-                        surface.blit(surf, (x+padding, cy+padding))
+                        self.draw_text(surface, rect, element["text"], grid_y)
+                        self.elements.append({"type": "LABEL"})
+
+                    elif element["type"] == "PROP":
+                        self.elements.append(element)
+                        group, name = element["idpath"].split(".")
+                        prop = getattr(getattr(pv.context.scene, group), name)
+
+                        if isinstance(prop, pv.props.BoolProp):
+                            text = prop.label if element["text"] is None else element["text"]
+                            self.draw_text(surface, rect, text, grid_y)
+
+                            color = ((67, 180, 255) if hov else (61, 159, 255)) if prop.value else \
+                                ((96,)*3 if hov else (54,)*3)
+                            pygame.draw.circle(surface, color, (x+w/1.5, cy+height/2), 7)
+                            pygame.draw.circle(surface, (255,)*3, (x+w/1.5, cy+height/2), 7, 1)
 
                     grid_y += 1
 
@@ -174,14 +184,22 @@ class Properties:
             if hovering is not None:
                 edited = True
 
-        if 0 <= grid < len(self.elements):
-            element = self.elements[grid]
-            if element["type"] == "HEADER":
-                if 1 in shared.mdowns:
+        if 1 in shared.mdowns:
+            if 0 <= grid < len(self.elements):
+                edited = True
+                element = self.elements[grid]
+
+                if element["type"] == "HEADER":
                     panel = pv.utils.get(pv.context.ui_sections[self.tab].panels, element["idname"], raise_error=False)
                     if panel is not None:
                         panel.expanded = (not panel.expanded)
-                        edited = True
+
+                elif element["type"] == "PROP":
+                    group, name = element["idpath"].split(".")
+                    prop = getattr(getattr(pv.context.scene, group), name)
+
+                    if isinstance(prop, pv.props.BoolProp):
+                        prop.value = (not prop.value)
 
         if edited:
             self.queue.append({"type": "DRAW_PROPS"})
