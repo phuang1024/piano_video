@@ -22,9 +22,32 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
+import time
+import signal
 import argparse
 from gui import gui
 from gui_utils import *
+
+
+class SIGINT_Handler:
+    threshold = 2
+
+    def __enter__(self):
+        self.old_handler = signal.signal(signal.SIGINT, self.handler)
+        self.last_int = 0
+
+    def __exit__(self, type, value, traceback):
+        signal.signal(signal.SIGINT, self.old_handler)
+
+    def handler(self, sig, frame):
+        t = time.time()
+        if t - self.last_int < self.threshold:
+            raise KeyboardInterrupt(f"Interrupted twice in {self.threshold} seconds. Exiting.")
+
+        print("SIGINT received. Continuing because Safe Mode is activated.")
+        print(f"Send SIGINT again in the next {self.threshold} seconds to exit.")
+
+        self.last_int = t
 
 
 def setup_addons(action: str, verbose: bool = False):
@@ -64,8 +87,19 @@ def test_modules(verbose=False):
         __import__(mod)
 
 
+def run(args):
+    vb = args.verbose
+    setup_addons("register", verbose=vb)
+    if args.test:
+        test_modules(verbose=vb)
+    else:
+        gui(verbose=vb)
+    setup_addons("unregister", verbose=vb)
+
+
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("-S", "--safe", action="store_true", help="Safe mode (protects accidental SIGINT or KeyboardInterrupt)")
     parser.add_argument("-V", "--version", action="store_true", help="Show the version of the program.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Display more information to stdout.")
     parser.add_argument("-T", "--test", action="store_true", help="Test API and modules. No GUI window will open.")
@@ -79,13 +113,11 @@ def main():
         print("Running in Python " + ".".join(map(str, sys.version_info[:3])))
         return
 
-    vb = args.verbose
-    setup_addons("register", verbose=vb)
-    if args.test:
-        test_modules(verbose=vb)
+    if args.safe:
+        with SIGINT_Handler():
+            run(args)
     else:
-        gui(verbose=vb)
-    setup_addons("unregister", verbose=vb)
+        run(args)
 
 
 main()
