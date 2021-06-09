@@ -33,7 +33,7 @@ Testing Dependencies
 --------------------
 
 To make sure the Piano Video API and dependent Python packages
-are properly installed, run ``pvid --test --verbose`` or ``pvid -Tv`
+are properly installed, run ``pvid --test --verbose`` or ``pvid -Tv``
 for a shorter command.
 
 This will run a short test that will not open a GUI. You can see
