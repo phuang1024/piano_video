@@ -102,7 +102,6 @@ class UIPanel:
     def __init__(self) -> None:
         self.layout = UILayout()
         self.expanded = False
-        self.draw()
 
     def draw(self) -> None:...
 

@@ -106,6 +106,9 @@ class Properties:
             grid_y += 1
 
             if panel.expanded:
+                panel.layout.elements = []
+                panel.draw()
+
                 # Draw panel elements
                 for element in panel.layout.elements:
                     cy = grid_y*height + y
