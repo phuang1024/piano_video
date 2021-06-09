@@ -78,6 +78,22 @@ def array_to_surf(array: np.ndarray) -> pygame.Surface:
     return pygame.image.frombuffer(array.tobytes(), array.shape[1::-1], "RGB")
 
 
+def kmod(key, target_key, ctrl=False, shift=False, alt=False):
+    keys = pygame.key.get_pressed()
+    ctrl_pressed = (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL])
+    shift_pressed = (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT])
+    alt_pressed = (keys[pygame.K_LALT] or keys[pygame.K_RALT])
+
+    if ctrl != ctrl_pressed:
+        return False
+    if shift != shift_pressed:
+        return False
+    if alt != alt_pressed:
+        return False
+
+    return (key == target_key)
+
+
 # Global constants
 VERSION = "0.1.0"
 PARENT = os.path.dirname(os.path.realpath(__file__))

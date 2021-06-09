@@ -67,9 +67,15 @@ def gui(verbose=False):
             elif event.type == pygame.VIDEORESIZE:
                 surface.fill(BLACK)
 
-        shared.mouse_pos = pygame.mouse.get_pos()
-        shared.mouse_pressed = pygame.mouse.get_pressed()
-        shared.keys_pressed = pygame.key.get_pressed()
+            elif event.type == pygame.KEYDOWN:
+                # TODO list of keydowns in shared with repeat
+                key = event.key
+                if kmod(key, pygame.K_q, True):
+                    set_run(False)
+
+        shared.mpos = pygame.mouse.get_pos()
+        shared.mpress = pygame.mouse.get_pressed()
+        shared.kpress = pygame.key.get_pressed()
         wm.draw(surface)
 
     pygame.quit()

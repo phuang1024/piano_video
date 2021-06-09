@@ -73,7 +73,7 @@ class Properties:
 
     def update_tabs(self, rect):
         x, y, w, h = rect
-        mx, my = shared.mouse_pos
+        mx, my = shared.mpos
         spacing = self.tab_spacing
         size = self.tab_size
 
@@ -86,7 +86,7 @@ class Properties:
                 tmp_y -= (spacing+size)
             if tmp_y < spacing+size:
                 hovering = (my-spacing) // (spacing+size)
-        if shared.mouse_pressed[0] and hovering is not None:
+        if shared.mpress[0] and hovering is not None:
             tab = hovering
 
         if hovering != self.hovering or tab != self.tab:
