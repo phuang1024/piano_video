@@ -40,6 +40,9 @@ customize and add features to Piano Video.
 
 3. The Add-ons: These are scripts that use the Piano Video module.
 These scripts run **all** the core functionality in Piano Video.
+**An add-on is defined as any script that extends the functionality
+of Piano Video in any way, including core functionality.** It should
+not be thought of as a script that adds a little to the GUI.
 
 Piano Video has a few built-in add-ons, such as MIDI parsing and
 rendering the blocks. These built-in add-ons are enough for general
