@@ -1,6 +1,8 @@
 API Tutorial
 ============
 
+A basic understanding of Python is required.
+
 
 Installation
 ------------
@@ -37,3 +39,26 @@ rendering the blocks. These add-ons are enough for general
 use. If you would like to customize the program, such as
 creating your own blocks, you would write your own add-on
 in Python using API.
+
+
+Add-on Structure
+----------------
+
+When you write an add-on for Piano Video, there are a few steps:
+
+1. Defining new classes: You will define classes that inherit from
+pre-defined classes in the ``pv`` module.
+
+2. Registering the classes: Next, you will need to register each class,
+which is like telling Piano Video that you wish to make your class part
+of the GUI. Different classes have different behaviors when registered,
+which will be described below.
+
+Please read on to see how each step is achieved.
+
+
+Writing an Add-on
+-----------------
+
+Now, let's go through the process of writing an add-on, step-by-step.
+
