@@ -32,6 +32,10 @@ from gui_utils import *
 class SIGINT_Handler:
     threshold = 2
 
+    def __init__(self, verbose=False):
+        printer = VerbosePrinter(verbose)
+        printer(f"Safe mode activated, threshold = {self.threshold}")
+
     def __enter__(self):
         self.old_handler = signal.signal(signal.SIGINT, self.handler)
         self.last_int = 0
@@ -140,7 +144,7 @@ def main():
         return
 
     if args.safe:
-        with SIGINT_Handler():
+        with SIGINT_Handler(args.verbose):
             run(args)
     else:
         run(args)
