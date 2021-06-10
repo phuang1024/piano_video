@@ -32,7 +32,8 @@ from gui_utils import *
 class SIGINT_Handler:
     threshold = 2
 
-    def __init__(self, verbose=False):
+    def __init__(self, safe, verbose=False):
+        self.safe = safe
         printer = VerbosePrinter(verbose)
         printer(f"Safe mode activated, threshold = {self.threshold}")
 
@@ -44,16 +45,25 @@ class SIGINT_Handler:
         signal.signal(signal.SIGINT, self.old_handler)
 
     def handler(self, sig, frame):
-        t = time.time()
-        if t - self.last_int < self.threshold:
-            raise KeyboardInterrupt(f"Interrupted twice in {self.threshold} seconds. Exiting.")
+        if self.safe:
+            t = time.time()
+            if t - self.last_int < self.threshold:
+                self.exit()
+                return
 
-        colors.red
-        print("SIGINT received. Continuing because Safe Mode is activated.")
-        print(f"Send SIGINT again in the next {self.threshold} seconds to exit.")
-        colors.reset
+            colors.red
+            print("SIGINT received. Continuing because Safe Mode is activated.")
+            print(f"Send SIGINT again in the next {self.threshold} seconds to exit.")
+            colors.reset
 
-        self.last_int = t
+            self.last_int = t
+
+        else:
+            self.exit()
+
+    def exit(self):
+        print(f"Received SIGINT, exiting normally.")
+        set_run(False)
 
 
 def init(verbose=False):
@@ -143,10 +153,7 @@ def main():
 
         return
 
-    if args.safe:
-        with SIGINT_Handler(args.verbose):
-            run(args)
-    else:
+    with SIGINT_Handler(args.safe, args.verbose):
         run(args)
 
 
