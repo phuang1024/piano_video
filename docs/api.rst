@@ -27,8 +27,8 @@ in every release.
     print(pv.__version__)
 
 
-Basics of the API
------------------
+Piano Video Structure
+---------------------
 
 The whole Piano Video program is made up of three parts:
 
@@ -72,6 +72,27 @@ Property classes for display on the GUI.
 ************
 
 Classes that can be registered onto the GUI.
+
+``pv.types.PropertyGroup``
+    A collection of properties under a common group idname.
+
+    When using, create a new class that inherits from this class.
+    Define the idname and the list of props as class members.
+
+    After you register this class, you can access the PropertyGroup
+    with ``pv.context.scene.<group_idname>``.
+    Access a prop with ``pv.context.scene.<group_idname>.<prop_idname>``
+
+    :type: ``type``
+    :idname: ``str``, the group idname of this PropertyGroup.
+    :props: ``List[pv.props.Property]``, a list of contained
+        properties.
+
+``pv.types.Scene``
+    The scene class, which contains all settings for a project.
+
+    :type: ``type``
+    :pgroups: ``List[pv.types.PropertyGroup]``
 
 
 ``pv.utils``
