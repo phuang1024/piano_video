@@ -20,7 +20,7 @@
 import io
 import struct
 import numpy as np
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 from .utils import UI32, get
 from .props import Property
 
@@ -29,7 +29,22 @@ class PropertyGroup:
     idname: str
     props: List[Property]
 
-    def __getattr__(self, attr: str) -> Property:
+    def __getattr__(self, attr: str) -> Any:
+        """
+        Returns the value of the prop, not the property itself.
+        """
+        return get(self.props, attr).value
+
+    def __setattr__(self, attr: str, value: Any) -> None:
+        """
+        Sets prop with idname "name" to "value"
+        """
+        get(self.props, attr).value = value
+
+    def get(self, attr: str) -> Property:
+        """
+        Returns the property with idname attr.
+        """
         return get(self.props, attr)
 
     def dump(self, stream: io.BytesIO) -> None:
