@@ -47,3 +47,34 @@ rendering the blocks. These add-ons are enough for general
 use. If you would like to customize the program, such as
 creating your own blocks, you would write your own add-on
 in Python using API.
+
+
+The PV Module
+-------------
+
+The API module, called PV (Piano Video), is structured as follows:
+
+
+pv.context
+**********
+
+Contains the current state of the GUI, such as the current settings
+and registered UI sections.
+
+
+pv.props
+********
+
+Property classes for display on the GUI.
+
+
+pv.types
+********
+
+Classes that can be registered onto the GUI.
+
+
+pv.utils
+********
+
+Utilities for PV, such as registering and unregistering a class.
