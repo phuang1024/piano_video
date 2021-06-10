@@ -13,4 +13,5 @@ and is not functional yet.
    install
    manual
    api
+   api-tutorial
    support
