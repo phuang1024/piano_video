@@ -12,6 +12,5 @@ and is not functional yet.
 
    install
    manual
-   cli-args
    api
    support

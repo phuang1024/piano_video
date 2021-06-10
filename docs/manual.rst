@@ -29,6 +29,18 @@ with ``python3 src/main.py``. Example: When you see ``pvid --help``,
 type ``python3 src/main.py --help`` instead.
 
 
+Command Line Arguments
+----------------------
+
+``pvid [-h] [-S] [-V] [-v] [-T]``
+
+* ``-h, --help``: Show a help message.
+* ``-S, --safe``: Protects against accidental SIGINT or KeyboardInterrupt.
+* ``-V, --version``: Show version info.
+* ``-v, --verbose``: Print info to stdout while running.
+* ``-T, --test``: Test API and dependent modules without opening a GUI.
+
+
 Testing Dependencies
 --------------------
 
