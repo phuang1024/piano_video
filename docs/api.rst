@@ -55,26 +55,26 @@ The PV Module
 The API module, called PV (Piano Video), is structured as follows:
 
 
-pv.context
-**********
+``pv.context``
+**************
 
 Contains the current state of the GUI, such as the current settings
 and registered UI sections.
 
 
-pv.props
-********
+``pv.props``
+************
 
 Property classes for display on the GUI.
 
 
-pv.types
-********
+``pv.types``
+************
 
 Classes that can be registered onto the GUI.
 
 
-pv.utils
-********
+``pv.utils``
+************
 
 Utilities for PV, such as registering and unregistering a class.
