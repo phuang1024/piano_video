@@ -25,6 +25,23 @@ from .utils import UI32, get
 from .props import Property
 
 
+class Operator:
+    idname: str
+    label: str
+    description: str = ""
+
+    args: List[Property] = []
+
+    def __getattr__(self, attr: str) -> Any:
+        """
+        Returns argument value from self.args list.
+        """
+        return get(self.args, attr).value
+
+    def poll(self) -> bool:...
+    def execute(self) -> str:...
+
+
 class PropertyGroup:
     idname: str
     props: List[Property]
@@ -149,6 +166,7 @@ class Scene:
 class Context:
     scene: Scene
     ui_sections: List[UISection]
+    operators: List[Operator]
 
     def __init__(self) -> None:
         self.scene = Scene()

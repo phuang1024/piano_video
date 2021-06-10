@@ -65,6 +65,9 @@ def register_class(cls: type) -> None:
     elif issubclass(cls, pv.types.UIPanel):
         get(pv.context.ui_sections, cls.section_id).panels.append(inst)
 
+    elif issubclass(cls, pv.types.Operator):
+        pv.context.operators.append(inst)
+
 
 def unregister_class(cls: type) -> None:
     import pv
@@ -73,13 +76,18 @@ def unregister_class(cls: type) -> None:
 
     if issubclass(cls, pv.types.PropertyGroup):
         scene.pgroups.pop(get(scene.pgroups, cls.idname, True))
+
     elif issubclass(cls, pv.types.UISection):
         context.ui_sections.pop(get(context.ui_sections, cls.idname, True))
+
     elif issubclass(cls, pv.types.UIPanel):
         section = get(pv.context.ui_sections, cls.section_id, raise_error=False)
         if section is not None:
             # Need to account for possibility that section is already unregistered
             section.pop(get(section.pgroups, cls.idname, True))
+
+    elif issubclass(cls, pv.types.Operator):
+        pv.context.operators.pop(get(pv.context.operators, cls.idname, idx=True))
 
 
 def get(items, idname, idx=False, raise_error=True, not_found_rval=None) -> Any:
