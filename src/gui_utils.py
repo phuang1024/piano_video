@@ -151,6 +151,7 @@ ADDON_PATHS = (
 )
 
 DEPENDENCIES = (
+    "aadraw",
     "cv2",
     "mido",
     "numpy",
