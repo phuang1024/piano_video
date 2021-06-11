@@ -18,6 +18,7 @@
 #
 
 import pygame
+import aadraw
 import pv
 import shared
 from gui_utils import *
@@ -95,8 +96,8 @@ class Properties:
         for panel in pv.context.ui_sections[self.tab].panels:
             # Draw header
             cy = grid_y*height + y
-            pygame.draw.rect(surface, (72,)*3, (x, cy, w, height-1))
-            pygame.draw.circle(surface, (255,)*3, (x+height/2, cy+height/2), 7, (0 if panel.expanded else 1))
+            pygame.draw.rect(surface, (72,)*3, (x, cy+1, w, height-2))
+            aadraw.circle(surface, (255,)*3, (x+height/2, cy+height/2), 7, (0 if panel.expanded else 1))
             self.draw_text(surface, rect, panel.label, grid_y, x_offset=height)
             self.elements.append({"type": "HEADER", "idname": panel.idname})
             grid_y += 1
@@ -118,7 +119,7 @@ class Properties:
                     elif element["type"] == "PROP":
                         self.elements.append(element)
                         group, name = element["idpath"].split(".")
-                        prop = getattr(getattr(pv.context.scene, group), name)
+                        prop = getattr(pv.context.scene, group).get(name)
 
                         if isinstance(prop, pv.props.BoolProp):
                             text = prop.label if element["text"] is None else element["text"]
@@ -126,8 +127,8 @@ class Properties:
 
                             color = ((67, 180, 255) if hov else (61, 159, 255)) if prop.value else \
                                 ((96,)*3 if hov else (54,)*3)
-                            pygame.draw.circle(surface, color, (x+w/1.5, cy+height/2), 7)
-                            pygame.draw.circle(surface, (255,)*3, (x+w/1.5, cy+height/2), 7, 1)
+                            aadraw.circle(surface, color, (x+w/1.5, cy+height/2), 7)
+                            aadraw.circle(surface, (255,)*3, (x+w/1.5, cy+height/2), 7, 1)
 
                     grid_y += 1
 
@@ -196,7 +197,7 @@ class Properties:
 
                 elif element["type"] == "PROP":
                     group, name = element["idpath"].split(".")
-                    prop = getattr(getattr(pv.context.scene, group), name)
+                    prop = getattr(pv.context.scene, group).get(name)
 
                     if isinstance(prop, pv.props.BoolProp):
                         prop.value = (not prop.value)
