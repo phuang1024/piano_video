@@ -29,7 +29,7 @@ PKG_NAME = f"pvid_{VERSION}"
 PKG = os.path.join(PARENT, PKG_NAME)
 
 BIN = os.path.join(PKG, "usr", "local", "bin", "pvid_utils")
-START = os.path.join(PKG, "usr", "local", "bin", "pvid")
+START = os.path.join(PKG, "usr", "local", "bin", "pv")
 CONTROL = os.path.join(PKG, "DEBIAN", "control")
 
 DATA = {
@@ -64,12 +64,10 @@ while len(dirs) > 0:
     for f in os.listdir(os.path.join(SRC, d:=dirs.pop())):
         relpath = os.path.join(d, f)
         abspath = os.path.join(SRC, relpath)
-        if "__pycache__" in abspath:
-            continue
-
         dst = os.path.join(BIN, relpath)
+
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        if os.path.isfile(abspath) and (".py" in abspath or "assets" in abspath) and (not "__pycache__" in abspath):
+        if os.path.isfile(abspath) and (".py" in relpath or "assets" in relpath) and (not "__pycache__" in relpath):
             shutil.copy(abspath, dst)
         elif os.path.isdir(abspath):
             dirs.append(relpath)
