@@ -65,10 +65,10 @@ class BoolProp(Property):
     value: bool
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: bool = False, value: bool = None) -> None:
+            default: bool = False) -> None:
         super().__init__(idname, label, description)
         self.default = default
-        self.value = default if value is None else value
+        self.value = default
 
     def dump(self, stream: io.BytesIO) -> None:
         """
@@ -99,11 +99,11 @@ class IntProp(Property):
     step: int
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: int = 0, value: int = None, min: int = -NUM_MAX, max: int = NUM_MAX,
+            default: int = 0, min: int = -NUM_MAX, max: int = NUM_MAX,
             step: int = 1) -> None:
         super().__init__(idname, label, description)
         self.default = default
-        self.value = default if value is None else value
+        self.value = default
         self.max = max
         self.min = min
         self.step = step
@@ -137,11 +137,11 @@ class FloatProp(Property):
     step: float
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: float = 0, value: float = None, min: float = -NUM_MAX, max: float = NUM_MAX,
+            default: float = 0, min: float = -NUM_MAX, max: float = NUM_MAX,
             step: float = 0.001) -> None:
         super().__init__(idname, label, description)
         self.default = default
-        self.value = default if value is None else value
+        self.value = default
         self.max = max
         self.min = min
         self.step = step
@@ -174,11 +174,11 @@ class StringProp(Property):
     subtype: str
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: str = "", value: str = None, max_len: int = 200,
+            default: str = "", max_len: int = 200,
             password: bool = False, subtype: str = "") -> None:
         super().__init__(idname, label, description)
         self.default = default
-        self.value = default if value is None else value
+        self.value = default
         self.max_len = max_len
         self.password = password
         self.subtype = subtype
@@ -210,10 +210,10 @@ class EnumProp(Property):
     items: List[List[str]]
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: str = None, value: str = None, items: List = []) -> None:
+            default: str = None, items: List = []) -> None:
         super().__init__(idname, label, description)
         self.default = items[0][0] if default is None else default
-        self.value = self.default if value is None else value
+        self.value = self.default
         self.items = items
 
     def dump(self, stream: io.BytesIO) -> None:
