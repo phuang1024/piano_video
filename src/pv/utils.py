@@ -66,7 +66,14 @@ def register_class(cls: type) -> None:
         get(pv.context.ui_sections, cls.section_id).panels.append(inst)
 
     elif issubclass(cls, pv.types.Operator):
-        pv.context.operators.append(inst)
+        pv.context.operators.append(inst)  # TODO maybe not needed
+
+        group, name = cls.idname.split(".")
+        try:
+            getattr(pv.ops, group)
+        except ValueError:
+            pv.ops.groups.append(pv.types.OpGroup(group))
+        get(pv.ops.groups, group).callers.append(pv.types.OpCaller(cls))
 
 
 def unregister_class(cls: type) -> None:
@@ -88,6 +95,11 @@ def unregister_class(cls: type) -> None:
 
     elif issubclass(cls, pv.types.Operator):
         pv.context.operators.pop(get(pv.context.operators, cls.idname, idx=True))
+
+        group, name = cls.idname.split(".")
+        op_group = get(pv.ops.groups, group)
+        idx = get(op_group.callers, name, True)
+        op_group.callers.pop(idx)
 
 
 def get(items: Sequence[Any], idname: str, idx: bool = False, raise_error: bool = True,
