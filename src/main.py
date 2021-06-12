@@ -25,6 +25,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import time
 import signal
 import argparse
+import json
 from gui import gui
 from gui_utils import *
 
@@ -74,6 +75,13 @@ def init(verbose=False):
         printer(f"  Making add-on directory {directory}")
         os.makedirs(directory, exist_ok=True)
 
+    printer(f"  Making config directory {CONFIG_PATH}")
+    os.makedirs(CONFIG_PATH, exist_ok=True)
+
+    if not os.path.isfile(ADDON_CONFIG_PATH):
+        printer(f"  Initializing add-on config {ADDON_CONFIG_PATH}")
+        data = {}
+
 
 def setup_addons(action: str, verbose: bool = False):
     printer = VerbosePrinter(verbose)
@@ -86,8 +94,8 @@ def setup_addons(action: str, verbose: bool = False):
 
             for file in os.listdir(directory):
                 printer(f"    Found {file}")
-                path = os.path.join(directory, file)
 
+                path = os.path.join(directory, file)
                 valid = (os.path.isfile(path) and path.endswith(".py")) or \
                     (os.path.isdir(path) and "__init__.py" in os.listdir(path))
                 if valid:
@@ -121,18 +129,50 @@ def run(args):
     setup_addons("unregister", verbose=vb)
 
 
+def trunc(s, length):
+    if len(s) >= length:
+        return s[:length-3] + "..."
+    return s + " "*(length-len(s))
+
+
 def manage_addons(cmds):
-    if cmds[0] == "list":
-        pass
+    parser = argparse.ArgumentParser(description="Manage your Piano Video add-ons")
+    parser.add_argument("cmd", nargs="?", choices=["help", "list"])
+    parser.add_argument("opts", nargs="*")
+    args = parser.parse_args(cmds)
+
+    if args.cmd == "help" or args.cmd is None:
+        parser.print_help(sys.stderr)
+
+    elif args.cmd == "list":
+        row  = "+---------------+------------------------------------------------------+"
+        head = "|   File Name   |                       Full Path                      |"
+        print(row)
+        print(head)
+
+        for directory in ADDON_PATHS:
+            for file in os.listdir(directory):
+                path = os.path.join(directory, file)
+                valid = (os.path.isfile(path) and path.endswith(".py")) or \
+                    (os.path.isdir(path) and "__init__.py" in os.listdir(path))
+                if valid:
+                    sys.stdout.write(row)
+                    sys.stdout.write("\n| ")
+                    sys.stdout.write(trunc(file, 13))
+                    sys.stdout.write(" | ")
+                    sys.stdout.write(trunc(path, 52))
+                    sys.stdout.write(" |\n")
+        print(row)
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Piano performance visualizer.")
     parser.add_argument("-S", "--safe", action="store_true", help="Safe mode (protects accidental SIGINT or KeyboardInterrupt)")
     parser.add_argument("-V", "--version", action="store_true", help="Show the version of the program.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Display more information to stdout.")
     parser.add_argument("-T", "--test", action="store_true", help="Test API and modules. No GUI window will open.")
-    parser.add_argument("cmds", nargs="*")
+    parser.add_argument("cmd", nargs="?", choices=["addons"])
+    parser.add_argument("opts", nargs="*")
     args = parser.parse_args()
 
     if args.version:
@@ -143,14 +183,9 @@ def main():
         print("Running in Python " + ".".join(map(str, sys.version_info[:3])))
         return
 
-    if len(args.cmds) > 0:
-        if args.cmds[0] == "addons":
-            manage_addons(args.cmds[1:])
-        else:
-            print(f"Unrecognized option: {args.cmds[0]}")
-            print("Please see docs for more info:")
-            print("  https://piano-video.readthedocs.io/en/latest/cli-args.html")
-
+    if args.cmd is not None:
+        if args.cmd == "addons":
+            manage_addons(args.opts)
         return
 
     with SIGINT_Handler(args.safe, args.verbose):
