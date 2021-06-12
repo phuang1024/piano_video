@@ -48,8 +48,12 @@ class OpCaller:
     Calls an operator. Takes in kwargs and sets them in
     the operator call.
     """
-
     operator: Type[Operator]
+    idname: str
+
+    def __init__(self, op: Type[Operator]) -> None:
+        self.operator = op
+        self.idname = op.idname
 
     def __call__(self, **kwargs) -> str:
         op = self.operator()
@@ -66,6 +70,35 @@ class OpCaller:
         if cleared:
             return op.execute()
         return "CANCELLED"
+
+
+class OpGroup:
+    """
+    Positioned at pv.ops.<group>
+    Has a group of callers.
+    """
+    callers: List[OpCaller]
+    idname: str
+
+    def __init__(self, idname: str) -> None:
+        self.callers = []
+        self.idname = idname
+
+    def __getattr__(self, attr: str) -> OpCaller:
+        return get(self.callers, attr)
+
+
+class Ops:
+    """
+    The Operators submodule pv.ops
+    """
+    groups: List[OpGroup]
+
+    def __init__(self) -> None:
+        self.groups = []
+
+    def __getattr__(self, attr: str) -> OpGroup:
+        return get(self.groups, attr)
 
 
 class PropertyGroup:
