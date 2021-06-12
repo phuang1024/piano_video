@@ -32,6 +32,12 @@ class Operator:
 
     args: List[Property] = []
 
+    def __str__(self) -> str:
+        return f"pv.types.Operator(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __getattr__(self, attr: str) -> Any:
         """
         Returns argument value from self.args list.
@@ -53,7 +59,13 @@ class OpCaller:
 
     def __init__(self, op: Type[Operator]) -> None:
         self.operator = op
-        self.idname = op.idname
+        self.idname = op.idname.split(".")[1]
+
+    def __str__(self) -> str:
+        return f"pv.types.OpCaller(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def __call__(self, **kwargs) -> str:
         op = self.operator()
@@ -84,6 +96,12 @@ class OpGroup:
         self.callers = []
         self.idname = idname
 
+    def __str__(self) -> str:
+        return f"pv.types.OpGroup(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __getattr__(self, attr: str) -> OpCaller:
         return get(self.callers, attr)
 
@@ -97,6 +115,12 @@ class Ops:
     def __init__(self) -> None:
         self.groups = []
 
+    def __str__(self) -> str:
+        return f"pv.types.Ops()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __getattr__(self, attr: str) -> OpGroup:
         return get(self.groups, attr)
 
@@ -104,6 +128,12 @@ class Ops:
 class PropertyGroup:
     idname: str
     props: List[Property]
+
+    def __str__(self) -> str:
+        return f"pv.types.PropertyGroup(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def __getattr__(self, attr: str) -> Any:
         """
@@ -161,6 +191,12 @@ class UILayout:
     def __init__(self) -> None:
         self.elements = []
 
+    def __str__(self) -> str:
+        return f"pv.types.UILayout()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def label(self, text: str = "") -> None:
         """
         Adds text.
@@ -194,6 +230,12 @@ class UIPanel:
         self.layout = UILayout()
         self.expanded = False
 
+    def __str__(self) -> str:
+        return f"pv.types.UIPanel(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def draw(self) -> None:...
 
 
@@ -211,12 +253,24 @@ class UISection:
         self.icon_img = None
         self.panels = []
 
+    def __str__(self) -> str:
+        return f"pv.types.UISection(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
 
 class Scene:
     pgroups: List[PropertyGroup]
 
     def __init__(self) -> None:
         self.pgroups = []
+
+    def __str__(self) -> str:
+        return f"pv.types.Scene()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def __getattr__(self, attr: str) -> PropertyGroup:
         return get(self.pgroups, attr)
@@ -230,3 +284,10 @@ class Context:
     def __init__(self) -> None:
         self.scene = Scene()
         self.ui_sections = []
+        self.operators = []
+
+    def __str__(self) -> str:
+        return f"pv.types.Context()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
