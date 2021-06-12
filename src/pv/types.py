@@ -44,8 +44,11 @@ class Operator:
         """
         return get(self.args, attr).value
 
-    def poll(self) -> bool:...
-    def execute(self) -> str:...
+    def poll(self) -> bool:
+        return True
+
+    def execute(self) -> str:
+        return "FINISHED"
 
 
 class OpCaller:
