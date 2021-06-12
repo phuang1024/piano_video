@@ -20,7 +20,7 @@
 import io
 import struct
 import numpy as np
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Type, Union
 from .utils import UI32, get
 from .props import Property
 
@@ -40,6 +40,32 @@ class Operator:
 
     def poll(self) -> bool:...
     def execute(self) -> str:...
+
+
+class OpCaller:
+    """
+    Positioned at pv.ops.<group>.<caller>
+    Calls an operator. Takes in kwargs and sets them in
+    the operator call.
+    """
+
+    operator: Type[Operator]
+
+    def __call__(self, **kwargs) -> str:
+        op = self.operator()
+        for key in kwargs:
+            prop = get(op.args, key, raise_error=False)
+            if prop is None:
+                raise ValueError(f"Could not find prop with idname {key}")
+            prop.value = kwargs[key]
+
+        try:
+            cleared = op.poll()
+        except:
+            cleared = False
+        if cleared:
+            return op.execute()
+        return "CANCELLED"
 
 
 class PropertyGroup:

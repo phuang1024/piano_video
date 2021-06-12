@@ -25,7 +25,7 @@ Avoid importing here, as it will likely result in a circular import.
 
 import os
 import cv2
-from typing import Any, Union
+from typing import Any, Sequence, Union
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 BUILTIN_ICON_PATHS = (
@@ -90,7 +90,8 @@ def unregister_class(cls: type) -> None:
         pv.context.operators.pop(get(pv.context.operators, cls.idname, idx=True))
 
 
-def get(items, idname, idx=False, raise_error=True, not_found_rval=None) -> Any:
+def get(items: Sequence[Any], idname: str, idx: bool = False, raise_error: bool = True,
+        not_found_rval: Any = None) -> Any:
     for i, item in enumerate(items):
         if item.idname == idname:
             return i if idx else item
