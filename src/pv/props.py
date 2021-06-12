@@ -19,7 +19,7 @@
 
 import io
 import struct
-from typing import Any, List
+from typing import Any, List, Tuple
 from .utils import UI32, I64, F64
 
 NUM_MAX = 2 ** 32
@@ -207,10 +207,10 @@ class EnumProp(Property):
 
     default: str
     value: str
-    items: List[List[str]]
+    items: List[Tuple[str, str, str]]
 
     def __init__(self, idname: str = "", label: str = "", description: str = "",
-            default: str = None, items: List = []) -> None:
+            default: str = None, items: List[Tuple[str, str, str]] = []) -> None:
         super().__init__(idname, label, description)
         self.default = items[0][0] if default is None else default
         self.value = self.default
