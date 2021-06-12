@@ -145,11 +145,12 @@ def manage_addons(cmds):
         parser.print_help(sys.stderr)
 
     elif args.cmd == "list":
-        row  = "+---------------+------------------------------------------------------+"
-        head = "|   File Name   |                       Full Path                      |"
+        row  = "+-----+-------------------------------+----------------------------------+"
+        head = "| Num |           File Name           |         Parent Directory         |"
         print(row)
         print(head)
 
+        num = 1
         for directory in ADDON_PATHS:
             for file in os.listdir(directory):
                 path = os.path.join(directory, file)
@@ -158,10 +159,13 @@ def manage_addons(cmds):
                 if valid:
                     sys.stdout.write(row)
                     sys.stdout.write("\n| ")
-                    sys.stdout.write(trunc(file, 13))
+                    sys.stdout.write(trunc(str(num), 3))
                     sys.stdout.write(" | ")
-                    sys.stdout.write(trunc(path, 52))
+                    sys.stdout.write(trunc(file, 29))
+                    sys.stdout.write(" | ")
+                    sys.stdout.write(trunc(os.path.basename(directory), 32))
                     sys.stdout.write(" |\n")
+                    num += 1
         print(row)
 
 
