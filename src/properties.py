@@ -73,7 +73,7 @@ class Properties:
             cy = (y+spacing) + num*(size+spacing)
             color = self.tab_col_selected if self.tab == num else \
                 (self.tab_col_hovered if self.tab_hovering == num else self.tab_col_idle)
-            pygame.draw.rect(surface, (color,)*3, (x+spacing, cy, size, size),
+            aadraw.rect(surface, (color,)*3, (x+spacing, cy, size-1, size),
                 border_top_left_radius=5, border_bottom_left_radius=5)
 
             # Draw icon
@@ -111,13 +111,12 @@ class Properties:
                     cy = grid_y*height + y
                     hov = (self.prop_hovering == grid_y)
                     pygame.draw.rect(surface, (54,)*3, (x, cy, w, height))
+                    self.elements.append(element)
 
                     if element["type"] == "LABEL":
                         self.draw_text(surface, rect, element["text"], grid_y)
-                        self.elements.append({"type": "LABEL"})
 
                     elif element["type"] == "PROP":
-                        self.elements.append(element)
                         group, name = element["idpath"].split(".")
                         prop = getattr(pv.context.scene, group).get(name)
 
@@ -161,7 +160,7 @@ class Properties:
                 tmp_y -= (spacing+size)
             if tmp_y < spacing+size:
                 hovering = (my-spacing) // (spacing+size)
-        if shared.mpress[0] and hovering is not None:
+        if shared.mpress[0] and hovering is not None and 0 <= hovering < len(pv.context.ui_sections):
             tab = hovering
 
         if hovering != self.tab_hovering:
