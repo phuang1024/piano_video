@@ -17,44 +17,70 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-# Checks if there is trailing whitespace in source files.
-
+import sys
 import os
+import pathlib
 
-PARENT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-FILE_DIRS = [
-    os.path.join(PARENT, "src"),
-    os.path.join(PARENT, "tests"),
-]
+RED = "\x1b[31m"
+GREEN = "\x1b[32m"
+
+# List of (dir, recursive, (glob1, glob2, glob3))
+PATHS = (
+    (".",         False, ("*.md", "*.gitignore", "*.txt")),
+    ("./build",   False, ("*.py",)),
+    ("./docs",    False, ("*.rst",)),
+    ("./scripts", True,  ("*.py",)),
+    ("./src",     True,  ("*.py", "*.c", "*.cpp")),
+    ("./tests",   True,  ("*.py",)),
+)
+
+
+def test_file(path):
+    msg = "OK"
+    exitcode = 0
+
+    with open(path, "r") as file:
+        data = file.read()
+
+    if not data.endswith("\n"):
+        msg = "no blank line at the end"
+        exitcode = 1
+
+    for i, line in enumerate(data.split("\n")):
+        if line.endswith(" "):
+            msg = f"line {i+1}: trailing whitespace"
+            exitcode = 1
+
+    sys.stdout.write(GREEN if exitcode == 0 else RED)
+    print(path, msg)
+
+    return exitcode
+
+
+def test_dir(directory, rec, globs):
+    exitcode = 0
+
+    for file in os.listdir(directory):
+        path = os.path.join(directory, file)
+        abspath = os.path.realpath(path)
+
+        if rec and os.path.isdir(abspath):
+            exitcode = max(exitcode, test_dir(path, rec, globs))
+
+    path = pathlib.Path(directory)
+    for glob in globs:
+        for relpath in path.glob(glob):
+            abspath = os.path.realpath(relpath)
+            if os.path.isfile(abspath):
+                exitcode = max(exitcode, test_file(relpath))
+
+    return exitcode
 
 
 def main():
     exitcode = 0
-
-    dirs = FILE_DIRS[:]
-    while len(dirs) > 0:
-        fdir = dirs.pop(0)
-        for f in os.listdir(fdir):
-            path = os.path.join(fdir, f)
-            relpath = os.path.join(os.path.basename(fdir), f)
-            if os.path.isfile(path):
-                try:
-                    with open(path, "r") as file:
-                        data = file.read()
-                        for i, l in enumerate(data.split("\n")):
-                            if l.endswith(" "):
-                                print(f"Trailing whitespace in file {relpath}, line {i+1}")
-                                exitcode = 1
-                        if not data.endswith("\n"):
-                            print(f"No blank line at the end of file {relpath}")
-                            exitcode = 1
-
-                except UnicodeDecodeError:
-                    pass
-
-            elif os.path.isdir(path):
-                dirs.append(path)
-
+    for path in PATHS:
+        exitcode = max(exitcode, test_dir(*path))
     return exitcode
 
 
