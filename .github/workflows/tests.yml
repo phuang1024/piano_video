@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run check
         run: |
-          python3 ./tests/formatting_check.py
+          python3 ./tests/formatting.py
 
   docs:
     runs-on: ubuntu-latest
