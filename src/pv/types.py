@@ -219,6 +219,16 @@ class UILayout:
             raise ValueError(f"Operator path must have exactly 1 period: {on_set}")
         self.elements.append({"type": "PROP", "idpath": idpath, "text": text, "on_set": on_set})
 
+    def operator(self, idpath: str, text: str = None) -> None:
+        """
+        Adds an operator.
+        :param idpath: ID name path of operator (ex. "my_group.my_prop")
+        :param text: Display this text next to the operator (set to None to use operator default)
+        """
+        if idpath.count(".") != 1:
+            raise ValueError(f"ID path must have exactly 1 period: {idpath}")
+        self.elements.append({"type": "OPERATOR", "idpath": idpath, "text": text})
+
 
 class UIPanel:
     idname: str
