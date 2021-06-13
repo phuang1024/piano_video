@@ -19,7 +19,7 @@
 
 import io
 import struct
-from typing import Any, List, Tuple
+from typing import Any, IO, List, Tuple
 from .utils import UI32, I64, F64
 
 NUM_MAX = 2 ** 32
@@ -44,14 +44,14 @@ class Property:
         self.label = label
         self.description = description
 
-    def dump_header(self, stream: io.BytesIO) -> None:
+    def dump_header(self, stream: IO[bytes]) -> None:
         stream.write(bytes([self.type_id]))
         stream.write(struct.pack(UI32, len(self.idname)))
         stream.write(self.idname.encode())
 
-    def dump(self, stream: io.BytesIO) -> None:...
+    def dump(self, stream: IO[bytes]) -> None:...
 
-    def load(self, stream: io.BytesIO) -> None:...
+    def load(self, stream: IO[bytes]) -> None:...
 
 
 class BoolProp(Property):
@@ -70,13 +70,13 @@ class BoolProp(Property):
         self.default = default
         self.value = default
 
-    def dump(self, stream: io.BytesIO) -> None:
+    def dump(self, stream: IO[bytes]) -> None:
         """
         Writes value as a byte (b"\\x00" or b"\\x01")
         """
         stream.write(bytes([self.value]))
 
-    def load(self, stream: io.BytesIO) -> None:
+    def load(self, stream: IO[bytes]) -> None:
         self.value = (stream.read(1) == b"\x01")
 
 
@@ -108,13 +108,13 @@ class IntProp(Property):
         self.min = min
         self.step = step
 
-    def dump(self, stream: io.BytesIO) -> None:
+    def dump(self, stream: IO[bytes]) -> None:
         """
         Writes value as a signed 64 bit integer.
         """
         stream.write(struct.pack(I64, self.value))
 
-    def load(self, stream: io.BytesIO) -> None:
+    def load(self, stream: IO[bytes]) -> None:
         self.value = struct.unpack(I64, stream.read(8))[0]
 
 
@@ -146,13 +146,13 @@ class FloatProp(Property):
         self.min = min
         self.step = step
 
-    def dump(self, stream: io.BytesIO) -> None:
+    def dump(self, stream: IO[bytes]) -> None:
         """
         Writes value as a signed 64 bit float.
         """
         stream.write(struct.pack(F64, self.value))
 
-    def load(self, stream: io.BytesIO) -> None:
+    def load(self, stream: IO[bytes]) -> None:
         self.value = struct.unpack(F64, stream.read(8))[0]
 
 
@@ -183,7 +183,7 @@ class StringProp(Property):
         self.password = password
         self.subtype = subtype
 
-    def dump(self, stream: io.BytesIO) -> None:
+    def dump(self, stream: IO[bytes]) -> None:
         """
         Writes length as a unsigned 32 bit integer.
         Then writes value as bytes.
@@ -191,7 +191,7 @@ class StringProp(Property):
         stream.write(struct.pack(UI32, len(self.value)))
         stream.write(self.value.encode())
 
-    def load(self, stream: io.BytesIO) -> None:
+    def load(self, stream: IO[bytes]) -> None:
         length = struct.unpack(UI32, stream.read(4))[0]
         self.value = stream.read(length).decode()
 
@@ -216,7 +216,7 @@ class EnumProp(Property):
         self.value = self.default
         self.items = items
 
-    def dump(self, stream: io.BytesIO) -> None:
+    def dump(self, stream: IO[bytes]) -> None:
         """
         Writes length of current value as a unsigned 32 bit integer.
         Then writes value as bytes.
@@ -224,6 +224,6 @@ class EnumProp(Property):
         stream.write(struct.pack(UI32, len(self.value)))
         stream.write(self.value.encode())
 
-    def load(self, stream: io.BytesIO) -> None:
+    def load(self, stream: IO[bytes]) -> None:
         length = struct.unpack(UI32, stream.read(4))[0]
         self.value = stream.read(length).decode()

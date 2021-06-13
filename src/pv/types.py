@@ -20,7 +20,7 @@
 import io
 import struct
 import numpy as np
-from typing import Any, Dict, List, Type, Union
+from typing import Any, Dict, IO, List, Type, Union
 from .utils import UI32, get
 from .props import Property
 
@@ -156,7 +156,7 @@ class PropertyGroup:
         """
         return get(self.props, attr)
 
-    def dump(self, stream: io.BytesIO) -> None:
+    def dump(self, stream: IO[bytes]) -> None:
         """
         Writes number of props as unsigned 32 bit integer.
         Then, writes header and data for each prop.
