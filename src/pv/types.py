@@ -128,6 +128,85 @@ class Ops:
         return get(self.groups, attr)
 
 
+class Function:
+    idname: str
+    label: str
+    description: str = ""
+
+    def __str__(self) -> str:
+        return f"pv.types.Function(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def execute(self, *args, **kwargs) -> Any:
+        ...
+
+
+class FuncCaller:
+    """
+    Positioned at pv.funcs.<group>.<caller>
+    Calls a function's execute method.
+    """
+    function: Type[Function]
+    idname: str
+
+    def __init__(self, func: Type[Function]) -> None:
+        self.function = func
+        self.idname = func.idname.split(".")[1]
+
+    def __str__(self) -> str:
+        return f"pv.types.FuncCaller(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __call__(self, *args, **kwargs) -> str:
+        op = self.function()
+        return op.execute(*args, **kwargs)
+
+
+class FuncGroup:
+    """
+    Positioned at pv.funcs.<group>
+    Has a group of callers.
+    """
+    callers: List[FuncCaller]
+    idname: str
+
+    def __init__(self, idname: str) -> None:
+        self.callers = []
+        self.idname = idname
+
+    def __str__(self) -> str:
+        return f"pv.types.FuncCaller(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __getattr__(self, attr: str) -> FuncCaller:
+        return get(self.callers, attr)
+
+
+class Funcs:
+    """
+    The Functions submodule pv.funcs
+    """
+    groups: List[FuncGroup]
+
+    def __init__(self) -> None:
+        self.groups = []
+
+    def __str__(self) -> str:
+        return f"pv.types.Funcs()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __getattr__(self, attr: str) -> FuncGroup:
+        return get(self.groups, attr)
+
+
 class PropertyGroup:
     idname: str
     props: List[Property]
