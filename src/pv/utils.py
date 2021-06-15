@@ -122,4 +122,3 @@ def get(items: Sequence[Any], idname: str, idx: bool = False, raise_error: bool 
         raise ValueError(f"No object with idname {idname} in {items}")
     else:
         return not_found_rval
-

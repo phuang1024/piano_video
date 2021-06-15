@@ -88,7 +88,7 @@ class WindowManager:
 
         report = pv.context.report
         report_time = pv.context.report_time
-    
+
         if report is not None and report_time >= time.time()-self.report_time:
             h, s, v = colorsys.rgb_to_hsv(*[c/255 for c in report_color(report[0])])
             text_col = 255
