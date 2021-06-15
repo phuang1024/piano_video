@@ -53,7 +53,7 @@ class Operator:
 
     def report(self, type: str, message: str) -> None:
         import pv
-        pv.context.report = (type, f"Op {self.idname}: {message}")
+        pv.context.report = (type, f"{message}")
         pv.context.report_time = time.time()
 
 
@@ -382,13 +382,17 @@ class Context:
     ui_sections: List[UISection]
     operators: List[Operator]
 
-    report: Tuple[str, str]    # (type, message)
+    report: Union[Tuple[str, str], None]    # (type, message)
     report_time: float
 
     def __init__(self) -> None:
         self.scene = Scene()
+
         self.ui_sections = []
         self.operators = []
+
+        self.report = None
+        self.report_time = 0
 
     def __str__(self) -> str:
         return f"pv.types.Context()"
