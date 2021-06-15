@@ -19,8 +19,9 @@
 
 import io
 import struct
+import time
 import numpy as np
-from typing import Any, Dict, IO, List, Type, Union
+from typing import Any, Dict, IO, List, Tuple, Type, Union
 from .utils import UI32, get
 from .props import Property
 
@@ -49,6 +50,11 @@ class Operator:
 
     def execute(self) -> str:
         return "FINISHED"
+
+    def report(self, type: str, message: str) -> None:
+        import pv
+        pv.context.report = (type, f"Op {self.idname}: {message}")
+        pv.context.report_time = time.time()
 
 
 class OpCaller:
@@ -81,7 +87,9 @@ class OpCaller:
         try:
             cleared = op.poll()
         except:
-            cleared = False
+            op.report("ERROR", "Poll failed")
+            return "CANCELLED"
+
         if cleared:
             return op.execute()
         return "CANCELLED"
@@ -370,8 +378,12 @@ class Scene:
 
 class Context:
     scene: Scene
+
     ui_sections: List[UISection]
     operators: List[Operator]
+
+    report: Tuple[str, str]    # (type, message)
+    report_time: float
 
     def __init__(self) -> None:
         self.scene = Scene()
