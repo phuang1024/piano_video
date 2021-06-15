@@ -218,5 +218,10 @@ class Properties:
                     if isinstance(prop, pv.props.BoolProp):
                         prop.value = (not prop.value)
 
+                elif element["type"] == "OPERATOR":
+                    group, name = element["idpath"].split(".")
+                    op = getattr(getattr(pv.ops, group), name)
+                    op(**element["kwargs"])
+
         if edited:
             self.queue.append({"type": "DRAW_PROPS"})
