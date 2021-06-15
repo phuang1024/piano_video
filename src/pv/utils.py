@@ -66,14 +66,20 @@ def register_class(cls: type) -> None:
         get(pv.context.ui_sections, cls.section_id).panels.append(inst)
 
     elif issubclass(cls, pv.types.Operator):
-        pv.context.operators.append(inst)  # TODO maybe not needed
-
         group, name = cls.idname.split(".")
         try:
             getattr(pv.ops, group)
         except ValueError:
             pv.ops.groups.append(pv.types.OpGroup(group))
         get(pv.ops.groups, group).callers.append(pv.types.OpCaller(cls))
+
+    elif issubclass(cls, pv.types.Function):
+        group, name = cls.idname.split(".")
+        try:
+            getattr(pv.funcs, group)
+        except ValueError:
+            pv.funcs.groups.append(pv.types.FuncGroup(group))
+        get(pv.funcs.groups, group).callers.append(pv.types.FuncCaller(cls))
 
 
 def unregister_class(cls: type) -> None:
@@ -94,12 +100,16 @@ def unregister_class(cls: type) -> None:
             section.pop(get(section.pgroups, cls.idname, True))
 
     elif issubclass(cls, pv.types.Operator):
-        pv.context.operators.pop(get(pv.context.operators, cls.idname, idx=True))
-
         group, name = cls.idname.split(".")
         op_group = get(pv.ops.groups, group)
         idx = get(op_group.callers, name, True)
         op_group.callers.pop(idx)
+
+    elif issubclass(cls, pv.types.Function):
+        group, name = cls.idname.split(".")
+        func_group = get(pv.funcs.groups, group)
+        idx = get(func_group.callers, name, True)
+        func_group.callers.pop(idx)
 
 
 def get(items: Sequence[Any], idname: str, idx: bool = False, raise_error: bool = True,
