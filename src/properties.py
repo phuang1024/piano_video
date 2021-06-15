@@ -132,7 +132,11 @@ class Properties:
                     elif element["type"] == "OPERATOR":
                         group, name = element["idpath"].split(".")
                         op = getattr(getattr(pv.ops, group), name).operator
+
                         text = op.label if element["text"] is None else element["text"]
+                        color = 96 if hov else 72
+
+                        aadraw.rect(surface, (color,)*3, (rect[0]+3.5, cy+3.5, rect[2]-7, height-7), border_radius=5)
                         self.draw_text(surface, rect, text, grid_y, font=FONT_SMALL, align="CENTER")
 
                     grid_y += 1
