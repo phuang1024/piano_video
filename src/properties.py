@@ -114,7 +114,7 @@ class Properties:
                     self.elements.append(element)
 
                     if element["type"] == "LABEL":
-                        self.draw_text(surface, rect, element["text"], grid_y)
+                        self.draw_text(surface, rect, element["text"], grid_y, font=FONT_SMALL)
 
                     elif element["type"] == "PROP":
                         group, name = element["idpath"].split(".")
@@ -122,24 +122,37 @@ class Properties:
 
                         if isinstance(prop, pv.props.BoolProp):
                             text = prop.label if element["text"] is None else element["text"]
-                            self.draw_text(surface, rect, text, grid_y)
+                            self.draw_text(surface, rect, text, grid_y, font=FONT_SMALL)
 
                             color = ((67, 180, 255) if hov else (61, 159, 255)) if prop.value else \
                                 ((96,)*3 if hov else (54,)*3)
                             aadraw.circle(surface, color, (x+w/1.5, cy+height/2), 7)
                             aadraw.circle(surface, (255,)*3, (x+w/1.5, cy+height/2), 7, 1)
 
+                    elif element["type"] == "OPERATOR":
+                        group, name = element["idpath"].split(".")
+                        op = getattr(getattr(pv.ops, group), name).operator
+                        text = op.label if element["text"] is None else element["text"]
+                        self.draw_text(surface, rect, text, grid_y, font=FONT_SMALL, align="CENTER")
+
                     grid_y += 1
 
-    def draw_text(self, surface, rect, text, grid_y, color=240, x_offset=0, y_offset=0):
+    def draw_text(self, surface, rect, text, grid_y, font=FONT, color=240, x_offset=0, align="LEFT"):
         height = self.props_height
 
-        surf = FONT.render(text, 1, (color,)*3)
+        surf = font.render(text, 1, (color,)*3)
         y = grid_y*height + rect[1]
         w, h = surf.get_size()
         margin = height - h
 
-        surface.blit(surf, (rect[0]+margin+x_offset, y+margin/2+y_offset))
+        if align == "LEFT":
+            x = rect[0] + margin
+        elif align == "RIGHT":
+            x = rect[0] + rect[2] - margin - w
+        else:
+            x = rect[0] + (rect[2]-w)//2
+
+        surface.blit(surf, (x+x_offset, y+margin/2))
 
     def update(self, rect, props_rect):
         self.update_tabs(rect)
