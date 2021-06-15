@@ -18,7 +18,10 @@
 #
 
 import time
+import colorsys
 import pygame
+import aadraw
+import pv
 import shared
 from gui_utils import *
 from properties import Properties
@@ -29,6 +32,10 @@ class WindowManager:
     tooltip_padding = 10
     tooltip_text_height = 18
 
+    status_bar_height = 30
+    report_time = 6
+    report_time_fade = 0.5
+
     def __init__(self) -> None:
         self.properties = Properties()
         self.prev_size = (None, None)
@@ -36,17 +43,17 @@ class WindowManager:
     def draw(self, surface):
         width, height = surface.get_size()
         sep = int(width * 0.8)
-        props_rect = (sep, 0, width-sep, height)
+        props_rect = (sep, 0, width-sep, height-self.status_bar_height)
 
         if width != self.prev_size[0] or height != self.prev_size[1]:
             self.properties.redraw(surface, props_rect)
 
             self.prev_size = (width, height)
 
-        # Draw properties
         self.properties.draw(surface, props_rect)
 
         self.draw_tooltip(surface)
+        self.draw_report(surface)
 
     def draw_tooltip(self, surface):
         width, height = surface.get_size()
@@ -73,6 +80,41 @@ class WindowManager:
 
             surface.blit(header_surf, (x+padding, y+padding+text_padding))
             surface.blit(text_surf, (x+padding, y+padding+text_padding+text_height))
+
+    def draw_report(self, surface):
+        width, height = surface.get_size()
+        bar_height = self.status_bar_height
+        pygame.draw.rect(surface, (32, 32, 32), (0, height-bar_height, width, bar_height))
+
+        report = pv.context.report
+        report_time = pv.context.report_time
+    
+        if report is not None and report_time >= time.time()-self.report_time:
+            h, s, v = colorsys.rgb_to_hsv(*[c/255 for c in report_color(report[0])])
+            text_col = 255
+
+            # Fade in
+            if time.time() < report_time+self.report_time_fade:
+                fac = 2 * (time.time()-report_time)
+                s *= fac
+
+            # Fade out
+            if time.time() >= report_time+self.report_time-self.report_time_fade:
+                fac = 2 * ((report_time+self.report_time) - time.time())
+                v *= fac
+                text_col *= fac
+
+            color = [255*c for c in colorsys.hsv_to_rgb(h, s, v)]
+            color.append(text_col)
+            text = FONT_SMALL.render(report[1], True, (text_col,)*3)
+
+            w, h = text.get_size()
+            text_x = width/2 - w/2
+            text_y = height - self.status_bar_height/2 - h/2
+            rect_coords = (text_x-3, text_y-2, w+6, h+4)
+
+            aadraw.rect(surface, tuple(color), rect_coords, border_radius=2)
+            surface.blit(text, (text_x, text_y))
 
 
 def gui(verbose=False):

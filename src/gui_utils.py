@@ -141,6 +141,16 @@ def kmod(target_key, ctrl=False, shift=False, alt=False):
 
     return (target_key in shared.kdowns)
 
+def report_color(type):
+    if type == "INFO":
+        return REPORT_INFO
+    elif type == "WARNING":
+        return REPORT_WARNING
+    elif type == "ERROR":
+        return REPORT_ERROR
+    else:
+        raise ValueError(f"Invalid report type: {type}")
+
 
 # Global constants
 VERSION = "0.1.0"
@@ -175,6 +185,10 @@ GRAY_DARK = (64, 64, 64)
 GRAY = (128, 128, 128)
 GRAY_LIGHT = (192, 192, 192)
 WHITE = (255, 255, 255)
+
+REPORT_INFO = (80, 110, 170)
+REPORT_WARNING = (190, 150, 90)
+REPORT_ERROR = (180, 60, 60)
 
 FONT_FAMILY = "ubuntu"
 FONT = pygame.font.SysFont(FONT_FAMILY, 15)
