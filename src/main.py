@@ -82,33 +82,46 @@ def init(verbose=False):
 
     if not os.path.isfile(ADDON_CONFIG_PATH):
         printer(f"  Initializing add-on config {ADDON_CONFIG_PATH}")
-        data = {}
+        data = []
+
+        for directory in ADDON_PATHS:
+            if os.path.isdir(directory):
+                for file in os.listdir(directory):
+                    path = os.path.join(directory, file)
+                    mod = import_file(path)
+                    if hasattr(mod, "pv_info"):
+                        data.append({
+                            "path": path,
+                            "info": mod.pv_info,
+                            "activated": True,
+                        })
+
+        with open(ADDON_CONFIG_PATH, "w") as file:
+            json.dump(data, file, indent=4)
+
+
+def import_file(path):
+    sys.path.insert(0, os.path.dirname(path))
+    mod = __import__(os.path.splitext(os.path.basename(path))[0])
+    sys.path.pop(0)
+    return mod
 
 
 def setup_addons(action: str, verbose: bool = False):
     printer = VerbosePrinter(verbose)
     printer(f"Setup add-ons: {action}")
 
-    for directory in ADDON_PATHS:
-        if os.path.isdir(directory):
-            printer(f"  Searching directory {directory}")
-            sys.path.insert(0, directory)
+    with open(ADDON_CONFIG_PATH, "r") as file:
+        data = json.load(file)
 
-            for file in os.listdir(directory):
-                printer(f"    Found {file}")
-
-                path = os.path.join(directory, file)
-                valid = (os.path.isfile(path) and path.endswith(".py")) or \
-                    (os.path.isdir(path) and "__init__.py" in os.listdir(path))
-                if valid:
-                    printer(f"      Setting up {file}")
-                    mod = __import__(os.path.splitext(file)[0])
-                    if hasattr(mod, action):
-                        getattr(mod, action)()
-                else:
-                    printer(f"      Skipping {file}")
-
-            sys.path.pop(0)
+    for addon in data:
+        path = addon["path"]
+        if os.path.isfile(path):
+            file = os.path.basename(path)
+            printer(f"      Setting up {file}")
+            mod = import_file(path)
+            if hasattr(mod, action):
+                getattr(mod, action)()
 
     printer(f"  Exiting add-on setup")
 
@@ -180,6 +193,8 @@ def main():
     parser.add_argument("cmd", nargs="?", choices=["addons"])
     parser.add_argument("opts", nargs="*")
     args = parser.parse_args()
+
+    init(args.verbose)
 
     if args.version:
         print(f"Piano Video v{VERSION}  Copyright (C) 2021  Patrick Huang")

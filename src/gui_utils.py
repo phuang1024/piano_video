@@ -160,7 +160,7 @@ ADDON_PATHS = (
     os.path.join(PARENT, "addons_installed"),
 )
 CONFIG_PATH = os.path.join(PARENT, "config")
-ADDON_CONFIG_PATH = os.path.join(CONFIG_PATH, "addons_config.json")
+ADDON_CONFIG_PATH = os.path.join(CONFIG_PATH, "addons.json")
 
 DEPENDENCIES = (
     "aadraw",
