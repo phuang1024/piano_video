@@ -182,7 +182,41 @@ make sure you add the comma after your class name:
         TUTORIAL_OT_MyOperator,
     )
 
+----
+
+**TODO testing and installing**
+
 Part 2: User Interface
 ^^^^^^^^^^^^^^^^^^^^^^
 
-To be written
+We will use the operator class you defined in this section, so make
+sure you don't delete it!
+
+In this section, we will be looking at how to extend the Properties
+section of the UI:
+
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/properties.png
+    :width: 200
+
+----
+
+First, let's look at UI Sections. They are the tabs on the left side.
+
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/ui_sections.png
+    :width: 50
+
+Like the operators, we will define a new class that extends off of a
+predefined UI Section class:
+
+.. code-block:: python
+
+    class TUTORIAL_UT_Section(pv.types.UISection):
+        idname = "tutorial"
+        label = "Tutorial"
+        description = "A UI section"
+
+Let's look at what each parameter means:
+
+- ``idname``: A unique ID for this section.
+- ``label``: This is the "name" of the panel that the user will see.
+- ``description``: A longer description of what the panel does.
