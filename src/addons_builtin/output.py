@@ -17,6 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+pv_info = {
+    "name": "Core Output",
+    "description": "Output format properties.",
+    "author": "Patrick Huang",
+}
+
 import pv
 from pv.props import *
 

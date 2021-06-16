@@ -17,9 +17,11 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-MIDI properties
-"""
+pv_info = {
+    "name": "Core MIDI",
+    "description": "MIDI parsing properties.",
+    "author": "Patrick Huang",
+}
 
 import pv
 from pv.props import *

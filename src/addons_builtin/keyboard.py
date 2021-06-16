@@ -17,9 +17,11 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-Keyboard properties
-"""
+pv_info = {
+    "name": "Core Keyboard",
+    "description": "Properties of the piano keyboard.",
+    "author": "Patrick Huang",
+}
 
 import pv
 from pv.props import *

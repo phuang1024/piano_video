@@ -17,9 +17,11 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-Read and write scene.
-"""
+pv_info = {
+    "name": "File IO",
+    "description": "Scene read and write operators.",
+    "author": "Patrick Huang",
+}
 
 import struct
 import pv

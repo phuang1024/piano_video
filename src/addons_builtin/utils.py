@@ -17,9 +17,11 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-Utilities that can be used by add-ons.
-"""
+pv_info = {
+    "name": "Core Utilities",
+    "description": "Useful operators and functions for other add-ons.",
+    "author": "Patrick Huang",
+}
 
 import webbrowser
 import pv
