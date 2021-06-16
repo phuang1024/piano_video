@@ -41,24 +41,148 @@ creating your own blocks, you would write your own add-on
 in Python using API.
 
 
-Add-on Structure
-----------------
-
-When you write an add-on for Piano Video, there are a few steps:
-
-1. Defining new classes: You will define classes that inherit from
-pre-defined classes in the ``pv`` module.
-
-2. Registering the classes: Next, you will need to register each class,
-which is like telling Piano Video that you wish to make your class part
-of the GUI. Different classes have different behaviors when registered,
-which will be described below.
-
-Please read on to see how each step is achieved.
-
-
 Writing an Add-on
 -----------------
 
 Now, let's go through the process of writing an add-on, step-by-step.
 
+Setting Up Your Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You will need a text editor to write and save your file.
+Open a new file, and save it as a ``.py`` file.
+
+Make sure you do not put any spaces in the file name.
+
+Part 1: Operators
+^^^^^^^^^^^^^^^^^
+
+An operator can be thought of as a function.
+You can display operators on the UI, and they will show up as a button.
+When the user presses the button, a block of code you define will
+be run.
+
+----
+
+To write an operator, we need to define a new class which extends off
+of a predefined class in the ``pv`` module:
+
+.. code-block:: python
+
+    import pv
+
+
+    class TUTORIAL_OT_MyOperator(pv.types.Operator):
+        pass
+
+
+    def register():
+        pass
+
+    def unregister():
+        pass
+
+When writing an add-on for Piano Video, we recommend you name
+all class names in the format ``GROUP_TYPE_Name``.
+
+In this case, the group is ``TUTORIAL``, the type is ``OT``
+(stands for Operator Type), and the name is ``MyOperator``.
+
+The ``register`` and ``unregister`` functions will be run
+by the GUI. These functions are where we tell Piano Video that
+we are adding our class to the GUI. We will fill them out in a moment.
+
+----
+
+Next, we need to define a few parameters for the operator:
+
+.. code-block:: python
+
+    # This code block and many others below leaves
+    # out sections for conciseness, but you should
+    # still have them.
+
+    class TUTORIAL_OT_MyOperator(pv.types.Operator):
+        idname = "tutorial.my_operator"
+        name = "My Operator"
+        description = "A test operator."
+
+Let's look at what each variable means:
+
+- ``idname`` is the unique ID of the operator. We can
+  access the operator by it's idname. More info about this later.
+
+- ``name`` is the text that is shown when you display the operator
+  on the GUI.
+
+- ``description`` is a short message that explains what this operator
+  does.
+
+----
+
+Next, let's define the code that will be run when a user clicks on the operator.
+
+.. code-block:: python
+
+    class TUTORIAL_OT_MyOperator(pv.types.Operator):
+        ...
+
+        def execute(self):
+            print("Hello world!")
+            return "FINISHED"
+
+The ``execute`` method will be run when the operator is clicked.
+It **must** return a string, and we recommend "FINISHED" for
+a successful run, and "CANCELLED" for an incomplete run.
+
+You may be wondering how any operator will be useful, if it can only return
+a string. The answer is operators are designed to modify the scene while running,
+instead of returning a result.
+
+If you need to use the return value, you should use ``pv.types.Function``
+instead. **TODO write docs**
+
+----
+
+Last, let's write the register and unregister functions.
+
+.. code-block:: python
+
+    class TUTORIAL_OT_MyOperator(pv.types.Operator):
+        ...
+
+
+    classes = (
+        TUTORIAL_OT_MyOperator,
+    )
+
+    def register():
+        for cls in classes:
+            pv.utils.register_class(cls)
+
+    def unregister():
+        for cls in classes:
+            pv.utils.unregister_class(cls)
+
+We use ``pv.utils.register_class`` to add the class onto the GUI,
+and ``pv.utils.unregister_class`` to remove it from the GUI.
+
+If you wish to write more operators, you would define more classes
+and add them to the ``classes`` tuple.
+
+**Debug Tip**: If you are getting an error message similar to this,
+
+``TypeError: 'type' object is not iterable``
+
+make sure you add the comma after your class name:
+
+.. code-block:: python
+
+    classes = (
+        TUTORIAL_OT_MyOperator,
+    )
+
+Part 2: User Interface
+^^^^^^^^^^^^^^^^^^^^^^
+
+To be written
