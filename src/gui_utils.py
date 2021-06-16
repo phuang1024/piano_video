@@ -153,13 +153,13 @@ def report_color(type):
 
 
 # Global constants
-VERSION = "0.1.0"
+VERSION = "0.1.2"
 PARENT = os.path.dirname(os.path.realpath(__file__))
 ADDON_PATHS = (
     os.path.join(PARENT, "addons_builtin"),
     os.path.join(PARENT, "addons_installed"),
 )
-CONFIG_PATH = os.path.join(PARENT, "config")
+CONFIG_PATH = os.path.join(PARENT, f"config_{VERSION}")
 ADDON_CONFIG_PATH = os.path.join(CONFIG_PATH, "addons.json")
 
 DEPENDENCIES = (
