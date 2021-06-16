@@ -14,3 +14,4 @@ __pycache__
 /docs/_templates
 
 /src/addons_installed
+/src/config*
