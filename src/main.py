@@ -156,6 +156,9 @@ def manage_addons(cmds):
     parser.add_argument("opts", nargs="*")
     args = parser.parse_args(cmds)
 
+    with open(ADDON_CONFIG_PATH, "r") as file:
+        data = json.load(file)
+
     if args.cmd == "help" or args.cmd is None:
         parser.print_help(sys.stderr)
 
@@ -166,21 +169,16 @@ def manage_addons(cmds):
         print(head)
 
         num = 1
-        for directory in ADDON_PATHS:
-            for file in os.listdir(directory):
-                path = os.path.join(directory, file)
-                valid = (os.path.isfile(path) and path.endswith(".py")) or \
-                    (os.path.isdir(path) and "__init__.py" in os.listdir(path))
-                if valid:
-                    sys.stdout.write(row)
-                    sys.stdout.write("\n| ")
-                    sys.stdout.write(trunc(str(num), 3))
-                    sys.stdout.write(" | ")
-                    sys.stdout.write(trunc(file, 29))
-                    sys.stdout.write(" | ")
-                    sys.stdout.write(trunc(os.path.basename(directory), 32))
-                    sys.stdout.write(" |\n")
-                    num += 1
+        for addon in data:
+            sys.stdout.write(row)
+            sys.stdout.write("\n| ")
+            sys.stdout.write(trunc(str(num), 3))
+            sys.stdout.write(" | ")
+            sys.stdout.write(trunc(os.path.basename(addon["path"]), 29))
+            sys.stdout.write(" | ")
+            sys.stdout.write(trunc(os.path.basename(os.path.dirname(addon["path"])), 32))
+            sys.stdout.write(" |\n")
+            num += 1
         print(row)
 
 
