@@ -34,9 +34,11 @@ class SIGINT_Handler:
     threshold = 2
 
     def __init__(self, safe, verbose=False):
-        self.safe = safe
         printer = VerbosePrinter(verbose)
-        printer(f"Safe mode activated, threshold = {self.threshold}")
+
+        self.safe = safe
+        if safe:
+            printer(f"Safe mode activated, threshold = {self.threshold} seconds")
 
     def __enter__(self):
         self.old_handler = signal.signal(signal.SIGINT, self.handler)
