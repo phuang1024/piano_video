@@ -17,6 +17,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+run:
+	cd ./src; \
+	python ./main.py
+
 doc:
 	cd ./docs; \
 	make html
@@ -28,7 +32,3 @@ deb:
 pypi:
 	cd ./build; \
 	python ./setup.py bdist_wheel sdist
-
-run:
-	cd ./src; \
-	python ./main.py
