@@ -51,7 +51,6 @@ Setting Up Your Environment
 
 You will need a text editor to write and save your file.
 Open a new file, and save it as a ``.py`` file.
-
 Make sure you do not put any spaces in the file name.
 
 Part 1: Operators
@@ -84,7 +83,6 @@ of a predefined class in the ``pv`` module:
 
 When writing an add-on for Piano Video, we recommend you name
 all class names in the format ``GROUP_TYPE_Name``.
-
 In this case, the group is ``TUTORIAL``, the type is ``OT``
 (stands for Operator Type), and the name is ``MyOperator``.
 
@@ -132,8 +130,8 @@ Next, let's define the code that will be run when a user clicks on the operator.
             return "FINISHED"
 
 The ``execute`` method will be run when the operator is clicked.
-It **must** return a string, and we recommend "FINISHED" for
-a successful run, and "CANCELLED" for an incomplete run.
+It **must** return a string, and we recommend ``"FINISHED"`` for
+a successful run, and ``"CANCELLED"`` for an incomplete run.
 
 You may be wondering how any operator will be useful, if it can only return
 a string. The answer is operators are designed to modify the scene while running,
@@ -166,7 +164,6 @@ Last, let's write the register and unregister functions.
 
 We use ``pv.utils.register_class`` to add the class onto the GUI,
 and ``pv.utils.unregister_class`` to remove it from the GUI.
-
 If you wish to write more operators, you would define more classes
 and add them to the ``classes`` tuple.
 
@@ -206,7 +203,7 @@ if it has a pv_info variable.
 Now we are ready to install the add-on.
 We do this with a shell command:
 
-.. code-block: bash
+.. code-block:: bash
 
     >>> pv addons inst
     Enter file path: file.py
@@ -254,3 +251,37 @@ Let's look at what each parameter means:
 - ``idname``: A unique ID for this section.
 - ``label``: This is the "name" of the panel that the user will see.
 - ``description``: A longer description of what the panel does.
+
+Now, we can also add this class to the classes tuple:
+
+.. code-block:: python
+
+    classes = (
+        TUTORIAL_OT_MyOperator,
+        TUTORIAL_UT_Section,
+    )
+
+To install this add-on, we first need to uninstall the other one
+(remember, we installed it in the Operator section). Uninstalling
+and the installing can be tedious, so we can fix that problem by
+making a link install. Piano Video will read from the path we give
+it instead of copying the file.
+
+To make a link install, first we need to uninstall the previous one.
+Type ``pv addons list`` and locate which add-on is the test one.
+
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/addons.png
+    :width: 250
+
+To uninstall it, type ``pv addons rm <num>``, where num is the add-on
+number.
+
+To make a link install, type ``pv addons link`` and enter your file path.
+
+After linking the add-on, you can start the GUI with ``pv``. You should
+see a blank section, which was added by the add-on!
+
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/blank_section.png
+
+The good thing about linking an add-on is when we make a change to the file,
+we don't have to re-install the add-on!
