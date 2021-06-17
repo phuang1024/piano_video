@@ -47,11 +47,19 @@ class TEST_OT_Operator(pv.types.Operator):
         return "FINISHED"
 
 
+class TEST_DT_MyNamespace(pv.types.DataNamespace):
+    idname = "test"
+    data = {
+        "hi": True,
+    }
+
+
 classes = (
     TEST_PT_Props,
     TEST_UT_Section,
     TEST_UT_Panel,
     TEST_OT_Operator,
+    TEST_DT_MyNamespace,
 )
 
 def register():
