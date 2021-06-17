@@ -121,7 +121,7 @@ def setup_addons(action: str, verbose: bool = False):
             path = addon["path"]
             if os.path.isfile(path):
                 file = os.path.basename(path)
-                printer(f"      Setting up {file}")
+                printer(f"  Setting up {file}")
                 mod = import_file(path)
                 if hasattr(mod, action):
                     getattr(mod, action)()
