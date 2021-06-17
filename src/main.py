@@ -95,6 +95,7 @@ def init(verbose=False):
                             "path": path,
                             "info": mod.pv_info,
                             "activated": True,
+                            "link": False,
                         })
 
         with open(ADDON_CONFIG_PATH, "w") as file:
@@ -154,7 +155,7 @@ def trunc(s, length):
 
 def manage_addons(cmds):
     parser = argparse.ArgumentParser(description="Manage your Piano Video add-ons")
-    parser.add_argument("cmd", nargs="?", choices=["help", "list", "info", "act", "dact", "rm", "inst"])
+    parser.add_argument("cmd", nargs="?", choices=["help", "list", "info", "act", "dact", "rm", "inst", "link"])
     parser.add_argument("opts", nargs="*")
     args = parser.parse_args(cmds)
 
@@ -163,7 +164,7 @@ def manage_addons(cmds):
         data = json.load(file)
     addon = None if num is None else data[num]
 
-    if args.cmd not in ("help", "list", "inst") and (num is None or not 0 <= num < len(data)):
+    if args.cmd not in ("help", "list", "inst", "link") and (num is None or not 0 <= num < len(data)):
         print("Invalid add-on number.")
         return
 
@@ -205,11 +206,15 @@ def manage_addons(cmds):
 
     elif args.cmd == "rm":
         path = data[num]["path"]
-        if input(f"Remove path {path} permanently? [y/N] ").lower().strip() == "y":
+        if not data[num]["link"]:
+            if input(f"Remove path {path} permanently? [y/N] ").lower().strip() != "y":
+                return
             if os.path.isfile(path):
                 os.remove(path)
             elif os.path.isdir(path):
                 shutil.rmtree(path)
+        else:
+            print("Removed add-on internal data (the file is not deleted).")
         data.pop(num)
 
     elif args.cmd == "inst":
@@ -221,10 +226,27 @@ def manage_addons(cmds):
                 shutil.copy(path, ADDON_INSTALL_PATH)
             elif os.path.isdir(path):
                 shutil.copytree(path, ADDON_INSTALL_PATH)
+            final_path = os.path.join(ADDON_INSTALL_PATH, os.path.basename(path))
+
             data.append({
-                "path": os.path.join(ADDON_INSTALL_PATH, os.path.basename(path)),
+                "path": final_path,
                 "info": mod.pv_info,
                 "activated": True,
+                "link": False,
+            })
+
+        else:
+            print("Not installing because \"pv_info\" is missing.")
+
+    elif args.cmd == "link":
+        path = os.path.realpath(input("Enter file or directory path: "))
+        mod = import_file(path)
+        if hasattr(mod, "pv_info"):
+            data.append({
+                "path": path,
+                "info": mod.pv_info,
+                "activated": True,
+                "link": True,
             })
         else:
             print("Not installing because \"pv_info\" is missing.")
