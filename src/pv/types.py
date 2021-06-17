@@ -26,6 +26,46 @@ from .utils import UI32, get
 from .props import Property
 
 
+class DataNamespace:
+    """
+    A class which can be registered to pv.data.<idname>
+    Contains any number of hashable key to value pairs.
+    """
+    idname: str
+    data: Dict[Any, Any]
+
+    def __str__(self) -> str:
+        return f"pv.types.DataNamespace(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __getattr__(self, attr: Any) -> Any:
+        return self.data[attr]
+
+    def __setattr__(self, attr: Any, value: Any) -> None:
+        self.data[attr] = value
+
+
+class Data:
+    """
+    Data submodule at pv.data
+    """
+    namespaces: List[DataNamespace]
+
+    def __init__(self) -> None:
+        self.namespaces = []
+
+    def __str__(self) -> str:
+        return f"pv.types.Data()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __getattr__(self, attr: str) -> DataNamespace:
+        return get(self.namespaces, attr)
+
+
 class Operator:
     idname: str
     label: str
