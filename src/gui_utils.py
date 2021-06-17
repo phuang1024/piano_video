@@ -161,6 +161,7 @@ ADDON_PATHS = (
 )
 CONFIG_PATH = os.path.join(PARENT, f"config_{VERSION}")
 ADDON_CONFIG_PATH = os.path.join(CONFIG_PATH, "addons.json")
+ADDON_INSTALL_PATH = ADDON_PATHS[-1]
 
 DEPENDENCIES = (
     "aadraw",

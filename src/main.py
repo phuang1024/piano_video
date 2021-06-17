@@ -19,6 +19,7 @@
 
 import sys
 import os
+import shutil
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
@@ -153,7 +154,7 @@ def trunc(s, length):
 
 def manage_addons(cmds):
     parser = argparse.ArgumentParser(description="Manage your Piano Video add-ons")
-    parser.add_argument("cmd", nargs="?", choices=["help", "list", "info", "act", "dact", "rm"])
+    parser.add_argument("cmd", nargs="?", choices=["help", "list", "info", "act", "dact", "rm", "inst"])
     parser.add_argument("opts", nargs="*")
     args = parser.parse_args(cmds)
 
@@ -162,7 +163,7 @@ def manage_addons(cmds):
         data = json.load(file)
     addon = None if num is None else data[num]
 
-    if args.cmd not in ("help", "list") and (num is None or not 0 <= num < len(data)):
+    if args.cmd not in ("help", "list", "inst") and (num is None or not 0 <= num < len(data)):
         print("Invalid add-on number.")
         return
 
@@ -201,6 +202,32 @@ def manage_addons(cmds):
 
     elif args.cmd == "act":
         data[num]["activated"] = True
+
+    elif args.cmd == "rm":
+        path = data[num]["path"]
+        if input(f"Remove path {path} permanently? [y/N] ").lower().strip() == "y":
+            if os.path.isfile(path):
+                os.remove(path)
+            elif os.path.isdir(path):
+                shutil.rmtree(path)
+        data.pop(num)
+
+    elif args.cmd == "inst":
+        path = os.path.realpath(input("Enter file or directory path: "))
+        mod = import_file(path)
+
+        if hasattr(mod, "pv_info"):
+            if os.path.isfile(path):
+                shutil.copy(path, ADDON_INSTALL_PATH)
+            elif os.path.isdir(path):
+                shutil.copytree(path, ADDON_INSTALL_PATH)
+            data.append({
+                "path": os.path.join(ADDON_INSTALL_PATH, os.path.basename(path)),
+                "info": mod.pv_info,
+                "activated": True,
+            })
+        else:
+            print("Not installing because \"pv_info\" is missing.")
 
     with open(ADDON_CONFIG_PATH, "w") as file:
         json.dump(data, file, indent=4)
