@@ -115,13 +115,14 @@ def setup_addons(action: str, verbose: bool = False):
         data = json.load(file)
 
     for addon in data:
-        path = addon["path"]
-        if os.path.isfile(path):
-            file = os.path.basename(path)
-            printer(f"      Setting up {file}")
-            mod = import_file(path)
-            if hasattr(mod, action):
-                getattr(mod, action)()
+        if addon["activated"]:
+            path = addon["path"]
+            if os.path.isfile(path):
+                file = os.path.basename(path)
+                printer(f"      Setting up {file}")
+                mod = import_file(path)
+                if hasattr(mod, action):
+                    getattr(mod, action)()
 
     printer(f"  Exiting add-on setup")
 
@@ -152,19 +153,25 @@ def trunc(s, length):
 
 def manage_addons(cmds):
     parser = argparse.ArgumentParser(description="Manage your Piano Video add-ons")
-    parser.add_argument("cmd", nargs="?", choices=["help", "list"])
+    parser.add_argument("cmd", nargs="?", choices=["help", "list", "info", "act", "dact", "rm"])
     parser.add_argument("opts", nargs="*")
     args = parser.parse_args(cmds)
 
+    num = int(args.opts[0])-1 if len(args.opts) > 0 else None
     with open(ADDON_CONFIG_PATH, "r") as file:
         data = json.load(file)
+    addon = None if num is None else data[num]
+
+    if args.cmd not in ("help", "list") and (num is None or not 0 <= num < len(data)):
+        print("Invalid add-on number.")
+        return
 
     if args.cmd == "help" or args.cmd is None:
         parser.print_help(sys.stderr)
 
     elif args.cmd == "list":
-        row  = "+-----+-------------------------------+----------------------------------+"
-        head = "| Num |           File Name           |         Parent Directory         |"
+        row  = "+-----+-----------------------+------------------------------+-----------+"
+        head = "| Num |       File Name       |       Parent Directory       | Activated |"
         print(row)
         print(head)
 
@@ -174,12 +181,29 @@ def manage_addons(cmds):
             sys.stdout.write("\n| ")
             sys.stdout.write(trunc(str(num), 3))
             sys.stdout.write(" | ")
-            sys.stdout.write(trunc(os.path.basename(addon["path"]), 29))
+            sys.stdout.write(trunc(os.path.basename(addon["path"]), 21))
             sys.stdout.write(" | ")
-            sys.stdout.write(trunc(os.path.basename(os.path.dirname(addon["path"])), 32))
+            sys.stdout.write(trunc(os.path.basename(os.path.dirname(addon["path"])), 28))
+            sys.stdout.write(" | ")
+            sys.stdout.write(trunc("True" if addon["activated"] else "False", 9))
             sys.stdout.write(" |\n")
             num += 1
         print(row)
+
+    elif args.cmd == "info":
+        print("File path: ", addon["path"])
+        print("Activated: ", addon["activated"])
+        print("Included metadata:")
+        print(json.dumps(addon["info"], indent=4))
+
+    elif args.cmd == "dact":
+        data[num]["activated"] = False
+
+    elif args.cmd == "act":
+        data[num]["activated"] = True
+
+    with open(ADDON_CONFIG_PATH, "w") as file:
+        json.dump(data, file, indent=4)
 
 
 def main():
