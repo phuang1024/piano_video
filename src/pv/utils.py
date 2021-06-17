@@ -81,6 +81,9 @@ def register_class(cls: type) -> None:
             pv.funcs.groups.append(pv.types.FuncGroup(group))
         get(pv.funcs.groups, group).callers.append(pv.types.FuncCaller(cls))
 
+    elif issubclass(cls, pv.types.DataNamespace):
+        pv.data.namespaces.append(inst)
+
 
 def unregister_class(cls: type) -> None:
     import pv
@@ -110,6 +113,9 @@ def unregister_class(cls: type) -> None:
         func_group = get(pv.funcs.groups, group)
         idx = get(func_group.callers, name, True)
         func_group.callers.pop(idx)
+
+    elif issubclass(cls, pv.types.DataNamespace):
+        pv.data.namespaces.pop(get(pv.data.namespaces, cls.idname, idx=True))
 
 
 def get(items: Sequence[Any], idname: str, idx: bool = False, raise_error: bool = True,
