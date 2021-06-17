@@ -226,14 +226,14 @@ sure you don't delete it!
 In this section, we will be looking at how to extend the Properties
 section of the UI:
 
-.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/properties.png
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/images/properties.png
     :width: 200
 
 ----
 
 First, let's look at UI Sections. They are the tabs on the left side.
 
-.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/ui_sections.png
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/images/ui_sections.png
     :width: 50
 
 Like the operators, we will define a new class that extends off of a
@@ -270,7 +270,7 @@ it instead of copying the file.
 To make a link install, first we need to uninstall the previous one.
 Type ``pv addons list`` and locate which add-on is the test one.
 
-.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/addons.png
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/images/addons.png
     :width: 250
 
 To uninstall it, type ``pv addons rm <num>``, where num is the add-on
@@ -281,7 +281,7 @@ To make a link install, type ``pv addons link`` and enter your file path.
 After linking the add-on, you can start the GUI with ``pv``. You should
 see a blank section, which was added by the add-on!
 
-.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/blank_section.png
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/images/blank_section.png
 
 The good thing about linking an add-on is when we make a change to the file,
 we don't have to re-install the add-on!
