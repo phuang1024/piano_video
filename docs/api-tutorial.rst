@@ -184,7 +184,19 @@ make sure you add the comma after your class name:
 
 ----
 
-**TODO testing and installing**
+Now, let's install the add-on into Piano video!
+We do this with a shell command:
+
+``pv addons inst file.py``
+
+Make sure you replace ``file.py`` with your actual file name.
+
+Now, if you list the add-ons, you should see your add-on installed!
+
+``pv addons list``
+
+Currently, our add-on doesn't change the UI in any noticable way.
+We are going to go over modifying the UI in the next section.
 
 Part 2: User Interface
 ^^^^^^^^^^^^^^^^^^^^^^
