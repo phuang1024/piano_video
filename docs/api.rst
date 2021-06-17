@@ -11,7 +11,7 @@ The API will be considered stable when v1 is released.**
 Piano Video has a Python API in the form of a module,
 which allows you to extend Piano Video.
 
-If you wish to learn how to write an add-on, please read
+**If you wish to learn how to write an add-on**, please read
 the `API Tutorial <api-tutorial.html>`__ page instead, which contains
 step-by-step instructions for creating your first add-on.
 
