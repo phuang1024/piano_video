@@ -185,9 +185,31 @@ make sure you add the comma after your class name:
 ----
 
 Now, let's install the add-on into Piano video!
+Before we can do that, there are a few more things to do:
+
+.. code-block:: python
+
+    pv_info = {
+        "name": "My Test Add-on",
+        "description": "A test",
+        "author": "<your name>",
+    }
+
+    import pv
+
+    ...
+
+We need to add a ``pv_info`` variable to the top. This is a dictionary
+that carries information about the add-on. The add-on can only be installed
+if it has a pv_info variable.
+
+Now we are ready to install the add-on.
 We do this with a shell command:
 
-``pv addons inst file.py``
+.. code-block: bash
+
+    >>> pv addons inst
+    Enter file path: file.py
 
 Make sure you replace ``file.py`` with your actual file name.
 
