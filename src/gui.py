@@ -138,6 +138,13 @@ def gui(verbose=False):
 
         shared.kdowns = []
         shared.mdowns = []
+        shared.mpos = pygame.mouse.get_pos()
+        shared.mpress = pygame.mouse.get_pressed()
+        shared.kpress = pygame.key.get_pressed()
+        shared.mtime = time.time() - mouse_time_start
+        if shared.mpos != mouse_prev_pos:
+            mouse_time_start = time.time()
+        mouse_prev_pos = shared.mpos
 
         events = pygame.event.get()
         for event in events:
@@ -150,15 +157,6 @@ def gui(verbose=False):
                 shared.kdowns.append(event.key)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 shared.mdowns.append(event.button)
-
-        shared.mpos = pygame.mouse.get_pos()
-        shared.mpress = pygame.mouse.get_pressed()
-        shared.kpress = pygame.key.get_pressed()
-        shared.mtime = time.time() - mouse_time_start
-
-        if shared.mpos != mouse_prev_pos:
-            mouse_time_start = time.time()
-        mouse_prev_pos = shared.mpos
 
         if kmod(pygame.K_q, True):
             set_run(False)
