@@ -87,7 +87,7 @@ def init(verbose=False):
 
         for directory in ADDON_PATHS:
             if os.path.isdir(directory):
-                for file in os.listdir(directory):
+                for file in sorted(os.listdir(directory)):
                     path = os.path.join(directory, file)
                     mod = import_file(path)
                     if hasattr(mod, "pv_info"):
@@ -164,7 +164,7 @@ def manage_addons(cmds):
         data = json.load(file)
     addon = None if num is None else data[num]
 
-    if args.cmd not in (None, "help", "list", "inst", "link") and (num is None or not 0 <= num < len(data)):
+    if args.cmd not in (None, "help", "list", "inst", "link") and (num is None or not 0 <= num < len(data)) or addon is None:
         print("Invalid add-on number.")
         return
 
