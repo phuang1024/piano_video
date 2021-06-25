@@ -164,7 +164,7 @@ def manage_addons(cmds):
         data = json.load(file)
     addon = None if num is None else data[num]
 
-    if args.cmd not in ("help", "list", "inst", "link") and (num is None or not 0 <= num < len(data)):
+    if args.cmd not in (None, "help", "list", "inst", "link") and (num is None or not 0 <= num < len(data)):
         print("Invalid add-on number.")
         return
 

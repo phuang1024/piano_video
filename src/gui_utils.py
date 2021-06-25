@@ -23,6 +23,7 @@ import pygame
 import cv2
 import numpy as np
 import shared
+from getpass import getuser
 from copy import deepcopy
 pygame.init()
 
@@ -154,12 +155,13 @@ def report_color(type):
 
 # Global constants
 VERSION = "0.1.2"
+
 PARENT = os.path.dirname(os.path.realpath(__file__))
+CONFIG_PATH = os.path.join(PARENT, f"config", VERSION, getuser())
 ADDON_PATHS = (
     os.path.join(PARENT, "addons_builtin"),
-    os.path.join(PARENT, "addons_installed"),
+    os.path.join(CONFIG_PATH, "addons"),
 )
-CONFIG_PATH = os.path.join(PARENT, f"config_{VERSION}")
 ADDON_CONFIG_PATH = os.path.join(CONFIG_PATH, "addons.json")
 ADDON_INSTALL_PATH = ADDON_PATHS[-1]
 
