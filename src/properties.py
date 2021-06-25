@@ -217,6 +217,8 @@ class Properties:
 
                     if isinstance(prop, pv.props.BoolProp):
                         prop.value = (not prop.value)
+                        if element["on_set"] is not None:
+                            pv.utils.op_from_idname(element["on_set"])()
 
                 elif element["type"] == "OPERATOR":
                     group, name = element["idpath"].split(".")

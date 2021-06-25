@@ -25,7 +25,7 @@ Avoid importing here, as it will likely result in a circular import.
 
 import os
 import cv2
-from typing import Any, Sequence, Union
+from typing import Any, Callable, Sequence, Union
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 BUILTIN_ICON_PATHS = (
@@ -128,3 +128,9 @@ def get(items: Sequence[Any], idname: str, idx: bool = False, raise_error: bool 
         raise ValueError(f"No object with idname {idname} in {items}")
     else:
         return not_found_rval
+
+
+def op_from_idname(idname: str) -> Callable:
+    import pv
+    group, name = idname.split(".")
+    return getattr(getattr(pv.ops, group), name)
