@@ -327,11 +327,11 @@ class UILayout:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def label(self, text: str = "") -> None:
+    def label(self, text: str = "", description: str = "") -> None:
         """
         Adds text.
         """
-        self.elements.append({"type": "LABEL", "text": text})
+        self.elements.append({"type": "LABEL", "text": text, "description": description})
 
     def prop(self, idpath: str, text: str = None, on_set: str = None) -> None:
         """
