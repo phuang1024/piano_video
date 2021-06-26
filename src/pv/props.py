@@ -17,12 +17,17 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import io
 import struct
-from typing import Any, IO, List, Tuple
+from typing import Any, IO, List, Tuple, Type, Union
 from .utils import UI32, I64, F64
 
 NUM_MAX = 2 ** 32
+SUPPORTED_COLLECTION_TYPES = (
+    bool,
+    int,
+    float,
+    str,
+)
 
 
 class Property:
@@ -31,6 +36,7 @@ class Property:
     All props (BoolProp, IntProp, etc...) inherit from this.
     """
     type_id: int
+    builtin_type: type
 
     idname: str
     label: str
@@ -60,6 +66,7 @@ class BoolProp(Property):
     Type ID: 1
     """
     type_id: int = 1
+    builtin_type: type = bool
 
     default: bool
     value: bool
@@ -91,6 +98,7 @@ class IntProp(Property):
     step: Value step (offset from default)
     """
     type_id: int = 2
+    builtin_type: type = int
 
     default: int
     value: int
@@ -122,13 +130,14 @@ class FloatProp(Property):
     """
     Floating point property.
     The value is packed as a signed 64 bit float (double)
-    Type ID: 2
+    Type ID: 3
 
     min: Minimum value (inclusive)
     max: Maximum value (inclusive)
     step: Value step (offset from default)
     """
     type_id: int = 3
+    builtin_type: type = float
 
     default: float
     value: float
@@ -159,13 +168,14 @@ class FloatProp(Property):
 class StringProp(Property):
     """
     String property.
-    Type ID: 3
+    Type ID: 4
 
     max_len: Maximum length.
     password: Whether to display the string as asterisks (*)
     subtype: "" (normal), "FILE_PATH" (choose a file), "DIR_PATH" (choose a directory)
     """
     type_id: int = 4
+    builtin_type: type = str
 
     default: str
     value: str
@@ -199,11 +209,12 @@ class StringProp(Property):
 class EnumProp(Property):
     """
     Enumerate Property (like a dropdown list).
-    Type ID: 4
+    Type ID: 5
 
     items: List of (value, name, description) to show in the list.
     """
     type_id: int = 5
+    builtin_type: type = tuple
 
     default: str
     value: str
@@ -227,3 +238,36 @@ class EnumProp(Property):
     def load(self, stream: IO[bytes]) -> None:
         length = struct.unpack(UI32, stream.read(4))[0]
         self.value = stream.read(length).decode()
+
+
+class CollectionProp(Property):
+    """
+    A collection of items.
+    Type ID: 6
+
+    item_type: The item type. Can either be builtin (int) or pv type (IntProp)
+    items: List of stored items. Can be altered by the GUI.
+    extendable: Whether the length can be changed by the user.
+    ordered: Whether the collection is ordered.
+    """
+    type_id: int = 6
+    builtin_type: type = list
+
+    item_type: Type
+    items: List[Any]
+    extendable: bool
+    ordered: bool
+
+    def __init__(self, idname: str = "", label: str = "", description: str = "",
+            item_type: Union[type, Property] = str, items: List[Any] = [], extendable: bool = True,
+            ordered: bool = True) -> None:
+        raise NotImplementedError("CollectionProp is not ready yet.")
+        super().__init__(idname, label, description)
+        self.item_type = item_type.builtin_type if isinstance(item_type, Property) else item_type
+        self.items = items
+        self.extendable = extendable
+        self.ordered = ordered
+
+        assert (not isinstance(item_type, EnumProp)), "Cannot have collection of EnumProps."
+        assert (item_type in SUPPORTED_COLLECTION_TYPES or isinstance(item_type, Property)), \
+            f"Collection type must be in {SUPPORTED_COLLECTION_TYPES}"
