@@ -9,8 +9,8 @@
 ![](https://readthedocs.org/projects/piano-video/badge/?version=latest)
 ![](https://img.shields.io/tokei/lines/github/huangpatrick16777216/piano_video)
 
-[![preview](https://github.com/HuangPatrick16777216/piano_video/blob/main/images/aeolian_harp.jpg)](https://www.youtube.com/watch?v=GzIjygdvgAA)
-<sub><sup>Chopin Etude Op 25 No 1 "Aeolian Harp"</sup></sub>
+[![preview](https://github.com/HuangPatrick16777216/piano_video/blob/main/images/la_campanella.jpg)](https://www.youtube.com/watch?v=RETNQWfVIkA)
+<sub><sup>Liszt - La Campanella</sup></sub>
 
 Piano visualizer with MIDI parsing, decorative blocks, and particle simulations.
 
