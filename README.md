@@ -31,7 +31,6 @@ Piano visualizer with MIDI parsing, decorative blocks, and particle simulations.
 
 ## Examples
 
-* [Performances on my website](https://sites.google.com/view/patrick-piano/performances)
-* [YouTube Channel](https://www.youtube.com/channel/UCTGITVy1ROMaA3QVQ3SON-w)
+* [Video Performances](https://www.youtube.com/channel/UCTGITVy1ROMaA3QVQ3SON-w)
 
 [docs]: https://github.com/HuangPatrick16777216/piano_video/wiki
