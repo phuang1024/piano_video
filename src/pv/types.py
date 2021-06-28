@@ -20,6 +20,7 @@
 import io
 import struct
 import time
+import cv2
 import numpy as np
 from typing import Any, Dict, IO, List, Tuple, Type, Union
 from .utils import UI32, get
@@ -253,6 +254,25 @@ class Funcs:
 
     def __getattr__(self, attr: str) -> FuncGroup:
         return get(self.groups, attr)
+
+
+class Display:
+    """
+    The display submodule pv.disp
+    """
+    drawer: Union[str, None]
+    image: np.ndarray
+
+    def __init__(self) -> None:
+        self.drawer = None
+        self.image = np.zeros((1080, 1920, 3))
+
+
+class DispDrawer:
+    """
+    Create subclass to alter the display section of the GUI.
+    """
+    idname: str
 
 
 class PropertyGroup:
