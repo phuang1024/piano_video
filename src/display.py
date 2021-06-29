@@ -49,7 +49,5 @@ class GuiDisplay:
         if not (resized or time_passed):
             return
 
-        print("DRAW")
-
         pv.disp.draw()
         surface.blit(pv.disp.image, (x, y))
