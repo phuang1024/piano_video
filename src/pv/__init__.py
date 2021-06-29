@@ -17,8 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
+from . import draw
 from . import props
 from . import types
 from . import utils
