@@ -28,7 +28,6 @@ pygame.init()
 class GuiDisplay:
     def __init__(self):
         self.prev_size = None
-        self.prev_img = None
 
     def redraw(self, surface, rect):
         self.draw(surface, rect)
@@ -36,16 +35,8 @@ class GuiDisplay:
     def draw(self, surface, rect):
         x, y, w, h = rect
         if (w, h) != self.prev_size:
-            pv.disp.image = np.zeros((h, w, 3), dtype=np.uint8)
+            pv.disp.image = pygame.Surface((w, h))
         self.prev_size = (w, h)
 
         pv.disp.draw()
-        img = pv.disp.image
-        if self.prev_img is not None and np.array_equal(img, self.prev_img):
-            return
-        self.prev_img = np.empty_like(img)
-        self.prev_img[:] = img
-
-        img = cv2.resize(img, (w, h))
-        img = array_to_surf(img)
-        surface.blit(img, (x, y))
+        surface.blit(pv.disp.image, (x, y))

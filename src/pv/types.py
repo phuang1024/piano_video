@@ -20,11 +20,12 @@
 import io
 import struct
 import time
-import cv2
+import pygame
 import numpy as np
 from typing import Any, Dict, IO, List, Tuple, Type, Union
 from .utils import UI32, get
 from .props import Property
+pygame.init()
 
 
 class DataNamespace:
@@ -268,6 +269,9 @@ class DispDrawer:
     def __repr__(self) -> str:
         return self.__str__()
 
+    def draw(self, img: pygame.Surface) -> None:
+        ...
+
 
 class Display:
     """
@@ -275,12 +279,12 @@ class Display:
     """
     current_drawer: Union[str, None]
     drawers: List[DispDrawer]
-    image: np.ndarray
+    image: pygame.Surface
 
     def __init__(self) -> None:
         self.current_drawer = None
         self.drawers = []
-        self.image = np.zeros((1080, 1920, 3), dtype=np.uint8)
+        self.image = pygame.Surface((1920, 1080))
 
     def __str__(self) -> str:
         return f"pv.types.Display()"

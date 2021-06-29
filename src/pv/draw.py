@@ -17,8 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import numpy as np
+import pygame
 from typing import Tuple
+pygame.init()
 
 
 def bounds(v: float, vmin: float = 0, vmax: float = 1) -> float:
@@ -31,26 +32,26 @@ def bounds(v: float, vmin: float = 0, vmax: float = 1) -> float:
     return min(max(v, vmin), vmax)
 
 
-def mix(c1: Tuple, c2: Tuple, fac: float) -> np.ndarray:
+def mix(c1: Tuple, c2: Tuple, fac: float):
     """
     Mixes two RGB colors.
     :param c1: Color 1
     :param c2: Color 2
     :param fac: Factor of the second color.
     """
-    color = [int(c1[i]*(1-fac) + c2[i]*fac) for i in range(3)]
-    color = [bounds(0, 255, x) for x in color]
-    return np.array(color)
+    color = [c1[i]*(1-fac) + c2[i]*fac for i in range(3)]
+    color = [int(bounds(0, 255, x)) for x in color]
+    return color
 
 
 def pythag(x, y):
     return (x**2 + y**2) ** 0.5
 
 
-def circle(img: np.ndarray, color: Tuple[float, float, float], center: Tuple[float, float],
+def circle(img: pygame.Surface, color: Tuple[float, float, float], center: Tuple[float, float],
         radius: float, border: float = 0) -> None:
     cx, cy = center
-    width, height = img.shape[1::-1]
+    width, height = img.get_size()
 
     color = color[:3]
     out_thres = radius
@@ -65,5 +66,5 @@ def circle(img: np.ndarray, color: Tuple[float, float, float], center: Tuple[flo
             dist = pythag(x-cx, y-cy)
             out_fac = bounds(out_thres-dist+1)
             in_fac = bounds(dist-in_thres+1)
-            col = mix(img[y][x], color, out_fac*in_fac)
-            img[y][x] = col
+            col = mix(img.get_at((x, y)), color, out_fac*in_fac)
+            img.set_at((x, y), col)
