@@ -256,23 +256,40 @@ class Funcs:
         return get(self.groups, attr)
 
 
-class Display:
-    """
-    The display submodule pv.disp
-    """
-    drawer: Union[str, None]
-    image: np.ndarray
-
-    def __init__(self) -> None:
-        self.drawer = None
-        self.image = np.zeros((1080, 1920, 3))
-
-
 class DispDrawer:
     """
     Create subclass to alter the display section of the GUI.
     """
     idname: str
+
+    def __str__(self) -> str:
+        return f"pv.types.DispDrawer()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Display:
+    """
+    The display submodule pv.disp
+    """
+    current_drawer: Union[str, None]
+    drawers: List[DispDrawer]
+    image: np.ndarray
+
+    def __init__(self) -> None:
+        self.current_drawer = None
+        self.drawers = []
+        self.image = np.zeros((1080, 1920, 3))
+
+    def __str__(self) -> str:
+        return f"pv.types.Display()"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __getattr__(self, attr: str) -> FuncCaller:
+        return get(self.drawers, attr)
 
 
 class PropertyGroup:

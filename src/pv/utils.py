@@ -84,6 +84,9 @@ def register_class(cls: type) -> None:
     elif issubclass(cls, pv.types.DataNamespace):
         pv.data.namespaces.append(inst)
 
+    elif issubclass(cls, pv.types.DispDrawer):
+        pv.disp.drawers.append(inst)
+
 
 def unregister_class(cls: type) -> None:
     import pv
@@ -116,6 +119,9 @@ def unregister_class(cls: type) -> None:
 
     elif issubclass(cls, pv.types.DataNamespace):
         pv.data.namespaces.pop(get(pv.data.namespaces, cls.idname, idx=True))
+
+    elif issubclass(cls, pv.types.DispDrawer):
+        pv.disp.drawers.pop(get(pv.disp.drawers, cls.idname, idx=True))
 
 
 def get(items: Sequence[Any], idname: str, idx: bool = False, raise_error: bool = True,

@@ -26,5 +26,6 @@ from . import utils
 
 context = types.Context()
 data = types.Data()
+disp = types.Display()
 funcs = types.Funcs()
 ops = types.Ops()
