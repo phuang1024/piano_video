@@ -32,6 +32,7 @@ from gui_utils import *
 
 
 class SIGINT_Handler:
+    #TODO also catch SIGTERM
     threshold = 2
 
     def __init__(self, safe, verbose=False):
@@ -119,7 +120,7 @@ def setup_addons(action: str, verbose: bool = False):
     for addon in data:
         if addon["activated"]:
             path = addon["path"]
-            if os.path.isfile(path):
+            if os.path.isfile(path) or (os.path.isdir(path) and "__init__.py" in os.listdir(path)):
                 file = os.path.basename(path)
                 printer(f"  Setting up {file}")
                 mod = import_file(path)
