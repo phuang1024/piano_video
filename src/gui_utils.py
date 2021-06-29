@@ -154,7 +154,7 @@ def report_color(type):
 
 
 # Global constants
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 CONFIG_PATH = os.path.join(PARENT, f"config", VERSION, getuser())
