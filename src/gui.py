@@ -23,6 +23,7 @@ import pygame
 import aadraw
 import pv
 import shared
+from display import GuiDisplay
 from gui_utils import *
 from properties import Properties
 pygame.init()
@@ -38,19 +39,24 @@ class WindowManager:
 
     def __init__(self) -> None:
         self.properties = Properties()
+        self.display = GuiDisplay()
         self.prev_size = (None, None)
 
     def draw(self, surface):
         width, height = surface.get_size()
         sep = int(width * 0.8)
+
         props_rect = (sep, 0, width-sep, height-self.status_bar_height)
+        disp_rect = (0, 0, sep, height-self.status_bar_height)
 
         if width != self.prev_size[0] or height != self.prev_size[1]:
             self.properties.redraw(surface, props_rect)
+            self.display.redraw(surface, disp_rect)
 
             self.prev_size = (width, height)
 
         self.properties.draw(surface, props_rect)
+        self.display.draw(surface, disp_rect)
 
         self.draw_tooltip(surface)
         self.draw_report(surface)

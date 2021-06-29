@@ -280,7 +280,7 @@ class Display:
     def __init__(self) -> None:
         self.current_drawer = None
         self.drawers = []
-        self.image = np.zeros((1080, 1920, 3))
+        self.image = np.zeros((1080, 1920, 3), dtype=np.uint8)
 
     def __str__(self) -> str:
         return f"pv.types.Display()"
@@ -290,6 +290,10 @@ class Display:
 
     def __getattr__(self, attr: str) -> FuncCaller:
         return get(self.drawers, attr)
+
+    def draw(self) -> None:
+        if self.current_drawer is not None:
+            get(self.drawers, self.current_drawer).draw()
 
 
 class PropertyGroup:
