@@ -17,8 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import numpy as np
-import cv2
+import time
 import pygame
 import pv
 from gui_utils import *
@@ -28,15 +27,29 @@ pygame.init()
 class GuiDisplay:
     def __init__(self):
         self.prev_size = None
+        self.next_draw_time = 0
 
     def redraw(self, surface, rect):
         self.draw(surface, rect)
 
     def draw(self, surface, rect):
         x, y, w, h = rect
+
+        resized = False
         if (w, h) != self.prev_size:
             pv.disp.image = pygame.Surface((w, h))
+            resized = True
         self.prev_size = (w, h)
+
+        time_passed = False
+        if time.time() >= self.next_draw_time:
+            time_passed = True
+            self.next_draw_time = time.time() + 1/pv.disp.fps
+
+        if not (resized or time_passed):
+            return
+
+        print("DRAW")
 
         pv.disp.draw()
         surface.blit(pv.disp.image, (x, y))

@@ -280,11 +280,13 @@ class Display:
     current_drawer: Union[str, None]
     drawers: List[DispDrawer]
     image: pygame.Surface
+    fps: float
 
     def __init__(self) -> None:
         self.current_drawer = None
         self.drawers = []
         self.image = pygame.Surface((1920, 1080))
+        self.fps = 24
 
     def __str__(self) -> str:
         return f"pv.types.Display()"
