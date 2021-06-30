@@ -266,8 +266,8 @@ predefined UI Section class:
 Let's look at what each parameter means:
 
 - ``idname``: A unique ID for this section.
-- ``label``: This is the "name" of the panel that the user will see.
-- ``description``: A longer description of what the panel does.
+- ``label``: This is the "name" of the section that the user will see.
+- ``description``: A longer description of what the section is for.
 
 Now, we can also add this class to the classes tuple:
 
@@ -284,7 +284,7 @@ and then installing can be tedious. We can fix that problem by
 making a link install. Piano Video will read from the path we give
 it instead of copying the file.
 
-To make a link install, first we need to uninstall the previous one.
+To make a link install, first we need to uninstall the previous installation.
 Type ``pv addons list`` and locate which add-on is the test one.
 
 .. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/addons.png
@@ -299,6 +299,46 @@ After linking the add-on, you can start the GUI with ``pv``. You should
 see a blank section, which was added by the add-on!
 
 .. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/blank_section.png
+    :width: 50
 
-The good thing about linking an add-on is when we make a change to the file,
+The good thing about making a link installation is when we make a change to the file,
 we don't have to re-install the add-on!
+
+----
+
+Next, let's add a panel to our section:
+
+.. image:: https://raw.githubusercontent.com/HuangPatrick16777216/piano_video/main/docs/images/blank_section.png
+    :width: 250
+
+Again, we will extend a class off of a predefined class.
+
+.. code-block:: python
+
+    class TUTORIAL_UT_Panel(pv.types.UIPanel):
+        idname = "my_panel"
+        label = "My Panel"
+        description = "A UI panel"
+        section_id = "tutorial"
+
+        def draw(self):
+            layout = self.layout
+            layout.label("Testing a label")
+
+- ``idname``: A unique ID for this section.
+- ``label``: This is the "name" of the section that the user will see.
+- ``description``: A longer description of what the section is for.
+- ``section_id``: The idname of the section this panel will appear in.
+  In this case, we put "tutorial", which is the idname of the section we just defined.
+- ``draw()``: This is a function that will draw the elements in the panel.
+  For now, we will just add a label (text).
+
+We can add this to the classes tuple as well.
+
+.. code-block:: python
+
+    classes = (
+        TUTORIAL_OT_MyOperator,
+        TUTORIAL_UT_Section,
+        TUTORIAL_UT_Panel,
+    )
