@@ -19,5 +19,5 @@ if I ever create one, **I will most likely only accept GNU General**
 
 Please open an [issue][issue] on GitHub.
 
-[issue]: https://github.com/HuangPatrick16777216/piano_video/issues
+[issue]: https://github.com/phuang1024/piano_video/issues
 [api-docs]: https://piano-video.readthedocs.io/en/latest/api.html#

@@ -28,7 +28,7 @@ SRC = os.path.join(os.path.dirname(PARENT), "src", "pv")
 long_description = """
 # Piano Video
 
-A Python api for https://github.com/HuangPatrick16777216/piano_video
+A Python api for https://github.com/phuang1024/piano_video
 
 `pip install piano_video`
 
@@ -54,10 +54,10 @@ setuptools.setup(
     version=os.path.basename(os.environ["PYPI_VERSION"]),
     author="Patrick Huang",
     author_email="huangpatrick16777216@gmail.com",
-    description="Python API for https://github.com/HuangPatrick16777216/piano_video",
+    description="Python API for https://github.com/phuang1024/piano_video",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/HuangPatrick16777216/piano_video",
+    url="https://github.com/phuang1024/piano_video",
     py_modules=["pv"],
     packages=setuptools.find_packages(),
     install_requires=requirements,
