@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
 import io
 import struct
 import time
@@ -486,3 +487,38 @@ class Context:
 
     def __repr__(self) -> str:
         return self.__str__()
+
+
+class SubCache:
+    """
+    A sub cache of the main cache directory.
+    This is what actually stores data.
+    """
+    idname: str
+    fname: str
+
+    def __str__(self) -> str:
+        return f"pv.cache.SubCache(idname={self.idname})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Cache:
+    """
+    The cache module/manager at pv.cache
+    """
+    path: str
+    subcaches: List[SubCache]
+
+    def __init__(self, path: str = "") -> None:
+        self.path = path
+
+    def __str__(self) -> str:
+        return f"pv.cache.Cache(path={self.path})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __getattr__(self, attr: str) -> SubCache:
+        return get(self.subcaches, attr)
