@@ -21,9 +21,10 @@ import os
 import io
 import struct
 import time
+import cv2
 import pygame
 import numpy as np
-from typing import Any, Dict, IO, List, Tuple, Type, Union
+from typing import Any, Dict, Hashable, IO, List, Tuple, Type, Union
 from .utils import UI32, get
 from .props import Property
 pygame.init()
@@ -35,7 +36,7 @@ class DataNamespace:
     Contains any number of hashable key to value pairs.
     """
     idname: str
-    data: Dict[Any, Any]
+    data: Dict[Hashable, Any]
 
     def __str__(self) -> str:
         return f"pv.types.DataNamespace(idname={self.idname})"
@@ -496,6 +497,10 @@ class SubCache:
     """
     idname: str
     fname: str
+    keys: Dict[Hashable, Tuple[int, str]]
+
+    def __init__(self):
+        self.keys = {}
 
     def __str__(self) -> str:
         return f"pv.cache.SubCache(idname={self.idname})"
@@ -503,11 +508,38 @@ class SubCache:
     def __repr__(self) -> str:
         return self.__str__()
 
+    def __getitem__(self, key) -> Union[None, bytes, IO[bytes], np.ndarray, pygame.Surface]:
+        from pv.types import Cache
+
+        mode, path = self.keys[key]
+        path = os.path.join(Cache.path, self.fname, path)
+
+        if mode == Cache.NONE:
+            return None
+        elif mode == Cache.BYTES:
+            with open(path, "rb") as file:
+                return file.read()
+        elif mode == Cache.BYTESTREAM:
+            with open(path, "rb") as file:
+                return io.BytesIO(file.read())
+        elif mode in (Cache.ARRAY_PNG, Cache.ARRAY_JPG):
+            return cv2.imread(path)
+        elif mode in (Cache.SURF_PNG, Cache.SURF_JPG):
+            return pygame.image.load(path)
+
 
 class Cache:
     """
     The cache module/manager at pv.cache
     """
+    NONE:       int = 0
+    BYTES:      int = 1
+    BYTESTREAM: int = 2
+    ARRAY_PNG:  int = 3
+    ARRAY_JPG:  int = 4
+    SURF_PNG:   int = 5
+    SURF_JPG:   int = 6
+
     path: str
     subcaches: List[SubCache]
 
