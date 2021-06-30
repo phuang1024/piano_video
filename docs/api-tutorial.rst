@@ -181,8 +181,7 @@ make sure you add the comma after your class name:
 
 ----
 
-Now, let's install the add-on into Piano video!
-Before we can do that, there are a few more things to do:
+Before we can install the add-on, there are a few more things to do:
 
 .. code-block:: python
 
@@ -198,7 +197,19 @@ Before we can do that, there are a few more things to do:
 
 We need to add a ``pv_info`` variable to the top. This is a dictionary
 that carries information about the add-on. The add-on can only be installed
-if it has a pv_info variable.
+if it has a ``pv_info`` variable.
+
+We can also add this print statement to ``register``:
+
+.. code-block:: python
+
+    def register():
+        print("Registering my test add-on!")
+        for cls in classes:
+            pv.utils.register_class(cls)
+
+When Piano Video starts up, it will run the ``register`` function.
+We will be able to see the output on the terminal.
 
 Now we are ready to install the add-on.
 We do this with a shell command:
@@ -213,6 +224,12 @@ Make sure you replace ``file.py`` with your actual file name.
 Now, if you list the add-ons, you should see your add-on installed!
 
 ``pv addons list``
+
+We can start Piano Video with
+
+``pv``
+
+and we should see the printed text on the terminal.
 
 Currently, our add-on doesn't change the UI in any noticable way.
 We are going to go over modifying the UI in the next section.
@@ -263,7 +280,7 @@ Now, we can also add this class to the classes tuple:
 
 To install this add-on, we first need to uninstall the other one
 (remember, we installed it in the Operator section). Uninstalling
-and the installing can be tedious, so we can fix that problem by
+and then installing can be tedious. We can fix that problem by
 making a link install. Piano Video will read from the path we give
 it instead of copying the file.
 
