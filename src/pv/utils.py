@@ -24,8 +24,10 @@ Avoid importing here, as it will likely result in a circular import.
 """
 
 import os
+import random
 import cv2
-from typing import Any, Callable, Sequence, Union
+from hashlib import sha256
+from typing import Any, Callable, Sequence
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 BUILTIN_ICON_PATHS = (
@@ -140,3 +142,7 @@ def op_from_idname(idname: str) -> Callable:
     import pv
     group, name = idname.split(".")
     return getattr(getattr(pv.ops, group), name)
+
+
+def randhash(length: int = 20) -> str:
+    return sha256(bytes(random.choices(range(256), k=500))).hexdigest()[:length]
