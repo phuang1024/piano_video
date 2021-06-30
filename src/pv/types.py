@@ -509,10 +509,10 @@ class SubCache:
         return self.__str__()
 
     def __getitem__(self, key) -> Union[None, bytes, IO[bytes], np.ndarray, pygame.Surface]:
-        from pv.types import Cache
+        import pv
 
         mode, path = self.keys[key]
-        path = os.path.join(Cache.path, self.fname, path)
+        path = os.path.join(pv.cache.path, self.fname, path)
 
         if mode == Cache.NONE:
             return None
@@ -540,11 +540,11 @@ class Cache:
     SURF_PNG:   int = 5
     SURF_JPG:   int = 6
 
-    path: str
+    _path: str
     subcaches: List[SubCache]
 
     def __init__(self, path: str = "") -> None:
-        self.path = path
+        self._path = path
 
     def __str__(self) -> str:
         return f"pv.cache.Cache(path={self.path})"
@@ -554,3 +554,12 @@ class Cache:
 
     def __getattr__(self, attr: str) -> SubCache:
         return get(self.subcaches, attr)
+
+    @property
+    def path(self) -> str:
+        return self._path
+
+    @path.setter
+    def path(self, value) -> None:
+        self._path = value
+        os.makedirs(value, exist_ok=True)

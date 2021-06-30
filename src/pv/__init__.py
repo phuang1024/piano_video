@@ -24,6 +24,7 @@ from . import props
 from . import types
 from . import utils
 
+cache = types.Cache()
 context = types.Context()
 data = types.Data()
 disp = types.Display()
