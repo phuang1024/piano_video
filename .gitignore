@@ -9,6 +9,8 @@ __pycache__
 *.mp3
 *.mp4
 
+/build/pv_*
+
 /docs/_build
 /docs/_static
 /docs/_templates
