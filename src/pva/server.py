@@ -18,9 +18,11 @@
 #
 
 import os
+import time
 import argparse
 import base64
 import json
+from datetime import datetime
 from hashlib import sha256, sha384, sha512
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
@@ -61,7 +63,7 @@ class Data:
 
     @staticmethod
     def dump(path: str, obj):
-        Data.write(path, json.dumps(obj))
+        Data.write(path, json.dumps(obj, indent=4))
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -70,7 +72,6 @@ class Handler(BaseHTTPRequestHandler):
         headers = self.headers
         data = self.rfile.read(int(headers["Content-Length"])).decode()
         data = {k: v for k, v in [x.split("=") for x in data.split("&")]}
-        print(data, flush=True)
 
         if path == "/account/exists":
             self.send_response(200)
@@ -81,9 +82,29 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = os.path.realpath(self.path)
+        headers = self.headers
+        data = self.rfile.read(int(headers["Content-Length"])).decode()
+        data = {k: v for k, v in [x.split("=") for x in data.split("&")]}
+
+        if path == "/account/create":
+            uname = data["uname"]
+            password = data["password"]
+            exists = (uname in [f.split(".")[0] for f in Data.listdir("accounts")])
+            if exists:
+                self.send_response(405)
+                self.send_header("content-type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"The username already exists.")
+            else:
+                Data.dump(f"accounts/{uname}.json", {"uname": uname, "password": password,
+                    "create_time": time.time(), "create_date": get_date()})
+                self.send_response(200)
+                self.send_header("content-type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"Success!")
 
 
-def secure_hash(data: bytes) -> bytes:
+def secure_hash(data: bytes, hex=False):
     """
     A function that calls SHA2 algorithms many times.
     This makes it harder to brute force reverse hashes,
@@ -97,7 +118,11 @@ def secure_hash(data: bytes) -> bytes:
         data = sha256(data).digest()
     for _ in range(1000):
         data = sha512(data).digest()
-    return data
+    return sha512(data).hexdigest() if hex else sha512(data).digest()
+
+
+def get_date():
+    return datetime.now().strftime("%Y-%m-%d %H-%M-%S")
 
 
 def main():
