@@ -25,30 +25,35 @@ from hashlib import sha256, sha384, sha512
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
+DATA = os.path.join(PARENT, "data")
 
 
 class Data:
     @staticmethod
     def read(path: str, mode: str = "r"):
-        with open(os.path.join(PARENT, path), mode) as file:
+        with open(os.path.join(DATA, path), mode) as file:
             return file.read()
 
     @staticmethod
     def write(path: str, data, mode: str = "w"):
-        with open(os.path.join(PARENT, path), mode) as file:
+        with open(os.path.join(DATA, path), mode) as file:
             file.write(data)
 
     @staticmethod
     def isfile(path: str):
-        return os.path.isfile(os.path.join(PARENT, path))
+        return os.path.isfile(os.path.join(DATA, path))
 
     @staticmethod
     def isdir(path: str):
-        return os.path.isdir(os.path.join(PARENT, path))
+        return os.path.isdir(os.path.join(DATA, path))
 
     @staticmethod
-    def makedirs(path: str):
-        os.makedirs(os.path.join(PARENT, path))
+    def makedirs(path: str, exist_ok=True):
+        os.makedirs(os.path.join(DATA, path), exist_ok=exist_ok)
+
+    @staticmethod
+    def listdir(path: str):
+        return os.listdir(os.path.join(DATA, path))
 
     @staticmethod
     def load(path: str):
@@ -61,7 +66,21 @@ class Data:
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        pass
+        path = os.path.realpath(self.path)
+        headers = self.headers
+        data = self.rfile.read(int(headers["Content-Length"])).decode()
+        data = {k: v for k, v in [x.split("=") for x in data.split("&")]}
+        print(data, flush=True)
+
+        if path == "/account/exists":
+            self.send_response(200)
+            self.send_header("content-type", "text/json")
+            self.end_headers()
+            exists = (data["uname"] in [f.split(".")[0] for f in Data.listdir("accounts")])
+            self.wfile.write(json.dumps({"exists": exists}).encode())
+
+    def do_POST(self):
+        path = os.path.realpath(self.path)
 
 
 def secure_hash(data: bytes) -> bytes:
@@ -86,6 +105,9 @@ def main():
     parser.add_argument("--ip", help="IP address to bind to", default="0.0.0.0")
     parser.add_argument("--port", help="Port to bind to", type=int, default=5555)
     args = parser.parse_args()
+
+    Data.makedirs("accounts")
+    Data.makedirs("projects")
 
     print(f"Serving on IP {args.ip} and PORT {args.port}")
     server = HTTPServer((args.ip, args.port), Handler)
