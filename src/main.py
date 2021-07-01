@@ -32,8 +32,7 @@ from gui import gui
 from gui_utils import *
 
 
-class SIGINT_Handler:
-    #TODO also catch SIGTERM
+class QuitHandler:
     threshold = 2
 
     def __init__(self, safe, verbose=False):
@@ -41,16 +40,18 @@ class SIGINT_Handler:
 
         self.safe = safe
         if safe:
-            printer(f"Safe mode activated, threshold = {self.threshold} seconds")
+            printer(f"Safe mode activated, threshold={self.threshold} seconds")
 
     def __enter__(self):
-        self.old_handler = signal.signal(signal.SIGINT, self.handler)
+        self.old_sigint = signal.signal(signal.SIGINT, self.handler_int)
+        self.old_sigterm = signal.signal(signal.SIGTERM, self.handler_term)
         self.last_int = 0
 
     def __exit__(self, type, value, traceback):
-        signal.signal(signal.SIGINT, self.old_handler)
+        signal.signal(signal.SIGINT, self.old_sigint)
+        signal.signal(signal.SIGTERM, self.old_sigterm)
 
-    def handler(self, sig, frame):
+    def handler_int(self, sig, frame):
         if self.safe:
             t = time.time()
             if t - self.last_int < self.threshold:
@@ -59,7 +60,24 @@ class SIGINT_Handler:
 
             colors.red
             print("SIGINT received. Continuing because Safe Mode is activated.")
-            print(f"Send SIGINT again in the next {self.threshold} seconds to exit.")
+            print(f"Interrupt again in the next {self.threshold} seconds to exit.")
+            colors.reset
+
+            self.last_int = t
+
+        else:
+            self.exit()
+
+    def handler_term(self, sig, frame):
+        if self.safe:
+            t = time.time()
+            if t - self.last_int < self.threshold:
+                self.exit()
+                return
+
+            colors.red
+            print("SIGTERM received. Continuing because Safe Mode is activated.")
+            print(f"Interrupt again in the next {self.threshold} seconds to exit.")
             colors.reset
 
             self.last_int = t
@@ -68,7 +86,7 @@ class SIGINT_Handler:
             self.exit()
 
     def exit(self):
-        print(f"Received SIGINT, exiting normally.")
+        print(f"Received interrupt, exiting normally.")
         set_run(False)
 
 
@@ -300,7 +318,7 @@ def main():
             manage_addons(args.opts)
         return
 
-    with SIGINT_Handler(args.safe, args.verbose):
+    with QuitHandler(args.safe, args.verbose):
         run(args)
 
     shutil.rmtree(TMP_PATH)
