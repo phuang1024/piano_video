@@ -27,6 +27,7 @@ import time
 import signal
 import argparse
 import json
+import pv
 from gui import gui
 from gui_utils import *
 
@@ -267,6 +268,8 @@ def main():
     args = parser.parse_args()
 
     init(args.verbose)
+    os.makedirs(TMP_PATH, exist_ok=True)
+    pv.cache.path = TMP_PATH
 
     if args.version:
         print(f"Piano Video v{VERSION}  Copyright (C) 2021  Patrick Huang")
@@ -283,6 +286,8 @@ def main():
 
     with SIGINT_Handler(args.safe, args.verbose):
         run(args)
+
+    shutil.rmtree(TMP_PATH)
 
 
 main()

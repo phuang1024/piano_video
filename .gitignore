@@ -15,3 +15,4 @@ __pycache__
 
 /src/addons_installed
 /src/config*
+/src/tmp

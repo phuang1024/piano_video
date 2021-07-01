@@ -22,6 +22,7 @@ import os
 import pygame
 import cv2
 import numpy as np
+import pv
 import shared
 from getpass import getuser
 from copy import deepcopy
@@ -158,6 +159,7 @@ VERSION = "0.1.3"
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 CONFIG_PATH = os.path.join(PARENT, f"config", VERSION, getuser())
+TMP_PATH = os.path.join(PARENT, "tmp", pv.utils.randhash())
 ADDON_PATHS = (
     os.path.join(PARENT, "addons_builtin"),
     os.path.join(CONFIG_PATH, "addons"),
