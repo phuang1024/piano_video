@@ -18,14 +18,7 @@
 #
 
 import os
-import argparse
 from hashlib import sha256, sha384, sha512
-from http.server import HTTPServer, BaseHTTPRequestHandler
-
-
-class Handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        pass
 
 
 def secure_hash(data: bytes) -> bytes:
@@ -43,17 +36,3 @@ def secure_hash(data: bytes) -> bytes:
     for _ in range(1000):
         data = sha512(data).digest()
     return data
-
-
-def main():
-    parser = argparse.ArgumentParser("Server of Piano Video add-on system.")
-    parser.add_argument("--ip", help="IP address to bind to", default="0.0.0.0")
-    parser.add_argument("--port", help="Port to bind to", type=int, default=5555)
-    args = parser.parse_args()
-
-    print(f"Serving on IP {args.ip} and PORT {args.port}")
-    server = HTTPServer((args.ip, args.port), Handler)
-    server.serve_forever()
-
-
-main()
