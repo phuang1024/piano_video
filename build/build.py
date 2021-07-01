@@ -18,37 +18,32 @@
 #
 
 import os
-import subprocess
 import shutil
+import subprocess
 
 VERSION = "0.1-3"
-
-PARENT = os.path.dirname(os.path.realpath(__file__))
-SRC = os.path.join(os.path.dirname(PARENT), "src")
-PKG_NAME = f"pvid_{VERSION}"
-PKG = os.path.join(PARENT, PKG_NAME)
-
-BIN = os.path.join(PKG, "usr", "local", "bin", "pvid_utils")
-START = os.path.join(PKG, "usr", "local", "bin", "pv")
-CONTROL = os.path.join(PKG, "DEBIAN", "control")
-
-DATA = {
-    "Package": "pvid",
-    "Version": VERSION,
-    "Section": "base",
-    "Priority": "optional",
+PKG_NAME = f"pv_{VERSION}"
+META = {
+    "Package":      "pv",
+    "Version":      VERSION,
+    "Section":      "base",
+    "Priority":     "optional",
     "Architecture": "i386",
-    "Maintainer": "Patrick Huang <huangpatrick16777216@gmail.com>",
-    "Description": "Video editor with a Python API."
+    "Maintainer":   "Patrick Huang <huangpatrick16777216@gmail.com>",
+    "Description":  "Piano performance visualizer."
 }
 
+PARENT = os.path.dirname(os.path.realpath(__file__))
+ROOT = os.path.join(PARENT, PKG_NAME)
+
+CMDS = (
+    ("pv", "/usr/local/bin/pv_utils/main.py"),
+)
 START_DATA = """
 #!/usr/bin/python3.8
-
 import sys
 import os
-
-cmd = "python3.8 /usr/local/bin/pvid_utils/main.py "
+cmd = "python3.8 {} "
 for a in sys.argv[1:]:
     cmd += a
     cmd += " "
@@ -56,29 +51,58 @@ os.system(cmd.strip())
 """.strip()
 
 
-os.makedirs(BIN)
-os.makedirs(os.path.dirname(CONTROL))
+def makedirs():
+    os.makedirs(os.path.join(ROOT, "DEBIAN"), exist_ok=True)
+    os.makedirs(os.path.join(ROOT, "usr/local/bin/pv_utils"), exist_ok=True)
 
-dirs = [""]
-while len(dirs) > 0:
-    for f in os.listdir(os.path.join(SRC, d:=dirs.pop())):
-        relpath = os.path.join(d, f)
-        abspath = os.path.join(SRC, relpath)
-        dst = os.path.join(BIN, relpath)
 
-        os.makedirs(os.path.dirname(dst), exist_ok=True)
-        if os.path.isfile(abspath) and (".py" in relpath or "assets" in relpath) and (not "__pycache__" in relpath):
-            shutil.copy(abspath, dst)
-        elif os.path.isdir(abspath):
-            dirs.append(relpath)
+def write_control():
+    path = os.path.join(ROOT, "DEBIAN", "control")
+    with open(path, "w") as file:
+        for key in META:
+            file.write("{}: {}\n".format(key, META[key]))
 
-with open(CONTROL, "w") as file:
-    for key in DATA:
-        file.write("{}: {}\n".format(key, DATA[key]))
 
-with open(START, "w") as file:
-    file.write(START_DATA)
-os.system(f"chmod +x {START}")
+def copy_files():
+    src = os.path.join(os.path.dirname(PARENT), "src")
+    dirs = [""]
+    while len(dirs) > 0:
+        d = dirs.pop(0)
+        for f in os.listdir(os.path.join(src, d)):
+            if f not in ("__pycache__", "config", "tmp"):
+                relpath = os.path.join(d, f)
+                abspath = os.path.join(src, relpath)
+                dstpath = os.path.join(ROOT, "usr/local/bin/pv_utils", relpath)
+                if os.path.isfile(abspath):
+                    os.makedirs(os.path.dirname(dstpath), exist_ok=True)
+                    shutil.copy(abspath, dstpath)
+                elif os.path.isdir(abspath):
+                    dirs.append(relpath)
 
-subprocess.Popen(["dpkg-deb", "--build", PKG_NAME], cwd=PARENT).wait()
-shutil.rmtree(PKG)
+
+def write_command(cmd, target):
+    start_path = os.path.join(ROOT, "usr/local/bin", cmd)
+    with open(start_path, "w") as file:
+        file.write(START_DATA.format(target))
+    subprocess.Popen(["chmod", "+x", start_path]).wait()
+
+
+def build():
+    subprocess.Popen(["dpkg-deb", "--build", PKG_NAME], cwd=PARENT).wait()
+
+
+def cleanup():
+    shutil.rmtree(ROOT)
+
+
+def main():
+    makedirs()
+    write_control()
+    copy_files()
+    for cmd, target in CMDS:
+        write_command(cmd, target)
+    build()
+    cleanup()
+
+
+main()
