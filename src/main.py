@@ -104,6 +104,22 @@ def init(verbose=False):
             json.dump(data, file, indent=4)
 
 
+def cleanup(verbose=False):
+    printer = VerbosePrinter(verbose)
+    printer("Cleaning up")
+
+    dirs = [PARENT]
+    while len(dirs) > 0:
+        d = dirs.pop(0)
+        for f in os.listdir(d):
+            path = os.path.join(d, f)
+            if f == "__pycache__":
+                printer(f"Removing pycache {path}")
+                shutil.rmtree(path)
+            elif os.path.isdir(path):
+                dirs.append(path)
+
+
 def import_file(path):
     sys.path.insert(0, os.path.dirname(path))
     mod = __import__(os.path.splitext(os.path.basename(path))[0])
@@ -288,6 +304,7 @@ def main():
         run(args)
 
     shutil.rmtree(TMP_PATH)
+    cleanup(args.verbose)
 
 
 main()
