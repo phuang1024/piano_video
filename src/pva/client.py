@@ -66,8 +66,11 @@ def account(options, addr):
         uname = input("Username: ")
         while get(addr, "account/exists", {"uname": uname}).json()["exists"]:
             uname = input("Username already exists. Try again: ")
-        password = getpass()
-        post(addr, "account/create", {"uname": uname, "password": password})
+        while (password:=getpass()) != getpass("Confirm password: "):
+            print("These do not match. Please try again.")
+        email = input("Email (leave blank for none): ")
+
+        post(addr, "account/create", {"uname": uname, "password": password, "email": email})
 
 
 def main():

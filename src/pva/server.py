@@ -97,28 +97,11 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(b"The username already exists.")
             else:
                 Data.dump(f"accounts/{uname}.json", {"uname": uname, "password": password,
-                    "create_time": time.time(), "create_date": get_date()})
+                    "email": data["email"], "create_time": time.time(), "create_date": get_date()})
                 self.send_response(200)
                 self.send_header("content-type", "text/plain")
                 self.end_headers()
                 self.wfile.write(b"Success!")
-
-
-def secure_hash(data: bytes, hex=False):
-    """
-    A function that calls SHA2 algorithms many times.
-    This makes it harder to brute force reverse hashes,
-    as each hash will take longer.
-
-    Currently, one CPU core can manage 1000 hashes per second.
-    """
-    for _ in range(1000):
-        data = sha384(data).digest()
-    for _ in range(1000):
-        data = sha256(data).digest()
-    for _ in range(1000):
-        data = sha512(data).digest()
-    return sha512(data).hexdigest() if hex else sha512(data).digest()
 
 
 def get_date():
