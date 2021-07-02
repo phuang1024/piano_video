@@ -38,6 +38,7 @@ ROOT = os.path.join(PARENT, PKG_NAME)
 
 CMDS = (
     ("pv", "/usr/local/bin/pv_utils/main.py"),
+    ("pva", "/usr/local/bin/pv_utils/pva/client.py"),
 )
 START_DATA = """
 #!/usr/bin/python3.8
