@@ -21,7 +21,9 @@ __all__ = (
     "Video",
 )
 
-from typing import Tuple
+import pv
+from pv.types import PropertyGroup
+from typing import Tuple, Type
 
 
 class Video:
@@ -42,3 +44,18 @@ class Video:
         """
         self.resolution = resolution
         self.fps = fps
+
+        self._props = []   # List of PropertyGroups.
+
+        pv.utils.add_callback(self._add_pgroup, ("pgroup",))
+        for cls in pv.utils._get_pgroups():
+            self._add_pgroup(cls)
+
+    def __getattr__(self, name: str) -> PropertyGroup:
+        return pv.utils.get(self._props, name)
+
+    def _add_pgroup(self, cls: Type[PropertyGroup]) -> None:
+        """
+        Callback function to add PropertyGroup props to internal list.
+        """
+        self._props.append(cls())

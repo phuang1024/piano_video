@@ -26,9 +26,13 @@ A PropertyGroup is a collection of properties.
 .. autoclass:: pv.PropertyGroup
     :members: _get_prop
 
-Register Class
---------------
-
-Register a class to "apply" it to the kernel.
+Utilities
+---------
 
 .. autofunction:: pv.utils.register_class
+
+.. autofunction:: pv.utils.add_callback
+
+.. autofunction:: pv.utils.get_index
+
+.. autofunction:: pv.utils.get

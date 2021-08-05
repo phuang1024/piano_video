@@ -36,6 +36,7 @@ class PropertyGroup:
         class MyProps(pv.types.PropertyGroup):
             prop1 = pv.props.BoolProp(name="hi")
     """
+    idname: str
 
     def __getattribute__(self, name: str) -> Any:
         attr = object.__getattribute__(self, name)
@@ -43,6 +44,9 @@ class PropertyGroup:
             return attr.value
         else:
             return attr
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        self._get_prop(name).value = value
 
     def _get_prop(self, name: str) -> Property:
         """
