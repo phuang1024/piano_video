@@ -26,12 +26,12 @@ GREEN = "\x1b[32m"
 
 # List of (dir, recursive, (glob1, glob2, glob3))
 PATHS = (
-    (".",         False, ("*.md", "*.gitignore", "*.txt")),
-    ("./build",   False, ("*.py",)),
-    ("./docs",    False, ("*.rst",)),
-    ("./scripts", True,  ("*.py",)),
-    ("./src",     True,  ("*.py", "*.c", "*.cpp")),
-    ("./tests",   True,  ("*.py",)),
+#     (".",         False, ("*.md", "*.gitignore", "*.txt")),
+#     ("./build",   False, ("*.py",)),
+#     ("./docs",    False, ("*.rst",)),
+#     ("./scripts", True,  ("*.py",)),
+#     ("./src",     True,  ("*.py", "*.c", "*.cpp")),
+#     ("./tests",   True,  ("*.py",)),
 )
 
 
