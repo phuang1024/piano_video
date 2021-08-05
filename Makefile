@@ -19,6 +19,13 @@
 
 .PHONY: docs
 
+help:
+	# Please see https://piano-video.rtfd.io for support.
+
+dist:
+	cd ./build; \
+	python main.py;
+
 docs:
 	cd ./docs; \
 	make html;
