@@ -22,8 +22,8 @@ __all__ = (
 )
 
 import pv
-from pv.types import PropertyGroup
-from typing import Tuple, Type
+from pv.types import DataGroup, PropertyGroup
+from typing import Any, Tuple, Type, Union
 
 
 class Video:
@@ -45,17 +45,38 @@ class Video:
         self.resolution = resolution
         self.fps = fps
 
-        self._props = []   # List of PropertyGroups.
+        self._pgroups = []   # PropertyGroups.
+        self._dgroups = []   # DataGroups
 
+        self._add_callbacks()
+
+    def __getattr__(self, name: str) -> Any:
+        if pv.utils.get_exists(self._pgroups, name):
+            return pv.utils.get(self._pgroups, name)
+        if pv.utils.get_exists(self._dgroups, name):
+            return pv.utils.get(self._dgroups, name)
+
+        raise AttributeError(f"pvkernel.Video has no attribute {name}")
+
+    def _add_callbacks(self) -> None:
+        """
+        Adds callbacks. Internal use.
+        """
         pv.utils.add_callback(self._add_pgroup, ("pgroup",))
+        pv.utils.add_callback(self._add_dgroup, ("dgroup",))
         for cls in pv.utils._get_pgroups():
             self._add_pgroup(cls)
-
-    def __getattr__(self, name: str) -> PropertyGroup:
-        return pv.utils.get(self._props, name)
+        for cls in pv.utils._get_dgroups():
+            self._add_dgroup(cls)
 
     def _add_pgroup(self, cls: Type[PropertyGroup]) -> None:
         """
         Callback function to add PropertyGroup props to internal list.
         """
-        self._props.append(cls())
+        self._pgroups.append(cls())
+
+    def _add_dgroup(self, cls: Type[DataGroup]) -> None:
+        """
+        Callback function to add DataGroup to internal list.
+        """
+        self._dgroups.append(cls())

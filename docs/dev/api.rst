@@ -40,6 +40,8 @@ Utilities
 
 .. autofunction:: pv.utils.add_callback
 
+.. autofunction:: pv.utils.get
+
 .. autofunction:: pv.utils.get_index
 
-.. autofunction:: pv.utils.get
+.. autofunction:: pv.utils.get_exists

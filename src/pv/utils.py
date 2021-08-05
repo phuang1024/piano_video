@@ -18,8 +18,10 @@
 #
 
 from typing import Any, Callable, List, Sequence, Type
-from pv.types import PropertyGroup
+from pv.types import DataGroup, PropertyGroup
 
+_dgroups: List[Type[DataGroup]] = []
+_dgroup_callback: List[Callable] = []
 _pgroups: List[Type[PropertyGroup]] = []
 _pgroup_callback: List[Callable] = []
 
@@ -31,6 +33,11 @@ def register_class(cls: Type) -> None:
     if issubclass(cls, PropertyGroup):
         _pgroups.append(cls)
         for func in _pgroup_callback:
+            func(cls)
+
+    elif issubclass(cls, DataGroup):
+        _dgroups.append(cls)
+        for func in _dgroup_callback:
             func(cls)
 
     else:
@@ -45,12 +52,25 @@ def add_callback(func: Callable, classes: Sequence[str]) -> None:
     :param classes: A list of strings indicating which types of classes to listen for.
         Valid values:
 
+        * "dgroup": DataGroup
         * "pgroup": PropertyGroup
     """
     classes = [s.lower() for s in classes]
 
     if "pgroup" in classes:
         _pgroup_callback.append(func)
+    elif "dgroup" in classes:
+        _dgroup_callback.append(func)
+
+
+def get_exists(objs: Sequence[Any], idname: str) -> bool:
+    """
+    Check whether there is an object with idname ``idname``.
+    """
+    for o in objs:
+        if o.idname == idname:
+            return True
+    return False
 
 def get_index(objs: Sequence[Any], idname: str) -> int:
     """
@@ -70,3 +90,6 @@ def get(objs: Sequence[Any], idname: str) -> Any:
 
 def _get_pgroups() -> List[Type[PropertyGroup]]:
     return _pgroups
+
+def _get_dgroups() -> List[Type[DataGroup]]:
+    return _dgroups
