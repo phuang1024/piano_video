@@ -26,6 +26,13 @@ A PropertyGroup is a collection of properties.
 .. autoclass:: pv.PropertyGroup
     :members: _get_prop
 
+Data and Cache
+--------------
+
+The API has a few classes for storing and accessing data.
+
+.. autoclass:: pv.DataGroup
+
 Utilities
 ---------
 

@@ -17,7 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from typing import Any, Union
+__all__ = (
+    "PropertyGroup",
+    "DataGroup",
+)
+
+from typing import Any, Dict, Union
 from .props import BoolProp, Property
 
 
@@ -54,3 +59,25 @@ class PropertyGroup:
         actual Property object.
         """
         return object.__getattribute__(self, name)
+
+
+class DataGroup:
+    """
+    A group of data pointers.
+
+    When creating your own DataGroup, inherit and define the idname.
+
+    Then, you can run ``video.data_idname.value = x`` or ``video.data_idname.value2``
+    to access and set values.
+
+    The values can be any type.
+    Value names cannot be ``idname`` or ``items``, as they will overwrite internal variables.
+    """
+    idname: str
+    items: Dict[str, Any]
+
+    def __getattr__(self, name: str) -> Any:
+        return self.items[name]
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        self.items[name] = value

@@ -43,6 +43,8 @@ def add_callback(func: Callable, classes: Sequence[str]) -> None:
 
     :param func: Function to call.
     :param classes: A list of strings indicating which types of classes to listen for.
+        Valid values:
+
         * "pgroup": PropertyGroup
     """
     classes = [s.lower() for s in classes]
