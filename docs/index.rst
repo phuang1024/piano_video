@@ -2,29 +2,37 @@ Piano Video
 ===========
 
 .. toctree::
-   :maxdepth: 1
-   :hidden:
-   :caption: General
+    :maxdepth: 1
+    :hidden:
+    :caption: General
 
-   thanks.rst
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-   :caption: Developers
-
-   dev/build.rst
-   dev/file_tree.rst
-   dev/gui.rst
-   dev/api.rst
-   dev/kernel.rst
+    thanks.rst
 
 .. toctree::
-   :maxdepth: 1
-   :hidden:
-   :caption: Blog
+    :maxdepth: 1
+    :hidden:
+    :caption: End User
 
-   blog/plan.rst
+    enduser/install
+    enduser/support
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: Developers
+
+    dev/build.rst
+    dev/file_tree.rst
+    dev/gui.rst
+    dev/api.rst
+    dev/kernel.rst
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: Blog
+
+    blog/plan.rst
 
 A free piano visualizer.
 
