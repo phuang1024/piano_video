@@ -4,9 +4,17 @@ Piano Video
 .. toctree::
    :maxdepth: 1
    :hidden:
+   :caption: General
+
+   thanks.rst
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
    :caption: Developers
 
    dev/plan.rst
+   dev/kernel.rst
 
 A free piano visualizer.
 
