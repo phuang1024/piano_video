@@ -1,6 +1,7 @@
+.vscode
+
 __pycache__
 .pvcache
-.vscode
 
 *.deb
 *.json
@@ -15,7 +16,4 @@ __pycache__
 /docs/_static
 /docs/_templates
 
-/src/addons_installed
-/src/config*
-/src/pva/data
-/src/tmp
+/lib
