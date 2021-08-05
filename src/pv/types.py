@@ -37,9 +37,16 @@ class PropertyGroup:
             prop1 = pv.props.BoolProp(name="hi")
     """
 
-    def __getattribute__(self, name: str) -> Union[Property, Any]:
+    def __getattribute__(self, name: str) -> Any:
         attr = object.__getattribute__(self, name)
         if isinstance(attr, Property):
             return attr.value
         else:
             return attr
+
+    def _get_prop(self, name: str) -> Property:
+        """
+        You can use this to bypass ``__getattribute__`` and get the
+        actual Property object.
+        """
+        return object.__getattribute__(self, name)

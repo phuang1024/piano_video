@@ -24,4 +24,4 @@ displayed properly.
 A PropertyGroup is a collection of properties.
 
 .. autoclass:: pv.PropertyGroup
-    :members:
+    :members: _get_prop
