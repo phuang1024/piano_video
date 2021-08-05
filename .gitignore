@@ -3,14 +3,16 @@
 __pycache__
 .pvcache
 
-*.deb
 *.json
 *.out
 *.mid
 *.mp3
 *.mp4
 
-/build/pv_*
+/build/*.deb
+/build/*.egg-info
+/build/build
+/build/dist
 
 /docs/_build
 /docs/_static
