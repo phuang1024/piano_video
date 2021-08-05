@@ -18,9 +18,9 @@
 #
 
 """
-pvkernel, the kernel for Piano Video.
+pv, the API to the kernel.
 
-This library is a Python module, and handles rendering, effects, MIDI parsing, etc.
+Import from Python to modify kernel behavior.
 """
 
-from .video import Video
+from .props import *
