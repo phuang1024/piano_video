@@ -14,6 +14,7 @@ Piano Video
    :caption: Developers
 
    dev/plan.rst
+   dev/api.rst
    dev/kernel.rst
 
 A free piano visualizer.
