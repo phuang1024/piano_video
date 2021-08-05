@@ -37,6 +37,8 @@ class Property:
     * ``type``: Type.
     * ``set(value)``: Set the property's value. Default just sets it,
       but you may need to check requirements.
+
+    **Call ``super().__init__()`` AFTER initializing ``self.default``**
     """
     type: Type
     name: str
@@ -44,6 +46,9 @@ class Property:
 
     default: Any
     value: Any
+
+    def __init__(self):
+        self.value = self.default
 
     def set(self, value: Any) -> None:
         """
@@ -66,6 +71,8 @@ class BoolProp(Property):
         self.description = description
         self.default = default
 
+        super().__init__()
+
 
 class IntProp(Property):
     """
@@ -82,6 +89,8 @@ class IntProp(Property):
         self.default = default
         self.min = min
         self.max = max
+
+        super().__init__()
 
     def set(self, value: Any) -> None:
         self.value = max(min(self.type(value), self.max), self.min)
@@ -103,6 +112,8 @@ class FloatProp(Property):
         self.min = min
         self.max = max
 
+        super().__init__()
+
     def set(self, value: Any) -> None:
         self.value = max(min(self.type(value), self.max), self.min)
 
@@ -120,6 +131,8 @@ class StrProp(Property):
         self.description = description
         self.default = default
         self.max_len = max_len
+
+        super().__init__()
 
     def set(self, value: Any) -> None:
         self.value = self.type(value)[:self.max_len]
