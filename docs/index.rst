@@ -21,6 +21,7 @@ Piano Video
     :hidden:
     :caption: Developers
 
+    dev/intro.rst
     dev/build.rst
     dev/file_tree.rst
     dev/gui.rst

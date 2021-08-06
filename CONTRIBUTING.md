@@ -1,23 +1,16 @@
-## Editing the API or GUI
+# Contributing
 
-Please make a fork and open a pull request on this repository.
+Full contributing docs can be found [here][docs]
 
-Keep in mind that my code is pretty messy, and you may have
-a hard time reading it :)
+## Editing Source
 
-## Writing Add-ons
-
-If you would like to learn how to write an add-on, please read
-the [API documentation][api-docs]. Then, you can write your add-on
-in your own repository.
-
-There is currently no official add-on distribution website, but
-if I ever create one, **I will most likely only accept GNU General**
-**Public License v3 compatible licenses**
+Piano Video is currently in development, and the structure of the source code
+may change unpredictably. If you wish to make a patch, please fork and make
+a pull request on GitHub.
 
 ## Bug Reports or Feature Requests
 
 Please open an [issue][issue] on GitHub.
 
+[docs]: https://piano-video.rtfd.io/en/latest/dev/intro.html
 [issue]: https://github.com/phuang1024/piano_video/issues
-[api-docs]: https://piano-video.readthedocs.io/en/latest/api.html#
