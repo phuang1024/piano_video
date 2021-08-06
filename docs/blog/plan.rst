@@ -17,3 +17,6 @@ Currently, I have the plan to develop Piano Video in three sections:
 * ``pvgui``: This is a Python GUI application (with Tkinter) that most end users
   will launch. It provides a graphical interface to the API and kernel.
   **Invoked through the command** ``pvid``.
+
+End users can develop their own add-ons and install them.
+``pvgui`` manages user add-on installations.

@@ -22,8 +22,12 @@ __all__ = (
     "DataGroup",
 )
 
-from typing import Any, Dict, Union
+from typing import List, TYPE_CHECKING, Any, Dict, Union
 from .props import BoolProp, Property
+
+Video = None
+if TYPE_CHECKING:
+    from pvkernel import Video
 
 
 class PropertyGroup:
@@ -81,3 +85,52 @@ class DataGroup:
 
     def __setattr__(self, name: str, value: Any) -> None:
         self.items[name] = value
+
+
+class Operator:
+    """
+    A function that is positioned at ``pv.ops.group.idname``.
+    It can be displayed in the GUI.
+
+    The return value will always be None.
+
+    To create your own operator, inherit and define:
+
+    * ``group``: Operator group.
+    * ``idname``: Unique operator idname.
+    * ``label``: The text that will show on the GUI (as a button).
+    * ``description``: What this operator does.
+    * ``execute(video)``: This will be run when the operator is called.
+      The first parameter is the video class (``pvkernel.Video``)
+    """
+    group: str
+    idname: str
+    label: str
+    description: str
+
+    def __init__(self, video: Video) -> None:
+        self._video = video
+
+    def __call__(self) -> None:
+        self.execute(self._video)
+
+    def execute(self, video: Video) -> None:
+        ...
+
+class OpGroup:
+    """
+    Internal class.
+    Positioned at ``pv.ops.group``
+    """
+    idname: str
+    operators: List[Operator]
+    video: Video
+
+    def __init__(self, idname: str, video: Video) -> None:
+        self.idname = idname
+        self.operators = []
+        self.video = video
+
+    def __getattr__(self, name: str) -> Operator:
+        from .utils import get
+        return get(self.operators, name)

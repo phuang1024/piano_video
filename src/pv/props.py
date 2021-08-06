@@ -38,7 +38,7 @@ class Property:
     * ``set(value)``: Set the property's value. Default just sets it,
       but you may need to check requirements.
 
-    **Call ``super().__init__()`` AFTER initializing ``self.default``**
+    **Call** ``super().__init__()`` **AFTER initializing** ``self.default``
     """
     type: Type
     name: str

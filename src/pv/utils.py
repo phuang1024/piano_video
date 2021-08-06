@@ -17,11 +17,14 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from copy import deepcopy
 from typing import Any, Callable, List, Sequence, Type
-from pv.types import DataGroup, PropertyGroup
+from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
 
 _dgroups: List[Type[DataGroup]] = []
 _dgroup_callback: List[Callable] = []
+_ops: List[Type[Operator]] = []
+_ops_callback: List[Callable] = []
 _pgroups: List[Type[PropertyGroup]] = []
 _pgroup_callback: List[Callable] = []
 
@@ -40,6 +43,11 @@ def register_class(cls: Type) -> None:
         for func in _dgroup_callback:
             func(cls)
 
+    elif issubclass(cls, Operator):
+        _ops.append(cls)
+        for func in _ops_callback:
+            func(cls)
+
     else:
         raise ValueError(f"Cannot register {cls}")
 
@@ -54,6 +62,7 @@ def add_callback(func: Callable, classes: Sequence[str]) -> None:
 
         * "dgroup": DataGroup
         * "pgroup": PropertyGroup
+        * "ogroup": Operator
     """
     classes = [s.lower() for s in classes]
 
@@ -61,6 +70,8 @@ def add_callback(func: Callable, classes: Sequence[str]) -> None:
         _pgroup_callback.append(func)
     elif "dgroup" in classes:
         _dgroup_callback.append(func)
+    elif "ogroup" in classes:
+        _ops_callback.append(func)
 
 
 def get_exists(objs: Sequence[Any], idname: str) -> bool:
@@ -93,3 +104,6 @@ def _get_pgroups() -> List[Type[PropertyGroup]]:
 
 def _get_dgroups() -> List[Type[DataGroup]]:
     return _dgroups
+
+def _get_ogroups() -> List[Type[Operator]]:
+    return _ops

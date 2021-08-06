@@ -22,8 +22,10 @@ __all__ = (
 )
 
 import pv
-from pv.types import DataGroup, PropertyGroup
-from typing import Any, Tuple, Type, Union
+from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
+from typing import Any, Tuple, Type
+
+from pv.utils import get, get_exists
 
 
 class Video:
@@ -45,16 +47,19 @@ class Video:
         self.resolution = resolution
         self.fps = fps
 
-        self._pgroups = []   # PropertyGroups.
         self._dgroups = []   # DataGroups
+        self._ogroups = []   # Operators
+        self._pgroups = []   # PropertyGroups.
 
         self._add_callbacks()
 
     def __getattr__(self, name: str) -> Any:
-        if pv.utils.get_exists(self._pgroups, name):
-            return pv.utils.get(self._pgroups, name)
+        if pv.utils.get_exists(self._ogroups, name):
+            return pv.utils.get(self._ogroups, name)
         if pv.utils.get_exists(self._dgroups, name):
             return pv.utils.get(self._dgroups, name)
+        if pv.utils.get_exists(self._pgroups, name):
+            return pv.utils.get(self._pgroups, name)
 
         raise AttributeError(f"pvkernel.Video has no attribute {name}")
 
@@ -62,21 +67,33 @@ class Video:
         """
         Adds callbacks. Internal use.
         """
-        pv.utils.add_callback(self._add_pgroup, ("pgroup",))
         pv.utils.add_callback(self._add_dgroup, ("dgroup",))
-        for cls in pv.utils._get_pgroups():
-            self._add_pgroup(cls)
+        pv.utils.add_callback(self._add_ogroup, ("ogroup",))
+        pv.utils.add_callback(self._add_pgroup, ("pgroup",))
         for cls in pv.utils._get_dgroups():
             self._add_dgroup(cls)
-
-    def _add_pgroup(self, cls: Type[PropertyGroup]) -> None:
-        """
-        Callback function to add PropertyGroup props to internal list.
-        """
-        self._pgroups.append(cls())
+        for cls in pv.utils._get_ogroups():
+            self._add_ogroup(cls)
+        for cls in pv.utils._get_pgroups():
+            self._add_pgroup(cls)
 
     def _add_dgroup(self, cls: Type[DataGroup]) -> None:
         """
         Callback function to add DataGroup to internal list.
         """
         self._dgroups.append(cls())
+
+    def _add_ogroup(self, cls: Type[Operator]) -> None:
+        """
+        Callback function to add Operator to internal list.
+        """
+        group = cls.group
+        if not get_exists(self._ogroups, group):
+            self._ogroups.append(OpGroup(group, self))
+        get(self._ogroups, cls.group).operators.append(cls(self))
+
+    def _add_pgroup(self, cls: Type[PropertyGroup]) -> None:
+        """
+        Callback function to add PropertyGroup props to internal list.
+        """
+        self._pgroups.append(cls())
