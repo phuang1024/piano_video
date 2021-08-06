@@ -81,10 +81,12 @@ class DataGroup:
     items: Dict[str, Any]
 
     def __getattr__(self, name: str) -> Any:
-        return self.items[name]
+        return object.__getattribute__(self, "items")[name]
 
     def __setattr__(self, name: str, value: Any) -> None:
-        self.items[name] = value
+        if not hasattr(self, "items"):
+            object.__setattr__(self, "items", {})
+        object.__getattribute__(self, "items")[name] = value
 
 
 class Operator:

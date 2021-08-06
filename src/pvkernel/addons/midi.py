@@ -108,7 +108,7 @@ class BUILTIN_OT_MidiParse(pv.types.Operator):
                 time = 0
                 for msg in midi:
                     time += msg.time * video.fps
-                    attrs = {a: getattr(msg, a) for a in dir(msg) if not a.startswith("_")}
+                    attrs = {a: getattr(msg, a) for a in dir(msg) if (not a.startswith("_")) and (a not in ("time", "type"))}
                     messages.append(Message(msg.type, time, **attrs))
         messages.sort(key=lambda m: m.time)
 

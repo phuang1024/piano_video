@@ -17,13 +17,16 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-pvkernel, the kernel for Piano Video.
+import sys
+import os
+from .utils import ADDON_PATHS
 
-This library is a Python module, and handles rendering, effects, MIDI parsing, etc.
-"""
 
-from .startup import register_addons
-from .video import Video
-
-register_addons()
+def register_addons():
+    for path in ADDON_PATHS:
+        sys.path.insert(0, path)
+        for file in os.listdir(path):
+            if file != "__pycache__":
+                mod = __import__(file.split(".")[0])
+                mod.register()
+        sys.path.pop(0)
