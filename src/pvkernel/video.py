@@ -21,6 +21,7 @@ __all__ = (
     "Video",
 )
 
+import numpy as np
 import pv
 from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
 from typing import Any, Tuple, Type
@@ -47,6 +48,19 @@ class Video:
         self.resolution = resolution
         self.fps = fps
 
+        self._jobs = {
+            "init": [],
+            "intro": [],
+            "piano": [],
+            "blocks": [],
+            "effects": [],
+            "outro": [],
+            "modifiers": [],
+            "deinit": [],
+        }
+        self._img_input = None
+        self._img_output = None
+
         self._dgroups = []   # DataGroups
         self._ogroups = []   # Operators
         self._pgroups = []   # PropertyGroups.
@@ -62,6 +76,20 @@ class Video:
             return pv.utils.get(self._pgroups, name)
 
         raise AttributeError(f"pvkernel.Video has no attribute {name}")
+
+    @property
+    def img_input(self):
+        return self._img_input
+
+    @property
+    def img_output(self):
+        raise ValueError("Cannot access output image.")
+
+    @img_output.setter
+    def img_output(self, value):
+        assert isinstance(value, np.ndarray)
+        assert value.dtype == np.uint8
+        self._img_output = value
 
     def _add_callbacks(self) -> None:
         """
@@ -97,3 +125,14 @@ class Video:
         Callback function to add PropertyGroup props to internal list.
         """
         self._pgroups.append(cls())
+
+    def add_job(self, idname: str, slot: str) -> None:
+        """
+        Add a job to run.
+
+        :param idname: Job idname.
+        :param slot: Job slot idname.
+        """
+        jobs = pv.utils._get_jobs()
+        job = get(jobs, idname)
+        self._jobs[slot].extend(job.ops)

@@ -21,6 +21,8 @@ I will call these *Job Slots*.
 * Modifiers: Modifies the whole image
 * Deinit: Free memory (if applicable), close files, etc.
 
+The slot idnames are the names above lowercase.
+
 API
 ---
 
@@ -29,5 +31,5 @@ Jobs are a collection of operator idnames to run.
 Some job slots can have multiple jobs (e.g. effects), and some can only have one job
 (e.g. piano).
 
-The operators will be passed specific parameters for each job slot. This is further defined
-in the docs.
+The graphical job operators will be given the input image at ``video.img_input`` and
+should save the output to ``video.img_output``.
