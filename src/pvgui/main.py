@@ -17,6 +17,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from tkinter import Tk
+import pv
+import pvkernel
 
-print("hi")
+print("Piano Video GUI is still in development.")
+print("See https://piano-video.rtfd.io for more information.")
