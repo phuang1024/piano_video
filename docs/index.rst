@@ -34,6 +34,7 @@ Piano Video
     :caption: Blog
 
     blog/plan.rst
+    blog/render_jobs.rst
 
 A free piano visualizer.
 
