@@ -20,6 +20,9 @@
 __all__ = (
     "PropertyGroup",
     "DataGroup",
+    "Operator",
+    "OpGroup",
+    "Job",
 )
 
 from typing import List, TYPE_CHECKING, Any, Dict, Union
@@ -136,3 +139,18 @@ class OpGroup:
     def __getattr__(self, name: str) -> Operator:
         from .utils import get
         return get(self.operators, name)
+
+
+class Job:
+    """
+    Create a job to modify the final video.
+
+    See https://piano-video.rtfd.io/en/latest/blog/render_jobs.html for more info.
+
+    Inherit and define:
+
+    * ``idname``: Job idname.
+    * ``ops``: List of operator idnames (``"group.idname"``) to run.
+    """
+    idname: str
+    ops: List[str]

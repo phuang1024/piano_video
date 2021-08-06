@@ -40,6 +40,13 @@ Operators are functions that operate on a video and can be displayed in the GUI.
 
 .. autoclass:: pv.types.Operator
 
+Jobs
+----
+
+Jobs modify the rendering process.
+
+.. autoclass:: pv.Job
+
 Utilities
 ---------
 

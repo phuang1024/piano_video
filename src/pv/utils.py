@@ -17,12 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from copy import deepcopy
 from typing import Any, Callable, List, Sequence, Type
-from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
+from pv.types import DataGroup, Job, Operator, PropertyGroup
 
 _dgroups: List[Type[DataGroup]] = []
 _dgroup_callback: List[Callable] = []
+_jobs: List[Type[Job]]
 _ops: List[Type[Operator]] = []
 _ops_callback: List[Callable] = []
 _pgroups: List[Type[PropertyGroup]] = []
@@ -37,17 +37,16 @@ def register_class(cls: Type) -> None:
         _pgroups.append(cls)
         for func in _pgroup_callback:
             func(cls)
-
     elif issubclass(cls, DataGroup):
         _dgroups.append(cls)
         for func in _dgroup_callback:
             func(cls)
-
     elif issubclass(cls, Operator):
         _ops.append(cls)
         for func in _ops_callback:
             func(cls)
-
+    elif issubclass(cls, Job):
+        _jobs.append(cls)
     else:
         raise ValueError(f"Cannot register {cls}")
 
@@ -107,3 +106,6 @@ def _get_dgroups() -> List[Type[DataGroup]]:
 
 def _get_ogroups() -> List[Type[Operator]]:
     return _ops
+
+def _get_jobs() -> List[Type[Job]]:
+    return _jobs
