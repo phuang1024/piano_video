@@ -1,7 +1,7 @@
 Building
 ========
 
-As mentioned in the `plan <blog/plan.html`__, Piano Video comes in three parts.
+As mentioned in the `plan <../blog/plan.html>`__, Piano Video comes in three parts.
 Each part is built to separate binary files.
 
 Build instructions:

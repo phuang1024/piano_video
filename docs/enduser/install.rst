@@ -25,6 +25,6 @@ File names vary.
 From Source
 -----------
 
-First build the files. Instructions are `here <dev/build.html>`__
+First build the files. Instructions are `here <../dev/build.html>`__
 
 Then, install the files as above.
