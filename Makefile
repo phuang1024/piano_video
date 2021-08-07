@@ -22,6 +22,11 @@
 help:
 	# Please see https://piano-video.rtfd.io for support.
 
+build:
+	cd ./src/pvkernel; \
+	make cpp; \
+	make cuda;
+
 dist:
 	cd ./build; \
 	python main.py;

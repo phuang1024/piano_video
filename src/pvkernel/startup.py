@@ -19,7 +19,10 @@
 
 import sys
 import os
+from subprocess import DEVNULL, Popen
 from .utils import ADDON_PATHS
+
+PARENT = os.path.dirname(os.path.realpath(__file__))
 
 
 def register_addons():
@@ -30,3 +33,16 @@ def register_addons():
                 mod = __import__(file.split(".")[0])
                 mod.register()
         sys.path.pop(0)
+
+
+def build():
+    p1 = None
+    p2 = None
+    if "PV_USE_CPP" in os.environ:
+        p1 = Popen(["make", "cpp"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
+    if "PV_USE_CUDA" in os.environ:
+        p2 = Popen(["make", "cuda"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
+    if p1 is not None:
+        p1.wait()
+    if p2 is not None:
+        p2.wait()

@@ -17,17 +17,13 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-pvkernel, the kernel for Piano Video.
+CXX = /usr/bin/g++
+CUDA = /usr/bin/nvcc
 
-This library is a Python module, and handles rendering, effects, MIDI parsing, etc.
-"""
+.PHONY: cpp cuda
 
-from .startup import build, register_addons
-from .video import Video
+cpp:
+	# NotImplemented
 
-build()
-register_addons()
-
-del build
-del register_addons
+cuda:
+	# NotImplemented
