@@ -22,7 +22,7 @@ from pv.types import DataGroup, Job, Operator, PropertyGroup
 
 _dgroups: List[Type[DataGroup]] = []
 _dgroup_callback: List[Callable] = []
-_jobs: List[Type[Job]]
+_jobs: List[Type[Job]] = []
 _ops: List[Type[Operator]] = []
 _ops_callback: List[Callable] = []
 _pgroups: List[Type[PropertyGroup]] = []
