@@ -98,6 +98,15 @@ def get(objs: Sequence[Any], idname: str) -> Any:
     return objs[get_index(objs, idname)]
 
 
+def call_op(video, *idnames: str) -> None:
+    idname = ".".join(idnames)
+    parts = idname.split(".")
+    obj = video
+    for p in parts:
+        obj = getattr(obj, p)
+    obj()
+
+
 def _get_pgroups() -> List[Type[PropertyGroup]]:
     return _pgroups
 

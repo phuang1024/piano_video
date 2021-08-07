@@ -44,6 +44,7 @@ class VideoWriter:
         self._video = cv2.VideoWriter(self.path, cv2.VideoWriter_fourcc(*"mp4v"),
             self.fps, self.resolution)
         self._entered = True
+        return self
 
     def __exit__(self, *args):
         self._video.release()

@@ -24,9 +24,9 @@ __all__ = (
 import numpy as np
 import pv
 from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
-from typing import Any, Tuple, Type
-
 from pv.utils import get, get_exists
+from typing import Any, Tuple, Type
+from .export import export
 
 
 class Video:
@@ -58,13 +58,14 @@ class Video:
             "modifiers": [],
             "deinit": [],
         }
-        self._render_img = None
+        self._render_img: np.ndarray = None
 
         self._dgroups = []   # DataGroups
         self._ogroups = []   # Operators
         self._pgroups = []   # PropertyGroups.
 
         self._add_callbacks()
+        self._add_default_jobs()
 
     def __getattr__(self, name: str) -> Any:
         if pv.utils.get_exists(self._ogroups, name):
@@ -80,6 +81,30 @@ class Video:
     def render_img(self) -> np.ndarray:
         assert self._render_img is not None, "Input image not initialized (Kernel fault)."
         return self._render_img
+
+    @render_img.setter
+    def render_img(self, value) -> None:
+        self._render_img = value
+
+    def export(self, path: str) -> None:
+        """
+        Calls ``pvkernel.export.export``
+        """
+        export(self, path)
+
+    def add_job(self, idname: str, slot: str) -> None:
+        """
+        Add a job to run.
+
+        :param idname: Job idname.
+        :param slot: Job slot idname.
+        """
+        jobs = pv.utils._get_jobs()
+        job = get(jobs, idname)
+        self._jobs[slot].extend(job.ops)
+
+    def _add_default_jobs(self):
+        self.add_job("blocks_job", "blocks")
 
     def _add_callbacks(self) -> None:
         """
@@ -115,14 +140,3 @@ class Video:
         Callback function to add PropertyGroup props to internal list.
         """
         self._pgroups.append(cls())
-
-    def add_job(self, idname: str, slot: str) -> None:
-        """
-        Add a job to run.
-
-        :param idname: Job idname.
-        :param slot: Job slot idname.
-        """
-        jobs = pv.utils._get_jobs()
-        job = get(jobs, idname)
-        self._jobs[slot].extend(job.ops)

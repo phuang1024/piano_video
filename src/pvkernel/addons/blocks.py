@@ -24,7 +24,7 @@ Will register:
 
 * PropertyGroup ``blocks_props``
 * Operator group ``blocks_ops``
-* Job ``blocks``
+* Job ``blocks_job``
 """
 
 import pv
@@ -45,9 +45,15 @@ class BUILTIN_OT_BlocksRender(pv.types.Operator):
         video.render_img[:200, :200] = 255
 
 
+class BUILTIN_JT_Blocks(pv.types.Job):
+    idname = "blocks_job"
+    ops = ("blocks_ops.render",)
+
+
 classes = (
     BUILTIN_PT_Blocks,
     BUILTIN_OT_BlocksRender,
+    BUILTIN_JT_Blocks,
 )
 
 def register():
