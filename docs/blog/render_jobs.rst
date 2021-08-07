@@ -3,6 +3,8 @@ Render Jobs
 
 *Written August 6, 2021*
 
+*Updated August 7, 2021*
+
 In order to be easily extensible, I will develop the rendering process with *jobs*:
 
 The full video can be split into three parts: The text intro, the piano with effects,
@@ -31,5 +33,6 @@ Jobs are a collection of operator idnames to run.
 Some job slots can have multiple jobs (e.g. effects), and some can only have one job
 (e.g. piano).
 
-The graphical job operators will be given the input image at ``video.img_input`` and
-should save the output to ``video.img_output``.
+The graphical job operators should modify the input image at ``video.render_img``
+
+**ALL INPUT AND OUTPUT IMAGES WILL HAVE FOUR CHANNELS, RGBA.**

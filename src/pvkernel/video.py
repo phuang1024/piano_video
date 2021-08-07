@@ -58,8 +58,7 @@ class Video:
             "modifiers": [],
             "deinit": [],
         }
-        self._img_input = None
-        self._img_output = None
+        self._render_img = None
 
         self._dgroups = []   # DataGroups
         self._ogroups = []   # Operators
@@ -78,18 +77,9 @@ class Video:
         raise AttributeError(f"pvkernel.Video has no attribute {name}")
 
     @property
-    def img_input(self):
-        return self._img_input
-
-    @property
-    def img_output(self):
-        raise ValueError("Cannot access output image.")
-
-    @img_output.setter
-    def img_output(self, value):
-        assert isinstance(value, np.ndarray)
-        assert value.dtype == np.uint8
-        self._img_output = value
+    def render_img(self) -> np.ndarray:
+        assert self._render_img is not None, "Input image not initialized (Kernel fault)."
+        return self._render_img
 
     def _add_callbacks(self) -> None:
         """

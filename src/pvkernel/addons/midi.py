@@ -22,9 +22,9 @@ MIDI parsing and handling.
 
 Will register:
 
-* DataGroup ``midi``
-* PropertyGroup ``midi``
-* Operator group ``midi``
+* DataGroup ``midi_data``
+* PropertyGroup ``midi_props``
+* Operator group ``midi_ops``
 """
 
 import os
