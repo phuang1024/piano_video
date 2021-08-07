@@ -15,6 +15,7 @@ Piano Video
 
     enduser/install
     enduser/support
+    enduser/env_vars
 
 .. toctree::
     :maxdepth: 1
