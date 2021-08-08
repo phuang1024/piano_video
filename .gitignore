@@ -9,6 +9,9 @@ __pycache__
 *.mp3
 *.mp4
 
+*.o
+*.so
+
 /build/*.deb
 /build/*.egg-info
 /build/build

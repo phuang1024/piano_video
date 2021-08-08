@@ -8,9 +8,6 @@ variable in bash, run:
 
     export VARIABLE="value"
 
-Piano Video will just check if the variable exists, so you don't have to worry
-about the value.
-
 .. list-table:: Environment Variables
     :widths: 25 75
     :header-rows: 1
@@ -18,6 +15,8 @@ about the value.
     * - Variable
       - Description
     * - ``PV_USE_CPP``
-      - Use C++ libraries. Will compile at import.
+      - If present, use C++ libraries. Will compile at import.
     * - ``PV_USE_CUDA``
-      - Use cuda libraries. Will compile at import.
+      - If present, use cuda libraries. Will compile at import.
+    * - ``PV_MAX_THREADS``
+      - Max number of threads to use when compiling. Defaults to 1.

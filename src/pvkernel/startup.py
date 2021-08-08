@@ -19,7 +19,7 @@
 
 import sys
 import os
-from subprocess import DEVNULL, Popen
+from subprocess import DEVNULL, PIPE, Popen, STDOUT
 from .utils import ADDON_PATHS
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
@@ -36,13 +36,14 @@ def register_addons():
 
 
 def build():
-    p1 = None
-    p2 = None
-    if "PV_USE_CPP" in os.environ:
-        p1 = Popen(["make", "cpp"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
-    if "PV_USE_CUDA" in os.environ:
-        p2 = Popen(["make", "cuda"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
-    if p1 is not None:
-        p1.wait()
-    if p2 is not None:
-        p2.wait()
+    script = os.path.join(PARENT, "makefile.py")
+    cpp = "--cpp" if "PV_USE_CPP" in os.environ else ""
+    cuda = "--cuda" if "PV_USE_CUDA" in os.environ else ""
+    threads = int(os.environ[v]) if (v:="PV_MAX_THREADS") in os.environ else 1
+
+    args = ["python", script, cpp, cuda, "-j", threads]
+    proc = Popen(args, stdin=DEVNULL, stdout=PIPE, stderr=STDOUT)
+    proc.wait()
+
+    if proc.returncode != 0:
+        print("Compiling failed.")
