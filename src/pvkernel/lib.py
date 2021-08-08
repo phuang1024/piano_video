@@ -38,3 +38,23 @@ class Library:
 
     def __getattr__(self, name: str) -> Callable:
         return getattr(self.lib, name)
+
+
+class LibSwitch:
+    """
+    Switch between Python, C++, and Cuda libraries
+    depending on env variables.
+    """
+
+    def __init__(self, py_lib, cpp_lib, cuda_lib) -> None:
+        self.py = py_lib
+        self.cpp = cpp_lib
+        self.cuda = cuda_lib
+
+    def __getattr__(self, name: str) -> Callable:
+        if "PV_USE_CUDA" in os.environ and self.cuda is not None:
+            return getattr(self.cuda, name)
+        elif "PV_USE_CPP" in os.environ and self.cpp is not None:
+            return getattr(self.cpp, name)
+        else:
+            return getattr(self.py, name)
