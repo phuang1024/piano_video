@@ -15,4 +15,4 @@ variable in bash, run:
     * - Variable
       - Description
     * - ``PV_USE_CUDA``
-      - If present, use cuda libraries. Requires a CUDA compatible GPU.
+      - If present, use cuda libraries. Requires a cuda compatible GPU.
