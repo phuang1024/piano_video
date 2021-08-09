@@ -22,3 +22,5 @@ __pycache__
 /docs/_templates
 
 /lib
+
+/src/test*.py

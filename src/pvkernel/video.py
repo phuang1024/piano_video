@@ -25,7 +25,7 @@ import numpy as np
 import pv
 from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
 from pv.utils import get, get_exists
-from typing import Any, Tuple, Type
+from typing import Any, Sequence, Tuple, Type
 from .export import export
 
 
@@ -59,6 +59,7 @@ class Video:
             "deinit": [],
         }
         self._render_img: np.ndarray = None
+        self._frame: int = None
 
         self._dgroups = []   # DataGroups
         self._ogroups = []   # Operators
@@ -79,18 +80,29 @@ class Video:
 
     @property
     def render_img(self) -> np.ndarray:
-        assert self._render_img is not None, "Input image not initialized (Kernel fault)."
+        assert self._render_img is not None, "Input image not initialized (kernel fault)."
         return self._render_img
 
     @render_img.setter
     def render_img(self, value) -> None:
         self._render_img = value
 
+    @property
+    def frame(self) -> int:
+        assert self._frame is not None, "Frame not initialized (kernel fault)."
+        return self._frame
+
     def export(self, path: str) -> None:
         """
         Calls ``pvkernel.export.export``
         """
         export(self, path)
+
+    def clear_jobs(self, slot: str) -> None:
+        """
+        Clear the jobs in a slot.
+        """
+        self._jobs[slot] = []
 
     def add_job(self, idname: str, slot: str) -> None:
         """
@@ -103,7 +115,15 @@ class Video:
         job = get(jobs, idname)
         self._jobs[slot].extend(job.ops)
 
+    def get_jobs(self, slot: str) -> Sequence[str]:
+        """
+        Get the jobs in a slot.
+        """
+        return self._jobs[slot]
+
     def _add_default_jobs(self):
+        self.add_job("midi_job", "init")
+        self.add_job("core_job", "init")
         self.add_job("blocks_job", "blocks")
 
     def _add_callbacks(self) -> None:

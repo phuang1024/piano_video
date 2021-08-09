@@ -31,10 +31,23 @@ def export(context: Video, path: str) -> None:
     """
     Exports the video from a video.
     """
+    for op in context.get_jobs("init"):
+        call_op(context, op)
+
+    print(context.core_data.running_time)
     res = context.resolution
     with VideoWriter(path, res, int(context.fps)) as video:
-        for i in range(30):
+        for frame in range(context.core_data.running_time):
+            context._frame = frame
             context._render_img = np.zeros((res[1], res[0], 4), dtype=np.uint8)
-            for op in context._jobs["blocks"]:
+
+            for op in context.get_jobs("piano"):
                 call_op(context, op)
+            for op in context.get_jobs("blocks"):
+                call_op(context, op)
+            for op in context.get_jobs("effects"):
+                call_op(context, op)
+            for op in context.get_jobs("modifiers"):
+                call_op(context, op)
+
             video.write(context.render_img[..., :3])

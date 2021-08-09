@@ -83,6 +83,9 @@ class DataGroup:
     idname: str
     items: Dict[str, Any]
 
+    def __init__(self):
+        self.items = {}
+
     def __getattr__(self, name: str) -> Any:
         return object.__getattribute__(self, "items")[name]
 

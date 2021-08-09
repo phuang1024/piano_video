@@ -25,6 +25,7 @@ Will register:
 * DataGroup ``midi_data``
 * PropertyGroup ``midi_props``
 * Operator group ``midi_ops``
+* Job ``midi_job``
 """
 
 import os
@@ -104,7 +105,7 @@ class BUILTIN_OT_MidiParse(pv.types.Operator):
         paths = video.midi_props.paths.split(os.path.pathsep)
         messages = []
         for path in paths:
-            with mido.MidiFile(path) as midi:
+            with mido.MidiFile(os.path.realpath(path)) as midi:
                 time = 0
                 for msg in midi:
                     time += msg.time * video.fps
@@ -129,10 +130,16 @@ class BUILTIN_OT_MidiParse(pv.types.Operator):
         video.midi_data.notes = notes
 
 
+class BUILTIN_JT_Midi(pv.types.Job):
+    idname = "midi_job"
+    ops = ("midi_ops.parse",)
+
+
 classes = (
     BUILTIN_PT_Midi,
     BUILTIN_DT_Midi,
     BUILTIN_OT_MidiParse,
+    BUILTIN_JT_Midi,
 )
 
 def register():

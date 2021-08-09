@@ -22,7 +22,7 @@ Block rendering.
 
 Will register:
 
-* PropertyGroup ``blocks_props``
+* Property group ``blocks_props``
 * Operator group ``blocks_ops``
 * Job ``blocks_job``
 """
