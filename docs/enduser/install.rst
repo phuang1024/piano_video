@@ -40,3 +40,16 @@ If you are using Windows or MacOS, switch to GNU/Linux and
 
 Piano Video is developed and tested on GNU/Linux and may or may not work on other
 operating systems.
+
+Old Versions
+------------
+
+Piano Video has had two previous versions before ``v0.2.0``.
+
+The first was a CLI version which was difficult to use. Unfortunately, the
+documentation does not exist anymore. You can find the program on the ``cli-old``
+branch.
+
+The second is an unfinished GUI version, similar in design to the current version.
+It can be found on the branch ``gui-old`` and sphinx documentation is in the
+``/docs`` folder.
