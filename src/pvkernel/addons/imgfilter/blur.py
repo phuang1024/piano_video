@@ -17,37 +17,24 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-CXX = g++
-CUDA = nvcc
+import pv
+from pvkernel import Video
 
-C_FLAGS = -Wall -O3 -c -fPIC
-CU_FLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-C_FILES = draw/draw.o addons/imgfilter/cppblur.o
-CU_FILES = addons/imgfilter/cublur.o
 
-TRASH = *.o
+class IMGFILTER_OT_Blur(pv.types.Operator):
+    group = "imgfilter"
+    idname = "blur"
+    label = "Blur"
+    description = "Apply gaussian blur to the render image."
 
-.PHONY: clean cpp
+    def execute(self, video: Video) -> None:
+        pass
 
-cpp: $(C_FILES)
-	$(CXX) -shared -o libpvkernel.so $(C_FILES)
 
-cuda: $(CU_FILES)
-	$(CXX) -shared -o libpvkernel.cu.so $(CU_FILES)
+classes = (
+    IMGFILTER_OT_Blur,
+)
 
-clean:
-	for ext in $(TRASH); do \
-		find . -name $$ext -delete; \
-	done
-
-draw/draw.o:
-	cd ./draw; \
-	$(CXX) $(C_FLAGS) draw.cpp
-
-addons/imgfilter/cppblur.o:
-	cd ./addons/imgfilter; \
-	$(CXX) $(C_FLAGS) cppblur.cpp
-
-addons/imgfilter/cublur.o:
-	cd ./addons/imgfilter; \
-	$(CUDA) $(CU_FLAGS) cublur.cu
+def register():
+    for cls in classes:
+        pv.utils.register_class(cls)
