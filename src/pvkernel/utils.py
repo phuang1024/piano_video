@@ -23,3 +23,6 @@ PARENT = os.path.dirname(os.path.realpath(__file__))
 ADDON_PATHS = (
     os.path.join(PARENT, "addons"),
 )
+
+def rgba(color):
+    return (*color, 255) if len(color) == 3 else color

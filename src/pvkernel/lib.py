@@ -17,44 +17,29 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+"""
+Loads library but does not provide any callable wrappers.
+Import the ``LIB`` variable in specific modules and define wrappers.
+"""
+
+__all__ = (
+    "I32",
+    "I64",
+    "F32",
+    "F64",
+    "IMG",
+    "LIB",
+)
+
 import os
 import ctypes
 import numpy as np
-from typing import Callable
+from .utils import PARENT
 
 I32 = ctypes.c_int32
+I64 = ctypes.c_int64
 F32 = ctypes.c_float
+F64 = ctypes.c_double
 IMG = np.ctypeslib.ndpointer(dtype=np.uint8, ndim=3, flags="aligned, c_contiguous")
 
-
-class Library:
-    """
-    A library wrapper for a Shared Object file.
-    """
-
-    def __init__(self, path: str) -> None:
-        self.path = path
-        self.lib = ctypes.CDLL(os.path.realpath(path))
-
-    def __getattr__(self, name: str) -> Callable:
-        return getattr(self.lib, name)
-
-
-class LibSwitch:
-    """
-    Switch between Python, C++, and Cuda libraries
-    depending on env variables.
-    """
-
-    def __init__(self, py_lib, cpp_lib, cuda_lib) -> None:
-        self.py = py_lib
-        self.cpp = cpp_lib
-        self.cuda = cuda_lib
-
-    def __getattr__(self, name: str) -> Callable:
-        if "PV_USE_CUDA" in os.environ and self.cuda is not None:
-            return getattr(self.cuda, name)
-        elif "PV_USE_CPP" in os.environ and self.cpp is not None:
-            return getattr(self.cpp, name)
-        else:
-            return getattr(self.py, name)
+LIB = ctypes.CDLL(os.path.join(PARENT, "libpvkernel.so"))

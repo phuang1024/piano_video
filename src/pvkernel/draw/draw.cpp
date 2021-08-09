@@ -53,7 +53,7 @@ void _draw_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UC
     _draw_set(img, width, x, y, 2, b);
 }
 
-void _draw_Zget(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value) {
+void _draw_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value) {
     /*
     Gets value at pixel and channel and modifies "value" param.
 
@@ -69,7 +69,7 @@ void _draw_Zget(UCH* img, const UINT width, const UINT x, const UINT y, const UC
 
 void _draw_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color) {
     /*
-    Gets value at pixel and modifies "value" param. Equivalent to 3 calls of _draw_Zget()
+    Gets value at pixel and modifies "value" param. Equivalent to 3 calls of _draw_get()
 
     :param img: Image.
     :param width: Image width.
@@ -77,9 +77,9 @@ void _draw_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* col
     :param y: Y coordinate.
     :param value: Value pointer. Will be modified to be the obtained value.
     */
-    _draw_Zget(img, width, x, y, 0, color+0);
-    _draw_Zget(img, width, x, y, 1, color+1);
-    _draw_Zget(img, width, x, y, 2, color+2);
+    _draw_get(img, width, x, y, 0, color+0);
+    _draw_get(img, width, x, y, 1, color+1);
+    _draw_get(img, width, x, y, 2, color+2);
 }
 
 void _draw_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac) {
