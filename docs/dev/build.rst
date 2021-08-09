@@ -20,4 +20,4 @@ The distributable binaries are:
 * ``build/dist/pv-...whl``: The API, as a Python library.
 * ``build/dist/pvkernel-...whl``: The Kernel, as a Python library.
 
-To install, see `Installation <enduser/install.html>`__.
+To install, see `Installation <../enduser/install.html>`__.

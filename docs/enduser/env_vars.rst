@@ -14,9 +14,5 @@ variable in bash, run:
 
     * - Variable
       - Description
-    * - ``PV_USE_CPP``
-      - If present, use C++ libraries. Will compile at import.
     * - ``PV_USE_CUDA``
-      - If present, use cuda libraries. Will compile at import.
-    * - ``PV_MAX_THREADS``
-      - Max number of threads to use when compiling. Defaults to 1.
+      - If present, use cuda libraries. Requires a CUDA compatible GPU.
