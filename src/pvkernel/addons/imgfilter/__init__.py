@@ -22,6 +22,11 @@ Image filtering, such as blur.
 """
 
 from . import blur
+from pvkernel.lib import LIB, CULIB
+from pvkernel.utils import CUDA
+
+LIB.imgfilter_blur()
+CULIB.imgfilter_blur()
 
 def register():
     blur.register()

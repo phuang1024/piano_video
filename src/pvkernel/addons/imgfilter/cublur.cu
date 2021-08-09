@@ -1,6 +1,6 @@
 #include <iostream>
 
 
-extern "C" void imgfilter_cublur() {
+extern "C" void imgfilter_blur() {
     std::cout << "asdf" << std::endl;
 }

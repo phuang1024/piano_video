@@ -34,7 +34,7 @@ __all__ = (
 import os
 import ctypes
 import numpy as np
-from .utils import PARENT
+from .utils import CUDA, PARENT
 
 I32 = ctypes.c_int32
 I64 = ctypes.c_int64
@@ -42,4 +42,11 @@ F32 = ctypes.c_float
 F64 = ctypes.c_double
 IMG = np.ctypeslib.ndpointer(dtype=np.uint8, ndim=3, flags="aligned, c_contiguous")
 
+LIB: ctypes.CDLL
+CULIB: ctypes.CDLL
+
 LIB = ctypes.CDLL(os.path.join(PARENT, "libpvkernel.so"))
+if CUDA:
+    CULIB = ctypes.CDLL(os.path.join(PARENT, "libpvkernel.cu.so"))
+else:
+    CULIB = None

@@ -33,7 +33,7 @@ cpp: $(C_FILES)
 	$(CXX) -shared -o libpvkernel.so $(C_FILES)
 
 cuda: $(CU_FILES)
-	$(CXX) -shared -o libpvkernel.cu.so $(CU_FILES)
+	$(CUDA) -shared -o libpvkernel.cu.so $(CU_FILES)
 
 clean:
 	for ext in $(TRASH); do \
