@@ -27,9 +27,11 @@ Will register:
 * Job ``blocks_job``
 """
 
+import numpy as np
 import pv
 from pv.props import FloatProp
 from pvkernel import Video
+from pvkernel import draw
 
 
 class BUILTIN_PT_Blocks(pv.types.PropertyGroup):
@@ -51,16 +53,30 @@ class BUILTIN_OT_BlocksRender(pv.types.Operator):
     def execute(self, video: Video) -> None:
         frame = video.frame
         height = video.resolution[1]
-        first_note = min(video.midi_data.notes, key=lambda n: n.start).start
+        threshold = height / 2
+        speed = video.blocks_props.block_speed * height / video.fps
 
+        first_note = min(video.midi_data.notes, key=lambda n: n.start).start
         for note in video.midi_data.notes:
-            start = note.start - first_note
-            end = note.end - first_note
+            start = note.start - first_note - frame
+            end = note.end - first_note - frame
+            top = threshold - end*speed
+            bottom = threshold - start*speed
+
+            if not (bottom < 0 or top > threshold):
+                x, width = video.core_data.key_pos[note.note]
+                bottom = min(bottom, threshold+10)
+                draw_block(video.render_img, (x, top, width, bottom-top))
 
 
 class BUILTIN_JT_Blocks(pv.types.Job):
     idname = "blocks_job"
     ops = ("blocks_ops.render",)
+
+
+def draw_block(img: np.ndarray, rect):
+    draw.rect(img, (255, 255, 255, 200), rect, border_radius=5)
+    draw.rect(img, (255, 255, 255, 255), rect, border_radius=5, border=3)
 
 
 classes = (

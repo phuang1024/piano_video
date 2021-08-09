@@ -18,6 +18,7 @@
 #
 
 import numpy as np
+from tqdm import trange
 from typing import TYPE_CHECKING
 from pv.utils import call_op
 from .videoio import VideoWriter
@@ -37,9 +38,9 @@ def export(context: Video, path: str) -> None:
     res = context.resolution
     with VideoWriter(path, res, int(context.fps)) as video:
         intro = context.core_props.pause_start * context.fps
-        for frame in range(context.core_data.running_time):
+        for frame in trange(context.core_data.running_time, desc="Rendering video"):
             context._frame = frame - intro
-            context._render_img = np.zeros((res[1], res[0], 4), dtype=np.uint8)
+            context._render_img = np.zeros((res[1], res[0], 3), dtype=np.uint8)
 
             for op in context.get_jobs("piano"):
                 call_op(context, op)

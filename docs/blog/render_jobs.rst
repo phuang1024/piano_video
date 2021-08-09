@@ -3,7 +3,7 @@ Render Jobs
 
 *Written August 6, 2021*
 
-*Updated August 7, 2021*
+*Updated August 9, 2021*
 
 In order to be easily extensible, I will develop the rendering process with *jobs*:
 
@@ -35,4 +35,4 @@ Some job slots can have multiple jobs (e.g. effects), and some can only have one
 
 The graphical job operators should modify the input image at ``video.render_img``
 
-**ALL INPUT AND OUTPUT IMAGES WILL HAVE FOUR CHANNELS, RGBA.**
+**ALL INPUT AND OUTPUT IMAGES WILL HAVE THREE CHANNELS, RGB.**

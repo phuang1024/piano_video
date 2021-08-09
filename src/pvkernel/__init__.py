@@ -24,10 +24,12 @@ This library is a Python module, and handles rendering, effects, MIDI parsing, e
 """
 
 from .startup import build, register_addons
-from .video import Video
 
 build()
-register_addons()
-
 del build
+
+from . import draw
+from .video import Video
+
+register_addons()
 del register_addons

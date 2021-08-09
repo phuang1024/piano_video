@@ -36,17 +36,16 @@ def register_addons():
 
 
 def build():
-    p1 = None
-    p2 = None
-    if "PV_USE_CPP" in os.environ:
-        p1 = Popen(["make", "cpp"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
+    p1 = Popen(["make", "cpp"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
+    p1.wait()
+    if p1.returncode != 0:
+        print("pvkernel: c++ compilation failed.")
+
     if "PV_USE_CUDA" in os.environ:
         p2 = Popen(["make", "cuda"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
-    if p1 is not None:
-        p1.wait()
-        if p1.returncode != 0:
-            print("pvkernel: c++ compilation failed.")
-    if p2 is not None:
         p2.wait()
         if p2.returncode != 0:
             print("pvkernel: cuda compilation failed.")
+
+    p3 = Popen(["make", "clean"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
+    p3.wait()

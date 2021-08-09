@@ -94,13 +94,12 @@ class BUILTIN_OT_KeyPos(pv.types.Operator):
         x = 0
         for key in range(88):
             if self.is_white(key):
-                video.core_data.key_pos[key] = (x, white_width)
+                video.core_data.key_pos[key] = (left+x, white_width)
                 x += white_width
             else:
-                video.core_data.key_pos[key] = (x+black_offset, black_width)
+                video.core_data.key_pos[key] = (left+x+black_offset, black_width)
 
         assert None not in video.core_data.key_pos, "Error calculating key position."
-        print(video.core_data.key_pos)
 
 
 class BUILTIN_JT_Core(pv.types.Job):

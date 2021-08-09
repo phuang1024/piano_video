@@ -18,7 +18,7 @@
 #
 
 import numpy as np
-from typing import Tuple, Union
+from typing import Tuple
 from ..lib import *
 from ..utils import rgba
 
