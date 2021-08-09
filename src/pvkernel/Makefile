@@ -21,7 +21,22 @@ CXX = g++
 CUDA = nvcc
 
 C_FLAGS = -Wall -O3 -c -fPIC
+C_FILES = draw/draw.o
 
-cpp:
+TRASH = *.o
+
+.PHONY: clean cpp
+
+clean:
+	for ext in $(TRASH); do \
+		find . -name $$ext -delete; \
+	done
+
+cpp: $(C_FILES)
+	$(CXX) -shared -o libpvkernel.so $(C_FILES)
+
+draw/draw.o:
+	cd ./draw; \
+	$(CXX) $(C_FLAGS) draw.cpp
 
 cuda:
