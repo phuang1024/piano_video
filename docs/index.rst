@@ -6,7 +6,8 @@ Piano Video
     :hidden:
     :caption: General
 
-    thanks.rst
+    general/about
+    general/thanks
 
 .. toctree::
     :maxdepth: 1
