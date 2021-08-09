@@ -28,11 +28,18 @@ Will register:
 """
 
 import pv
+from pv.props import FloatProp
 from pvkernel import Video
 
 
 class BUILTIN_PT_Blocks(pv.types.PropertyGroup):
     idname = "blocks_props"
+
+    block_speed = FloatProp(
+        name="Block Speed",
+        description="Screens per second speed.",
+        default=0.2
+    )
 
 
 class BUILTIN_OT_BlocksRender(pv.types.Operator):
@@ -42,7 +49,13 @@ class BUILTIN_OT_BlocksRender(pv.types.Operator):
     description = "The operator that will be run in a job."
 
     def execute(self, video: Video) -> None:
-        video.render_img[:200, :200] = 255
+        frame = video.frame
+        height = video.resolution[1]
+        first_note = min(video.midi_data.notes, key=lambda n: n.start).start
+
+        for note in video.midi_data.notes:
+            start = note.start - first_note
+            end = note.end - first_note
 
 
 class BUILTIN_JT_Blocks(pv.types.Job):

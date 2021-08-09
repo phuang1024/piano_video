@@ -37,6 +37,7 @@ Piano Video
 
     blog/plan.rst
     blog/render_jobs.rst
+    blog/cuda.rst
 
 A free piano visualizer.
 

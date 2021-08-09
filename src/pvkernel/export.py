@@ -34,11 +34,11 @@ def export(context: Video, path: str) -> None:
     for op in context.get_jobs("init"):
         call_op(context, op)
 
-    print(context.core_data.running_time)
     res = context.resolution
     with VideoWriter(path, res, int(context.fps)) as video:
+        intro = context.core_props.pause_start * context.fps
         for frame in range(context.core_data.running_time):
-            context._frame = frame
+            context._frame = frame - intro
             context._render_img = np.zeros((res[1], res[0], 4), dtype=np.uint8)
 
             for op in context.get_jobs("piano"):

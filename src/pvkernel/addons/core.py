@@ -68,15 +68,51 @@ class BUILTIN_OT_RunningTime(pv.types.Operator):
         video.core_data.running_time = int(total)
 
 
+class BUILTIN_OT_KeyPos(pv.types.Operator):
+    group = "core_ops"
+    idname = "key_pos"
+    label = "Key Positions"
+    description = "Calculate key X positions and widths and store in a list at core_data.key_pos"
+
+    @staticmethod
+    def is_white(key: int):
+        """
+        Whether the key is a white key, starting from the lowest note with a value of 0.
+        """
+        return (key-3) % 12 not in (1, 3, 6, 8, 10)
+
+    def execute(self, video: Video) -> None:
+        left = video.piano_props.left_offset
+        right = video.piano_props.right_offset + video.resolution[0]
+        width = right - left
+
+        video.core_data.key_pos = [None] * 88
+
+        white_width = width / 52
+        black_width = white_width * video.piano_props.black_width_fac
+        black_offset = white_width - black_width/2
+        x = 0
+        for key in range(88):
+            if self.is_white(key):
+                video.core_data.key_pos[key] = (x, white_width)
+                x += white_width
+            else:
+                video.core_data.key_pos[key] = (x+black_offset, black_width)
+
+        assert None not in video.core_data.key_pos, "Error calculating key position."
+        print(video.core_data.key_pos)
+
+
 class BUILTIN_JT_Core(pv.types.Job):
     idname = "core_job"
-    ops = ("core_ops.running_time",)
+    ops = ("core_ops.running_time", "core_ops.key_pos")
 
 
 classes = (
     BUILTIN_PT_Core,
     BUILTIN_DT_Core,
     BUILTIN_OT_RunningTime,
+    BUILTIN_OT_KeyPos,
     BUILTIN_JT_Core,
 )
 
