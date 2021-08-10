@@ -22,7 +22,7 @@ CUDA = nvcc
 
 C_FLAGS = -Wall -O3 -c -fPIC
 CU_FLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-C_FILES = draw/draw.o addons/imgfilter/cppblur.o
+C_FILES = draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o
 CU_FILES = addons/imgfilter/cublur.o
 
 TRASH = *.o
@@ -47,6 +47,10 @@ draw/draw.o:
 addons/imgfilter/cppblur.o:
 	cd ./addons/imgfilter; \
 	$(CXX) $(C_FLAGS) cppblur.cpp
+
+addons/glare/glare.o:
+	cd ./addons/glare; \
+	$(CXX) $(C_FLAGS) glare.cpp
 
 addons/imgfilter/cublur.o:
 	cd ./addons/imgfilter; \
