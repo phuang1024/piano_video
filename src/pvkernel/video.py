@@ -56,9 +56,9 @@ class Video:
         self._jobs = {
             "init": [],
             "intro": [],
-            "piano": [],
-            "blocks": [],
-            "effects": [],
+            "frame_init": [],
+            "frame": [],
+            "frame_deinit": [],
             "outro": [],
             "modifiers": [],
             "deinit": [],
@@ -72,16 +72,6 @@ class Video:
 
         self._add_callbacks()
         self._add_default_jobs()
-
-    # def __getattr__(self, name: str) -> Any:
-    #     if pv.utils.get_exists(self._ogroups, name):
-    #         return pv.utils.get(self._ogroups, name)
-    #     if pv.utils.get_exists(self._dgroups, name):
-    #         return pv.utils.get(self._dgroups, name)
-    #     if pv.utils.get_exists(self._pgroups, name):
-    #         return pv.utils.get(self._pgroups, name)
-
-    #     raise AttributeError(f"pvkernel.Video has no attribute {name}")
 
     @property
     def render_img(self) -> np.ndarray:
@@ -129,7 +119,8 @@ class Video:
     def _add_default_jobs(self):
         self.add_job("midi", "init")
         self.add_job("core", "init")
-        self.add_job("blocks", "blocks")
+        self.add_job("midi_frame_init", "frame_init")
+        self.add_job("blocks", "frame")
 
     def _add_callbacks(self) -> None:
         """

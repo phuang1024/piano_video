@@ -82,14 +82,14 @@ class BUILTIN_OT_KeyPos(pv.types.Operator):
         return (key-3) % 12 not in (1, 3, 6, 8, 10)
 
     def execute(self, video: Video) -> None:
-        left = video.props.piano.left_offset
-        right = video.props.piano.right_offset + video.resolution[0]
+        left = video.props.keyboard.left_offset
+        right = video.props.keyboard.right_offset + video.resolution[0]
         width = right - left
 
         video.data.core.key_pos = [None] * 88
 
         white_width = width / 52
-        black_width = white_width * video.props.piano.black_width_fac
+        black_width = white_width * video.props.keyboard.black_width_fac
         black_offset = white_width - black_width/2
         x = 0
         for key in range(88):

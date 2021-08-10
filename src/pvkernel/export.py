@@ -42,11 +42,11 @@ def export(context: Video, path: str) -> None:
             context._frame = frame - intro
             context._render_img = np.zeros((res[1], res[0], 3), dtype=np.uint8)
 
-            for op in context.get_jobs("piano"):
+            for op in context.get_jobs("frame_init"):
                 call_op(context, op)
-            for op in context.get_jobs("blocks"):
+            for op in context.get_jobs("frame"):
                 call_op(context, op)
-            for op in context.get_jobs("effects"):
+            for op in context.get_jobs("frame_deinit"):
                 call_op(context, op)
             for op in context.get_jobs("modifiers"):
                 call_op(context, op)

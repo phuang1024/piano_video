@@ -32,6 +32,7 @@ import pv
 from pv.props import FloatProp
 from pvkernel import Video
 from pvkernel import draw
+from utils import block_pos, first_note
 
 
 class BUILTIN_PT_Blocks(pv.types.PropertyGroup):
@@ -51,18 +52,12 @@ class BUILTIN_OT_BlocksRender(pv.types.Operator):
     description = "The operator that will be run in a job."
 
     def execute(self, video: Video) -> None:
-        frame = video.frame
         height = video.resolution[1]
         threshold = height / 2
-        speed = video.props.blocks.block_speed * height / video.fps
+        first = first_note(video)
 
-        first_note = min(video.data.midi.notes, key=lambda n: n.start).start
         for note in video.data.midi.notes:
-            start = note.start - first_note - frame
-            end = note.end - first_note - frame
-            top = threshold - end*speed
-            bottom = threshold - start*speed
-
+            top, bottom = block_pos(video, note, first)
             if not (bottom < 0 or top > threshold):
                 x, width = video.data.core.key_pos[note.note]
                 bottom = min(bottom, threshold+10)

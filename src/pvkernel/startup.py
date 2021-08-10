@@ -31,7 +31,8 @@ def register_addons():
         for file in os.listdir(path):
             if file != "__pycache__":
                 mod = __import__(file.split(".")[0])
-                mod.register()
+                if hasattr(mod, "register"):
+                    mod.register()
         sys.path.pop(0)
 
 

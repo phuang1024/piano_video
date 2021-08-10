@@ -31,8 +31,9 @@ Will register:
 import os
 import mido
 import pv
-from pv.props import *
+from pv.props import StrProp
 from pvkernel import Video
+from utils import block_pos, first_note
 from typing import Any, Dict
 
 
@@ -82,7 +83,7 @@ class Note:
         self.velocity = velocity
 
 
-class BUILTIN_PT_Midi(pv.types.PropertyGroup):
+class MIDI_PT_Midi(pv.types.PropertyGroup):
     idname = "midi"
 
     paths = StrProp(
@@ -91,11 +92,11 @@ class BUILTIN_PT_Midi(pv.types.PropertyGroup):
     )
 
 
-class BUILTIN_DT_Midi(pv.types.DataGroup):
+class MIDI_DT_Midi(pv.types.DataGroup):
     idname = "midi"
 
 
-class BUILTIN_OT_MidiParse(pv.types.Operator):
+class MIDI_OT_Parse(pv.types.Operator):
     group = "midi"
     idname = "parse"
     label = "Parse MIDI"
@@ -130,16 +131,40 @@ class BUILTIN_OT_MidiParse(pv.types.Operator):
         video.data.midi.notes = notes
 
 
-class BUILTIN_JT_Midi(pv.types.Job):
+class MIDI_OT_NotesPlaying(pv.types.Operator):
+    group = "midi"
+    idname = "notes_playing"
+    label = "Notes Playing"
+    description = "Calculate notes currently playing and store in ``midi.notes_playing``"
+
+    def execute(self, video: Video) -> None:
+        threshold = video.resolution[1] / 2
+        first = first_note(video)
+
+        video.data.midi.notes_playing = []
+        for note in video.data.midi.notes:
+            top, bottom = block_pos(video, note, first)
+            if bottom <= threshold <= top:
+                video.data.midi.notes_playing.append(note.note)
+
+
+class MIDI_JT_Init(pv.types.Job):
     idname = "midi"
     ops = ("midi.parse",)
 
 
+class MIDI_JT_FrameInit(pv.types.Job):
+    idname = "midi_frame_init"
+    ops = ("midi.notes_playing",)
+
+
 classes = (
-    BUILTIN_PT_Midi,
-    BUILTIN_DT_Midi,
-    BUILTIN_OT_MidiParse,
-    BUILTIN_JT_Midi,
+    MIDI_PT_Midi,
+    MIDI_DT_Midi,
+    MIDI_OT_Parse,
+    MIDI_OT_NotesPlaying,
+    MIDI_JT_Init,
+    MIDI_JT_FrameInit,
 )
 
 def register():
