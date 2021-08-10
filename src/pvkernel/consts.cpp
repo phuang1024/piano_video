@@ -17,7 +17,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <consts.hpp>
+#include "consts.hpp"
 
 
 double radians(CD deg) {
@@ -37,7 +37,7 @@ double pythag(CD dx, CD dy) {
     return std::pow((dx*dx) + (dy*dy), 0.5);
 }
 
-int ibounds(const int v, const int vmin = 0, const int vmax = 1) {
+int ibounds(const int v, const int vmin, const int vmax) {
     /*
     Integer bounds.
 
@@ -48,7 +48,7 @@ int ibounds(const int v, const int vmin = 0, const int vmax = 1) {
     return min(max(v, vmin), vmax);
 }
 
-double dbounds(CD v, CD vmin = 0, CD vmax = 1) {
+double dbounds(CD v, CD vmin, CD vmax) {
     /*
     Double bounds.
 

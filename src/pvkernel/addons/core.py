@@ -22,10 +22,10 @@ Core properties and operators.
 
 Will register:
 
-* Data group ``core_data``
-* Property group ``core_props``
-* Operator group ``core_ops``
-* Job group ``core_job``
+* Data group ``core``
+* Property group ``core``
+* Operator group ``core``
+* Job group ``core``
 """
 
 import pv
@@ -34,7 +34,7 @@ from pvkernel import Video
 
 
 class BUILTIN_PT_Core(pv.types.PropertyGroup):
-    idname = "core_props"
+    idname = "core"
 
     pause_start = FloatProp(
         name="Start Pause",
@@ -50,26 +50,26 @@ class BUILTIN_PT_Core(pv.types.PropertyGroup):
 
 
 class BUILTIN_DT_Core(pv.types.DataGroup):
-    idname = "core_data"
+    idname = "core"
 
 
 class BUILTIN_OT_RunningTime(pv.types.Operator):
-    group = "core_ops"
+    group = "core"
     idname = "running_time"
     label = "Running Time"
     description = "Total frames the piano plays with start and end pauses. Saves to core_data.running_time"
 
     def execute(self, video: Video) -> None:
-        pause = video.fps * (video.core_props.pause_start+video.core_props.pause_end)
-        first_note = min(video.midi_data.notes, key=lambda n: n.start).start
-        last_note = max(video.midi_data.notes, key=lambda n: n.end).end
+        pause = video.fps * (video.props.core.pause_start+video.props.core.pause_end)
+        first_note = min(video.data.midi.notes, key=lambda n: n.start).start
+        last_note = max(video.data.midi.notes, key=lambda n: n.end).end
 
         total = pause + (last_note-first_note)
-        video.core_data.running_time = int(total)
+        video.data.core.running_time = int(total)
 
 
 class BUILTIN_OT_KeyPos(pv.types.Operator):
-    group = "core_ops"
+    group = "core"
     idname = "key_pos"
     label = "Key Positions"
     description = "Calculate key X positions and widths and store in a list at core_data.key_pos"
@@ -82,29 +82,29 @@ class BUILTIN_OT_KeyPos(pv.types.Operator):
         return (key-3) % 12 not in (1, 3, 6, 8, 10)
 
     def execute(self, video: Video) -> None:
-        left = video.piano_props.left_offset
-        right = video.piano_props.right_offset + video.resolution[0]
+        left = video.props.piano.left_offset
+        right = video.props.piano.right_offset + video.resolution[0]
         width = right - left
 
-        video.core_data.key_pos = [None] * 88
+        video.data.core.key_pos = [None] * 88
 
         white_width = width / 52
-        black_width = white_width * video.piano_props.black_width_fac
+        black_width = white_width * video.props.piano.black_width_fac
         black_offset = white_width - black_width/2
         x = 0
         for key in range(88):
             if self.is_white(key):
-                video.core_data.key_pos[key] = (left+x, white_width)
+                video.data.core.key_pos[key] = (left+x, white_width)
                 x += white_width
             else:
-                video.core_data.key_pos[key] = (left+x+black_offset, black_width)
+                video.data.core.key_pos[key] = (left+x+black_offset, black_width)
 
-        assert None not in video.core_data.key_pos, "Error calculating key position."
+        assert None not in video.data.core.key_pos, "Error calculating key position."
 
 
 class BUILTIN_JT_Core(pv.types.Job):
-    idname = "core_job"
-    ops = ("core_ops.running_time", "core_ops.key_pos")
+    idname = "core"
+    ops = ("core.running_time", "core.key_pos")
 
 
 classes = (

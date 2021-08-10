@@ -22,9 +22,9 @@ Block rendering.
 
 Will register:
 
-* Property group ``blocks_props``
-* Operator group ``blocks_ops``
-* Job ``blocks_job``
+* Property group ``blocks``
+* Operator group ``blocks``
+* Job ``blocks``
 """
 
 import numpy as np
@@ -35,7 +35,7 @@ from pvkernel import draw
 
 
 class BUILTIN_PT_Blocks(pv.types.PropertyGroup):
-    idname = "blocks_props"
+    idname = "blocks"
 
     block_speed = FloatProp(
         name="Block Speed",
@@ -45,7 +45,7 @@ class BUILTIN_PT_Blocks(pv.types.PropertyGroup):
 
 
 class BUILTIN_OT_BlocksRender(pv.types.Operator):
-    group = "blocks_ops"
+    group = "blocks"
     idname = "render"
     label = "Render Blocks"
     description = "The operator that will be run in a job."
@@ -54,24 +54,24 @@ class BUILTIN_OT_BlocksRender(pv.types.Operator):
         frame = video.frame
         height = video.resolution[1]
         threshold = height / 2
-        speed = video.blocks_props.block_speed * height / video.fps
+        speed = video.props.blocks.block_speed * height / video.fps
 
-        first_note = min(video.midi_data.notes, key=lambda n: n.start).start
-        for note in video.midi_data.notes:
+        first_note = min(video.data.midi.notes, key=lambda n: n.start).start
+        for note in video.data.midi.notes:
             start = note.start - first_note - frame
             end = note.end - first_note - frame
             top = threshold - end*speed
             bottom = threshold - start*speed
 
             if not (bottom < 0 or top > threshold):
-                x, width = video.core_data.key_pos[note.note]
+                x, width = video.data.core.key_pos[note.note]
                 bottom = min(bottom, threshold+10)
                 draw_block(video.render_img, (x, top, width, bottom-top))
 
 
 class BUILTIN_JT_Blocks(pv.types.Job):
-    idname = "blocks_job"
-    ops = ("blocks_ops.render",)
+    idname = "blocks"
+    ops = ("blocks.render",)
 
 
 def draw_block(img: np.ndarray, rect):

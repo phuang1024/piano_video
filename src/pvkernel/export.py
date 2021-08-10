@@ -37,8 +37,8 @@ def export(context: Video, path: str) -> None:
 
     res = context.resolution
     with VideoWriter(path, res, int(context.fps)) as video:
-        intro = context.core_props.pause_start * context.fps
-        for frame in trange(context.core_data.running_time, desc="Rendering video"):
+        intro = context.props.core.pause_start * context.fps
+        for frame in trange(context.data.core.running_time, desc="Rendering video"):
             context._frame = frame - intro
             context._render_img = np.zeros((res[1], res[0], 3), dtype=np.uint8)
 

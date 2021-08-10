@@ -18,12 +18,34 @@
 #
 
 import os
+from typing import Any, Dict
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 ADDON_PATHS = (
     os.path.join(PARENT, "addons"),
 )
 CUDA = ("PV_USE_CUDA" in os.environ)
+
+
+class Namespace:
+    """
+    You can do ``namespace.a = 1`` or ``namespace.a`` to set and
+    access any value.
+    """
+    _items: Dict[str, Any]
+
+    def __init__(self) -> None:
+        object.__setattr__(self, "_items", {})
+
+    def __getattr__(self, name: str) -> Any:
+        if name in self._items:
+            return self._items[name]
+        else:
+            raise AttributeError(f"Namespace has no attribute {name}")
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        self._items[name] = value
+
 
 def rgba(color):
     return (*color, 255) if len(color) == 3 else color

@@ -99,9 +99,8 @@ def get(objs: Sequence[Any], idname: str) -> Any:
 
 
 def call_op(video, *idnames: str) -> None:
-    idname = ".".join(idnames)
-    parts = idname.split(".")
-    obj = video
+    parts = ".".join(idnames).split(".")
+    obj = video.ops
     for p in parts:
         obj = getattr(obj, p)
     obj()

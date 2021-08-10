@@ -22,7 +22,7 @@ Core properties and operators.
 
 Will register:
 
-* Property group ``piano_props``
+* Property group ``piano``
 """
 
 import pv
@@ -31,7 +31,7 @@ from pvkernel import Video
 
 
 class BUILTIN_PT_Piano(pv.types.PropertyGroup):
-    idname = "piano_props"
+    idname = "piano"
 
     left_offset = FloatProp(
         name="Left Offset",

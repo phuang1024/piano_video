@@ -22,10 +22,10 @@ MIDI parsing and handling.
 
 Will register:
 
-* DataGroup ``midi_data``
-* PropertyGroup ``midi_props``
-* Operator group ``midi_ops``
-* Job ``midi_job``
+* Data group ``midi``
+* Property group ``midi``
+* Operator group ``midi``
+* Job ``midi``
 """
 
 import os
@@ -83,7 +83,7 @@ class Note:
 
 
 class BUILTIN_PT_Midi(pv.types.PropertyGroup):
-    idname = "midi_props"
+    idname = "midi"
 
     paths = StrProp(
         name="Paths",
@@ -92,17 +92,17 @@ class BUILTIN_PT_Midi(pv.types.PropertyGroup):
 
 
 class BUILTIN_DT_Midi(pv.types.DataGroup):
-    idname = "midi_data"
+    idname = "midi"
 
 
 class BUILTIN_OT_MidiParse(pv.types.Operator):
-    group = "midi_ops"
+    group = "midi"
     idname = "parse"
     label = "Parse MIDI"
     description = "Parse selected midi files and store in data group."
 
     def execute(self, video: Video) -> None:
-        paths = video.midi_props.paths.split(os.path.pathsep)
+        paths = video.props.midi.paths.split(os.path.pathsep)
         messages = []
         for path in paths:
             with mido.MidiFile(os.path.realpath(path)) as midi:
@@ -126,13 +126,13 @@ class BUILTIN_OT_MidiParse(pv.types.Operator):
                         notes.append(Note(on[note], msg.time, note, msg.velocity))
         notes.sort(key=lambda n: n.start)
 
-        video.midi_data.messages = messages
-        video.midi_data.notes = notes
+        video.data.midi.messages = messages
+        video.data.midi.notes = notes
 
 
 class BUILTIN_JT_Midi(pv.types.Job):
-    idname = "midi_job"
-    ops = ("midi_ops.parse",)
+    idname = "midi"
+    ops = ("midi.parse",)
 
 
 classes = (

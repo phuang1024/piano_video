@@ -17,7 +17,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <../../consts.hpp>
+#include "../../consts.hpp"
 
 
 extern "C" void glare(UCH* img, const UINT width, const UINT height, CD intensity, CD radius,

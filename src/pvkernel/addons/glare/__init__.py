@@ -34,7 +34,7 @@ else:
 
 
 class GLARE_PT_Props(pv.types.PropertyGroup):
-    idname = "glare_props"
+    idname = "glare"
 
     intensity = FloatProp(
         name="Intensity",
@@ -50,7 +50,7 @@ class GLARE_PT_Props(pv.types.PropertyGroup):
 
 
 class GLARE_OT_Apply(pv.types.Operator):
-    group = "glare_ops"
+    group = "glare"
     idname = "apply"
     label = "Apply Glare"
     description = "Render glare on the render image."
@@ -60,8 +60,8 @@ class GLARE_OT_Apply(pv.types.Operator):
 
 
 class GLARE_JT_Job(pv.types.Job):
-    idname = "glare_job"
-    ops = ("glare_ops.apply")
+    idname = "glare"
+    ops = ("glare.apply")
 
 
 classes = (

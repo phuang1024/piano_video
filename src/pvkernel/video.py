@@ -27,6 +27,7 @@ from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
 from pv.utils import get, get_exists
 from typing import Any, Sequence, Tuple, Type
 from .export import export
+from .utils import Namespace
 
 
 class Video:
@@ -36,6 +37,10 @@ class Video:
     """
     resolution: Tuple[int, int]
     fps: float
+
+    props: Namespace
+    ops: Namespace
+    data: Namespace
 
     def __init__(self, resolution: Tuple[int, int] = (1920, 1080), fps: float = 30.) -> None:
         """
@@ -58,8 +63,8 @@ class Video:
             "modifiers": [],
             "deinit": [],
         }
-        self._render_img: np.ndarray = None
-        self._frame: int = None
+        self._render_img = None
+        self._frame = None
 
         self._dgroups = []   # DataGroups
         self._ogroups = []   # Operators
@@ -68,15 +73,15 @@ class Video:
         self._add_callbacks()
         self._add_default_jobs()
 
-    def __getattr__(self, name: str) -> Any:
-        if pv.utils.get_exists(self._ogroups, name):
-            return pv.utils.get(self._ogroups, name)
-        if pv.utils.get_exists(self._dgroups, name):
-            return pv.utils.get(self._dgroups, name)
-        if pv.utils.get_exists(self._pgroups, name):
-            return pv.utils.get(self._pgroups, name)
+    # def __getattr__(self, name: str) -> Any:
+    #     if pv.utils.get_exists(self._ogroups, name):
+    #         return pv.utils.get(self._ogroups, name)
+    #     if pv.utils.get_exists(self._dgroups, name):
+    #         return pv.utils.get(self._dgroups, name)
+    #     if pv.utils.get_exists(self._pgroups, name):
+    #         return pv.utils.get(self._pgroups, name)
 
-        raise AttributeError(f"pvkernel.Video has no attribute {name}")
+    #     raise AttributeError(f"pvkernel.Video has no attribute {name}")
 
     @property
     def render_img(self) -> np.ndarray:
@@ -122,17 +127,22 @@ class Video:
         return self._jobs[slot]
 
     def _add_default_jobs(self):
-        self.add_job("midi_job", "init")
-        self.add_job("core_job", "init")
-        self.add_job("blocks_job", "blocks")
+        self.add_job("midi", "init")
+        self.add_job("core", "init")
+        self.add_job("blocks", "blocks")
 
     def _add_callbacks(self) -> None:
         """
         Adds callbacks. Internal use.
         """
+        self.props = Namespace()
+        self.ops = Namespace()
+        self.data = Namespace()
+
         pv.utils.add_callback(self._add_dgroup, ("dgroup",))
         pv.utils.add_callback(self._add_ogroup, ("ogroup",))
         pv.utils.add_callback(self._add_pgroup, ("pgroup",))
+
         for cls in pv.utils._get_dgroups():
             self._add_dgroup(cls)
         for cls in pv.utils._get_ogroups():
@@ -144,19 +154,19 @@ class Video:
         """
         Callback function to add DataGroup to internal list.
         """
-        self._dgroups.append(cls())
+        setattr(self.data, cls.idname, cls())
 
     def _add_ogroup(self, cls: Type[Operator]) -> None:
         """
         Callback function to add Operator to internal list.
         """
         group = cls.group
-        if not get_exists(self._ogroups, group):
-            self._ogroups.append(OpGroup(group, self))
-        get(self._ogroups, cls.group).operators.append(cls(self))
+        if not hasattr(self.ops, group):
+            setattr(self.ops, group, OpGroup(group, self))
+        setattr(getattr(self.ops, group), cls.idname, cls(self))
 
     def _add_pgroup(self, cls: Type[PropertyGroup]) -> None:
         """
         Callback function to add PropertyGroup props to internal list.
         """
-        self._pgroups.append(cls())
+        setattr(self.props, cls.idname, cls())
