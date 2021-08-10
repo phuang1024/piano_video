@@ -40,9 +40,11 @@ double pythag(CD dx, CD dy);
 int ibounds(const int v, const int vmin = 0, const int vmax = 1);
 double dbounds(CD v, CD vmin = 0, CD vmax = 1);
 
+bool is_white(const UCH key);
+double key_pos(CD start, CD end, const UCH key);
+
 void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value);
 void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH r, const UCH g, const UCH b);
 void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value);
 void img_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color);
-
 void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac);

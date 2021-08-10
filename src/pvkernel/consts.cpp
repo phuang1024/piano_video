@@ -60,6 +60,33 @@ double dbounds(CD v, CD vmin = 0, CD vmax = 1) {
 }
 
 
+bool is_white(const UCH key) {
+    const UCH num = (key-3) % 12;
+    switch (num) {
+        case 1: return false;
+        case 3: return false;
+        case 6: return false;
+        case 8: return false;
+        case 10: return false;
+        default: return true;
+    }
+}
+
+double key_pos(CD start, CD end, const UCH key) {
+    CD white_width = (end-start) / 52.0;
+
+    double x = 0;
+    for (UCH i = 0; i < key; i++) {
+        if (is_white(i))
+            x += white_width;
+    }
+    if (is_white(key))
+        x += white_width/2.0;
+
+    return x;
+}
+
+
 void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value) {
     /*
     Sets pixel and channel of image to a value.
