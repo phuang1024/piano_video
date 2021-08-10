@@ -7,6 +7,32 @@ on:
     branches: [ main ]
 
 jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: C++
+        run: |
+          cd ./src/pvkernel; \
+          make cpp;
+      - name: Cuda
+        run: |
+          cd ./src/pvkernel; \
+          make cuda;
+
+  modules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Kernel
+        run: |
+          cd ./src; \
+          python3 -c "import pvkernel"
+      - name: Pv
+        run: |
+          cd ./src; \
+          python3 -c "import pv"
+
   formatting:
     runs-on: ubuntu-latest
     steps:

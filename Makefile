@@ -25,7 +25,8 @@ help:
 build:
 	cd ./src/pvkernel; \
 	make cpp; \
-	make cuda;
+	make cuda; \
+	make clean;
 
 dist:
 	cd ./build; \
