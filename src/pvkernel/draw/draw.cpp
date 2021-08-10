@@ -24,78 +24,6 @@ using std::min;
 using std::max;
 
 
-void _draw_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value) {
-    /*
-    Sets pixel and channel of image to a value.
-
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
-    :param channel: Channel number, corresponding to B, G, R.
-    :param value: Number from 0 to 255.
-    */
-    img[3*(y*width + x) + channel] = value;
-}
-
-void _draw_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH r, const UCH g, const UCH b) {
-    /*
-    Sets pixel to color. Equivalent to three calls of _draw_set()
-
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
-    :param r, g, b: R, G, B values.
-    */
-    _draw_set(img, width, x, y, 0, r);
-    _draw_set(img, width, x, y, 1, g);
-    _draw_set(img, width, x, y, 2, b);
-}
-
-void _draw_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value) {
-    /*
-    Gets value at pixel and channel and modifies "value" param.
-
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
-    :param channel: Channel number, corresponding to B, G, R.
-    :param value: Value pointer. Will be modified to be the obtained value.
-    */
-    value[0] = img[3*(y*width + x) + channel];
-}
-
-void _draw_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color) {
-    /*
-    Gets value at pixel and modifies "value" param. Equivalent to 3 calls of _draw_get()
-
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
-    :param value: Value pointer. Will be modified to be the obtained value.
-    */
-    _draw_get(img, width, x, y, 0, color+0);
-    _draw_get(img, width, x, y, 1, color+1);
-    _draw_get(img, width, x, y, 2, color+2);
-}
-
-void _draw_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac) {
-    /*
-    Mixes two colors with a factor.
-
-    :param dest: Destination array. Will be modified.
-    :param c1: Color 1.
-    :param c2: Color 2.
-    :param fac: Factor. 0 = full c1, 1 = full c2
-    */
-    for (int i = 0; i < 3; i++)
-        dest[i] = c1[i]*(1-fac) + c2[i]*fac;
-}
-
-
 extern "C" void draw_line(UCH* img, const UINT width, const UINT height, CD x1, CD y1, CD x2, CD y2,
         CD thick, CD r, CD g, CD b, CD a) {
     /*
@@ -128,9 +56,9 @@ extern "C" void draw_line(UCH* img, const UINT width, const UINT height, CD x1, 
             CD fac = dbounds(thick-dist+1);
 
             UCH c2[3], color[3];
-            _draw_getc(img, width, x, y, c2);
-            _draw_mix(color, c2, c1, fac*afac);
-            _draw_setc(img, width, x, y, color[0], color[1], color[2]);
+            img_getc(img, width, x, y, c2);
+            img_mix(color, c2, c1, fac*afac);
+            img_setc(img, width, x, y, color[0], color[1], color[2]);
         }
     }
 }
@@ -166,9 +94,9 @@ extern "C" void draw_circle(UCH* img, const UINT width, const UINT height, CD cx
             CD in_fac = dbounds(dist-in_thres+1);
 
             UCH c2[3], color[3];
-            _draw_getc(img, width, x, y, c2);
-            _draw_mix(color, c2, c1, out_fac*in_fac*afac);
-            _draw_setc(img, width, x, y, color[0], color[1], color[2]);
+            img_getc(img, width, x, y, c2);
+            img_mix(color, c2, c1, out_fac*in_fac*afac);
+            img_setc(img, width, x, y, color[0], color[1], color[2]);
         }
     }
 }
@@ -250,9 +178,9 @@ extern "C" void draw_rect(UCH* img, const UINT width, const UINT height, CD dx, 
             }
 
             UCH c2[3], color[3];
-            _draw_getc(img, width, x, y, c2);
-            _draw_mix(color, c2, c1, final_fac);
-            _draw_setc(img, width, x, y, color[0], color[1], color[2]);
+            img_getc(img, width, x, y, c2);
+            img_mix(color, c2, c1, final_fac);
+            img_setc(img, width, x, y, color[0], color[1], color[2]);
         }
     }
 }

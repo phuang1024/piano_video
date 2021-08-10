@@ -17,6 +17,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#pragma once
+
 #define  PI  3.14159265
 
 #include <cmath>
@@ -32,41 +34,15 @@ typedef  unsigned long long  ULL;
 typedef  const double        CD;
 
 
-double radians(CD deg) {
-    /*
-    Convert degrees to radians.
-    */
-    return deg/180*2*PI;
-}
+double radians(CD deg);
+double pythag(CD dx, CD dy);
 
-double pythag(CD dx, CD dy) {
-    /*
-    Pythagorean distance.
+int ibounds(const int v, const int vmin = 0, const int vmax = 1);
+double dbounds(CD v, CD vmin = 0, CD vmax = 1);
 
-    :param dx: X delta.
-    :param dy: Y delta.
-    */
-    return std::pow((dx*dx) + (dy*dy), 0.5);
-}
+void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value);
+void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH r, const UCH g, const UCH b);
+void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value);
+void img_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color);
 
-int ibounds(const int v, const int vmin = 0, const int vmax = 1) {
-    /*
-    Integer bounds.
-
-    :param v: Value.
-    :param vmin: Minimum value.
-    :param vmax: Maximum value.
-    */
-    return min(max(v, vmin), vmax);
-}
-
-double dbounds(CD v, CD vmin = 0, CD vmax = 1) {
-    /*
-    Double bounds.
-
-    :param v: Value.
-    :param vmin: Minimum value.
-    :param vmax: Maximum value.
-    */
-    return min(max(v, vmin), vmax);
-}
+void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac);
