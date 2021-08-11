@@ -17,30 +17,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import sys
-import os
 import argparse
-
-from cli import cli
-from gui import gui
-
-try:
-    import pv
-    import pvkernel
-except ModuleNotFoundError:
-    print("pvgui: error importing one or more of \"pv\", \"pvkernel\"")
-    print("pvgui: exiting")
-    sys.exit(1)
-
-VERSION = "0.2.1"
+import shlex
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Piano Video GUI.")
-    parser.add_argument("-c", "--cli", action="store_true", help="Launch CLI mode.")
-    args = parser.parse_args()
-
-    if args.cli:
-        cli()
-    else:
-        gui()
+def cli():
+    while True:
+        args = shlex.split(input(">>>"))
