@@ -35,10 +35,12 @@ typedef  const double        CD;
 
 
 double radians(CD deg);
+double degrees(CD rad);
 double pythag(CD dx, CD dy);
 
 int ibounds(const int v, const int vmin = 0, const int vmax = 1);
 double dbounds(CD v, CD vmin = 0, CD vmax = 1);
+double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max);
 
 bool is_white(const UCH key);
 double key_pos(CD start, CD end, const UCH key);

@@ -24,7 +24,14 @@ double radians(CD deg) {
     /*
     Convert degrees to radians.
     */
-    return deg/180*2*PI;
+    return deg / 180 * PI;
+}
+
+double degrees(CD rad) {
+    /*
+    Radians to degrees.
+    */
+    return rad / PI * 180;
 }
 
 double pythag(CD dx, CD dy) {
@@ -57,6 +64,12 @@ double dbounds(CD v, CD vmin, CD vmax) {
     :param vmax: Maximum value.
     */
     return min(max(v, vmin), vmax);
+}
+
+double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max) {
+    CD fac = (v-old_min) / (old_max-old_min);
+    CD mapped = fac * (new_max-new_min) + new_min;
+    return mapped;
 }
 
 
@@ -156,5 +169,5 @@ void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac) {
     :param fac: Factor. 0 = full c1, 1 = full c2
     */
     for (int i = 0; i < 3; i++)
-        dest[i] = c1[i]*(1-fac) + c2[i]*fac;
+        dest[i] = ibounds(c1[i]*(1-fac) + c2[i]*fac, 0, 255);
 }
