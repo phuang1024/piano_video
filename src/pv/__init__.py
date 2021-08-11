@@ -23,6 +23,8 @@ pv, the API to the kernel.
 Import from Python to modify kernel behavior.
 """
 
+__version__ = "0.2.0"
+
 from .props import *
 from .types import *
 from . import utils

@@ -51,7 +51,7 @@ def test_file(path):
             exitcode = 1
 
     sys.stdout.write(GREEN if exitcode == 0 else RED)
-    print(path, msg)
+    print(str(path)+":", msg)
 
     return exitcode
 

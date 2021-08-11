@@ -37,11 +37,11 @@ extern "C" void glare(UCH* img, const UINT width, const UINT height, CD intensit
 
     CD mid = height / 2.0;
     const UCH white[3] = {255, 255, 255};
- 
+
     for (UCH i = 0; i < num_notes; i++) {
         const UCH note = notes[i];
         CD x_pos = key_pos(x_start, x_end, note);
- 
+
         for (UINT x = x_pos-radius; x < x_pos+radius; x++) {
             for (UINT y = mid-radius; y < mid+radius; y++) {
                 CD dist = pythag(x-x_pos, y-mid);

@@ -39,7 +39,7 @@ class PropertyGroup:
 
     When creating your own PropertyGroup, you will inherit a class from
     this base class. Then, define:
-    
+
     * ``idname``: The unique idname of this property group.
     * properties: Define each property as a static attribute (shown below).
 
