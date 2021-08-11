@@ -25,9 +25,25 @@ This library is a Python module, and handles rendering, effects, MIDI parsing, e
 
 __version__ = "0.2.1"
 
-from .startup import build, register_addons
+import os
+from .startup import PARENT, build, register_addons
 
-build()
+LAST_COMP = os.path.join(PARENT, "last_compiled.txt")
+
+
+def get_last_comp():
+    if not os.path.isfile(LAST_COMP):
+        return None
+    with open(LAST_COMP, "r") as fp:
+        return fp.read()
+
+def set_last_comp():
+    with open(LAST_COMP, "w") as fp:
+        fp.write(__version__)
+
+
+if get_last_comp() != __version__:
+    build()
 del build
 
 from . import draw
