@@ -21,11 +21,14 @@ __all__ = (
     "Video",
 )
 
+import os
+import random
+import string
 import numpy as np
 import pv
 from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
-from pv.utils import get, get_exists
-from typing import Any, Sequence, Tuple, Type
+from pv.utils import get
+from typing import Sequence, Tuple, Type
 from .export import export
 from .utils import Namespace
 
@@ -34,6 +37,19 @@ class Video:
     """
     This class holds all the settings of a video.
     It is also used like a "context" for all rendering functions.
+
+    Attributes users can use:
+
+    * ``export(path)``: Render and save video to path.
+    * ``clear_jobs(slot)``: Clear all the jobs of a slot.
+    * ``add_job(idname, slot)``: Add a job to a slot.
+    * ``get_jobs(slot)``: Return the jobs of a slot.
+
+    Attributes add-ons can use:
+
+    * ``frame``: Current frame that is rendering.
+    * ``render_img``: Modify this attribute to update the render image.
+    * ``cache``: Cache directory. You should extend off of this if you need cache.
     """
     resolution: Tuple[int, int]
     fps: float
@@ -53,6 +69,9 @@ class Video:
         self.resolution = resolution
         self.fps = fps
 
+        rand = "".join(random.choices(string.ascii_letters+string.digits, k=32))
+        self.cache = os.path.join(os.getcwd(), rand)
+
         self._jobs = {
             "init": [],
             "intro": [],
@@ -63,6 +82,7 @@ class Video:
             "modifiers": [],
             "deinit": [],
         }
+
         self._render_img = None
         self._frame = None
 
