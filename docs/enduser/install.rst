@@ -1,8 +1,6 @@
 Installation
 ============
 
-**There has been no release so far in v0.2.x so there are no pre-built binaries.**
-
 GNU/Linux
 ---------
 
