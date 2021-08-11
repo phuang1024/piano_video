@@ -61,7 +61,7 @@ addons/glare/glare.o:
 # Cuda files
 
 utils_cu.o:
-	$(CUDA) $(CU_FLAGS) utils_cu.cu
+	$(CUDA) $(CU_FLAGS) utils.cpp -o utils_cu.o
 
 addons/imgfilter/cublur.o:
 	cd ./addons/imgfilter; \

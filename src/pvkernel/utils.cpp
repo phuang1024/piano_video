@@ -20,60 +20,62 @@
 #include "utils.hpp"
 
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 double radians(CD deg) {
-    /*
-    Convert degrees to radians.
-    */
+    /* Convert degrees to radians. */
     return deg / 180 * PI;
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 double degrees(CD rad) {
-    /*
-    Radians to degrees.
-    */
+    /* Radians to degrees. */
     return rad / PI * 180;
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 double pythag(CD dx, CD dy) {
-    /*
-    Pythagorean distance.
-
-    :param dx: X delta.
-    :param dy: Y delta.
-    */
+    /* Pythagorean distance. */
     return std::pow((dx*dx) + (dy*dy), 0.5);
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 int ibounds(const int v, const int vmin, const int vmax) {
-    /*
-    Integer bounds.
-
-    :param v: Value.
-    :param vmin: Minimum value.
-    :param vmax: Maximum value.
-    */
+    /* Integer bounds. */
     return min(max(v, vmin), vmax);
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 double dbounds(CD v, CD vmin, CD vmax) {
-    /*
-    Double bounds.
-
-    :param v: Value.
-    :param vmin: Minimum value.
-    :param vmax: Maximum value.
-    */
+    /* Double bounds. */
     return min(max(v, vmin), vmax);
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max) {
+    /* Map value from one range to another */
     CD fac = (v-old_min) / (old_max-old_min);
     CD mapped = fac * (new_max-new_min) + new_min;
     return mapped;
 }
 
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 bool is_white(const UCH key) {
+    /* Is the key white on piano */
     const UCH num = (key-3) % 12;
     switch (num) {
         case 1: return false;
@@ -85,10 +87,11 @@ bool is_white(const UCH key) {
     }
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 double key_pos(CD start, CD end, const UCH key) {
-    /*
-    Returns the MIDDLE of the key, not the left.
-    */
+    /* Returns the MIDDLE of the key, not the left. */
     CD white_width = (end-start) / 52.0;
 
     double x = start;
@@ -105,6 +108,9 @@ double key_pos(CD start, CD end, const UCH key) {
 }
 
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value) {
     /*
     Sets pixel and channel of image to a value.
@@ -119,6 +125,9 @@ void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH c
     img[3*(y*width + x) + channel] = value;
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH r, const UCH g, const UCH b) {
     /*
     Sets pixel to color. Equivalent to three calls of img_set()
@@ -134,6 +143,9 @@ void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH 
     img_set(img, width, x, y, 2, b);
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value) {
     /*
     Gets value at pixel and channel and modifies "value" param.
@@ -148,6 +160,9 @@ void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH c
     value[0] = img[3*(y*width + x) + channel];
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 void img_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color) {
     /*
     Gets value at pixel and modifies "value" param. Equivalent to 3 calls of img_get()
@@ -163,6 +178,9 @@ void img_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color
     img_get(img, width, x, y, 2, color+2);
 }
 
+#ifndef __GNUC__
+__host__ __device__
+#endif
 void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac) {
     /*
     Mixes two colors with a factor.
