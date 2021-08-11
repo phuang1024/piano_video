@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: Jimver/cuda-toolkit@v0.2.4
+      # - uses: Jimver/cuda-toolkit@v0.2.4
       - name: C++
         run: |
           cd ./src/pvkernel; \
           make cpp;
-      - name: Cuda
-        run: |
-          cd ./src/pvkernel; \
-          make cuda;
+      # - name: Cuda
+      #   run: |
+      #     cd ./src/pvkernel; \
+      #     make cuda;
 
   modules:
     runs-on: ubuntu-latest

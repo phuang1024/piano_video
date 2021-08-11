@@ -20,7 +20,7 @@
 import pv
 import pvkernel
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 print("Piano Video GUI is still in development.")
 print("See https://piano-video.rtfd.io for more information.")
