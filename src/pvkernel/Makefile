@@ -22,10 +22,8 @@ CUDA = nvcc
 
 C_FLAGS = -Wall -O3 -c -fPIC
 CU_FLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-C_FILES = consts.o draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o
+C_FILES = utils.o draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o
 CU_FILES = addons/imgfilter/cublur.o
-
-TRASH = *.o
 
 .PHONY: clean cpp
 
@@ -38,15 +36,13 @@ cuda: $(CU_FILES)
 	$(CUDA) -shared -o libpvkernel.cu.so $(CU_FILES)
 
 clean:
-	for ext in $(TRASH); do \
-		find . -name $$ext -delete; \
-	done
+	find . -name *.o -delete
 
 
 # C files
 
-consts.o:
-	$(CXX) $(C_FLAGS) consts.cpp
+utils.o:
+	$(CXX) $(C_FLAGS) utils.cpp
 
 draw/draw.o:
 	cd ./draw; \

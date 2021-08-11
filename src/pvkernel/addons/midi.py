@@ -144,7 +144,7 @@ class MIDI_OT_NotesPlaying(pv.types.Operator):
         video.data.midi.notes_playing = []
         for note in video.data.midi.notes:
             top, bottom = block_pos(video, note, first)
-            if bottom <= threshold <= top:
+            if top <= threshold <= bottom:
                 video.data.midi.notes_playing.append(note.note)
 
 

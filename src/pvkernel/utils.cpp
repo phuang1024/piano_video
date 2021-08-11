@@ -17,7 +17,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "consts.hpp"
+#include "utils.hpp"
 
 
 double radians(CD deg) {
@@ -73,6 +73,7 @@ bool is_white(const UCH key) {
 }
 
 double key_pos(CD start, CD end, const UCH key) {
+    // FIXME BUGGY
     CD white_width = (end-start) / 52.0;
 
     double x = 0;

@@ -82,6 +82,7 @@ class BUILTIN_OT_KeyPos(pv.types.Operator):
         return (key-3) % 12 not in (1, 3, 6, 8, 10)
 
     def execute(self, video: Video) -> None:
+        # FIXME BUGGY
         left = video.props.keyboard.left_offset
         right = video.props.keyboard.right_offset + video.resolution[0]
         width = right - left

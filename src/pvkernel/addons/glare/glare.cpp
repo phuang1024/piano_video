@@ -17,7 +17,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "../../consts.hpp"
+#include "../../utils.hpp"
 
 
 extern "C" void glare(UCH* img, const UINT width, const UINT height, CD intensity, CD radius,
@@ -35,23 +35,25 @@ extern "C" void glare(UCH* img, const UINT width, const UINT height, CD intensit
     :param x_end: X pixel end of piano.
     */
 
-   CD mid = height / 2.0;
-   const UCH white[3] = {255, 255, 255};
+    CD mid = height / 2.0;
+    const UCH white[3] = {255, 255, 255};
+ 
+    for (UCH i = 0; i < num_notes; i++) {
+        const UCH note = notes[i];
+        CD x_pos = key_pos(x_start, x_end, note);
+ 
+        for (UINT x = x_pos-radius; x < x_pos+radius; x++) {
+            for (UINT y = mid-radius; y < mid+radius; y++) {
+                CD dist = pythag(x-x_pos, y-mid);
+                CD fac = intensity * (1-(dist/radius));
 
-   for (UCH i = 0; i < num_notes; i++) {
-       const UCH note = notes[i];
-       CD x_pos = key_pos(x_start, x_end, note);
-
-       for (UINT x = x_pos-radius; x < x_pos+radius; x++) {
-           for (UINT y = mid-radius; y < mid+radius; y++) {
-               CD dist = pythag(x-x_pos, y-mid);
-               CD fac = intensity * (1-(dist/radius));
-
-               UCH original[3], modified[3];
-               img_getc(img, width, x, y, original);
-               img_mix(modified, original, white, fac);
-               img_setc(img, width, x, y, modified[0], modified[1], modified[2]);
-           }
-       }
-   }
+                if (dist <= radius && fac < 1) {
+                    UCH original[3], modified[3];
+                    img_getc(img, width, x, y, original);
+                    img_mix(modified, original, white, fac);
+                    img_setc(img, width, x, y, modified[0], modified[1], modified[2]);
+                }
+            }
+        }
+    }
 }
