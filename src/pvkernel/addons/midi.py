@@ -31,7 +31,7 @@ Will register:
 import os
 import mido
 import pv
-from pv.props import StrProp
+from pv.props import FloatProp, StrProp
 from pvkernel import Video
 from utils import block_pos, first_note
 from typing import Any, Dict
@@ -91,6 +91,12 @@ class MIDI_PT_Midi(pv.types.PropertyGroup):
         description="MIDI file paths. Separate with os.path.pathsep",
     )
 
+    min_len = FloatProp(
+        name="Minimum Length",
+        description="Minimum note length in seconds.",
+        default=0.1,
+    )
+
 
 class MIDI_DT_Midi(pv.types.DataGroup):
     idname = "midi"
@@ -114,6 +120,7 @@ class MIDI_OT_Parse(pv.types.Operator):
                     messages.append(Message(msg.type, time, **attrs))
         messages.sort(key=lambda m: m.time)
 
+        min_frames = video.fps * video.props.midi.min_len
         notes = []
         on = [0] * 88   # When the note was on
         for msg in messages:
@@ -124,7 +131,9 @@ class MIDI_OT_Parse(pv.types.Operator):
                     if note_on:
                         on[note] = msg.time
                     else:
-                        notes.append(Note(on[note], msg.time, note, msg.velocity))
+                        start = on[note]
+                        length = max(min_frames, msg.time-start)
+                        notes.append(Note(start, start+length, note, msg.velocity))
         notes.sort(key=lambda n: n.start)
 
         video.data.midi.messages = messages
