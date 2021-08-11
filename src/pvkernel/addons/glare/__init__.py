@@ -28,12 +28,7 @@ from pvkernel import Video
 from pvkernel.lib import *
 from pvkernel.utils import CUDA
 
-if CUDA and False:
-    NotImplemented # yet
-    glare_func = CULIB.glare
-else:
-    LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64)
-    glare_func = LIB.glare
+LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64)
 
 
 class GLARE_PT_Props(pv.types.PropertyGroup):
@@ -67,7 +62,7 @@ class GLARE_OT_Apply(pv.types.Operator):
         radius = video.props.glare.radius
         notes = np.array(video.data.midi.notes_playing, dtype=np.uint8)
 
-        glare_func(video.render_img, width, height, intensity, radius,
+        LIB.glare(video.render_img, width, height, intensity, radius,
             notes, notes.shape[0], start, end)
 
 
