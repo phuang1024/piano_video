@@ -51,5 +51,14 @@ jobs:
         run: |
           pip install sphinx sphinx-rtd-theme
           pip install -r requirements.txt
+      - name: Build wheels
+        run: make dist
+      - name: Install packages
+        run: |
+          cd ./build/dist; \
+          pip install *.whl
       - name: Build docs
-        run: make docs
+        run: |
+          cd ./docs
+          mkdir ./_static ./_templates
+          make html SPHINXOPTS="-W --keep-going"
