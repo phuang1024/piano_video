@@ -9,6 +9,8 @@ __pycache__
 *.mp3
 *.mp4
 
+!examples/*
+
 *.o
 *.so
 
