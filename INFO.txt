@@ -1,0 +1,9 @@
+Project information.
+None of this is read by a program, so any format works.
+
+Version numbers:
+build/main.py
+docs/conf.py
+src/pv/__init__.py
+src/pvgui/main.py
+src/pvkernel/__init__.py
