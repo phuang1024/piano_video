@@ -44,6 +44,7 @@ def set_last_comp():
 
 if get_last_comp() != __version__:
     build()
+set_last_comp()
 del build
 
 from . import draw

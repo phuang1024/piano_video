@@ -70,7 +70,8 @@ class Video:
         self.fps = fps
 
         rand = "".join(random.choices(string.ascii_letters+string.digits, k=32))
-        self.cache = os.path.join(os.getcwd(), rand)
+        self.cache = os.path.join(os.getcwd(), ".pvcache", rand)
+        os.makedirs(self.cache)
 
         self._jobs = {
             "init": [],

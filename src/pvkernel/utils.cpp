@@ -86,16 +86,20 @@ bool is_white(const UCH key) {
 }
 
 double key_pos(CD start, CD end, const UCH key) {
-    // FIXME BUGGY
+    /*
+    Returns the MIDDLE of the key, not the left.
+    */
     CD white_width = (end-start) / 52.0;
 
-    double x = 0;
-    for (UCH i = 0; i < key; i++) {
-        if (is_white(i))
+    double x = start;
+    for (UCH i = 0; i < 88; i++) {
+        if (is_white(i)) {
+            if (i == key) return x - white_width/2.0;
             x += white_width;
+        } else {
+            if (i == key) return x - 1.5*white_width;
+        }
     }
-    if (is_white(key))
-        x += white_width/2.0;
 
     return x;
 }

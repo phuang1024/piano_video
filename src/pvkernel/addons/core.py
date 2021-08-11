@@ -82,7 +82,6 @@ class BUILTIN_OT_KeyPos(pv.types.Operator):
         return (key-3) % 12 not in (1, 3, 6, 8, 10)
 
     def execute(self, video: Video) -> None:
-        # FIXME BUGGY
         left = video.props.keyboard.left_offset
         right = video.props.keyboard.right_offset + video.resolution[0]
         width = right - left
@@ -92,13 +91,13 @@ class BUILTIN_OT_KeyPos(pv.types.Operator):
         white_width = width / 52
         black_width = white_width * video.props.keyboard.black_width_fac
         black_offset = white_width - black_width/2
-        x = 0
+        x = left
         for key in range(88):
             if self.is_white(key):
-                video.data.core.key_pos[key] = (left+x, white_width)
+                video.data.core.key_pos[key] = (x, white_width)
                 x += white_width
             else:
-                video.data.core.key_pos[key] = (left+x+black_offset, black_width)
+                video.data.core.key_pos[key] = (x-black_offset, black_width)
 
         assert None not in video.data.core.key_pos, "Error calculating key position."
 

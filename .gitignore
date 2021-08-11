@@ -25,4 +25,5 @@ __pycache__
 
 /lib
 
+/src/pvkernel/last_compiled.txt
 /src/test*.py
