@@ -49,9 +49,3 @@ __host__ __device__ double map_range(CD v, CD old_min, CD old_max, CD new_min, C
 
 __host__ __device__ bool is_white(const UCH key);
 __host__ __device__ double key_pos(CD start, CD end, const UCH key);
-
-__host__ __device__ void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value);
-__host__ __device__ void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH r, const UCH g, const UCH b);
-__host__ __device__ void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value);
-__host__ __device__ void img_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color);
-__host__ __device__ void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac);

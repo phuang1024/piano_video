@@ -36,8 +36,8 @@ cuda: $(CU_FILES)
 	$(CUDA) -shared -o libpvkernel.cu.so $(CU_FILES)
 
 clean:  # for some reason needs to do it twice
-	find . -name *.o -delete
-	find . -name *.o -delete
+	find . -name "*.o" -delete
+	find . -name "*.o" -delete
 
 
 # C files
