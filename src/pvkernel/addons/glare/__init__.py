@@ -42,7 +42,7 @@ class GLARE_PT_Props(pv.types.PropertyGroup):
     intensity = FloatProp(
         name="Intensity",
         description="Glare brightness multiplier.",
-        default=0.8,
+        default=0.75,
     )
 
     radius = FloatProp(

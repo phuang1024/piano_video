@@ -39,28 +39,29 @@ extern "C" void glare(UCH* img, const UINT width, const UINT height, CD intensit
 
     CD mid = height / 2.0;
     const UCH white[3] = {255, 255, 255};
+    const UINT border = 25;
 
     for (UCH i = 0; i < num_notes; i++) {
         const UCH note = notes[i];
         CD x_pos = key_pos(x_start, x_end, note);
 
-        for (UINT x = x_pos-radius; x < x_pos+radius; x++) {
-            for (UINT y = mid-radius; y < mid+radius; y++) {
+        for (UINT x = x_pos-radius-border; x < x_pos+radius+border; x++) {
+            for (UINT y = mid-radius-border; y < mid+radius+border; y++) {
                 CD dx = abs(x-x_pos), dy = abs(y-mid);
                 CD dist = pythag(x-x_pos, y-mid);
+                CD dist_fac = dist / radius;
 
-                if (dist <= radius) {
-                    // Streaks every 45 degrees
-                    CD angle = degrees(atan(dy/dx));
-                    CD angle_dist = min(min(abs(angle), abs(angle-45)), abs(angle-90));
-                    CD angle_fac = 1 - dbounds(map_range(angle_dist, 0, 7, 0, 1));
-                    CD fac = (angle_fac/6+1) * intensity * (1-(dist/radius));
+                // Streaks every 45 degrees
+                CD angle = degrees(atan(dy/dx));
+                CD angle_dist = min(min(abs(angle), abs(angle-45)), abs(angle-90));
+                CD angle_fac = dbounds(map_range(angle_dist, 0, 5, 0.96, 1));
 
-                    UCH original[3], modified[3];
-                    img_getc(img, width, x, y, original);
-                    img_mix(modified, original, white, fac);
-                    img_setc(img, width, x, y, modified[0], modified[1], modified[2]);
-                }
+                CD fac = dbounds(angle_fac * dist_fac);   // 0 = full white, 1 = no white
+                CD real_fac = 1 - ((1-fac)*intensity);    // Account for intensity
+                UCH original[3], modified[3];
+                img_getc(img, width, x, y, original);
+                img_mix(modified, white, original, real_fac);
+                img_setc(img, width, x, y, modified[0], modified[1], modified[2]);
             }
         }
     }
