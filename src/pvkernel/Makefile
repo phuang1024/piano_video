@@ -20,54 +20,33 @@
 CXX = g++
 CUDA = nvcc
 
-C_FLAGS = -Wall -O3 -c -fPIC
-CU_FLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-C_FILES = utils.o draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o \
+CXXFLAGS = -Wall -O3 -c -fPIC
+CXXFILES = utils.o random.o draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o \
 	addons/smoke/smoke.o
-CU_FILES = utils_cu.o addons/imgfilter/cublur.o
+
+CUFLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
+CUFILES = utils_cu.o addons/imgfilter/cublur.o
 
 .PHONY: clean cpp
 
 # Useful targets
 
-cpp: $(C_FILES)
-	$(CXX) -shared -o libpvkernel.so $(C_FILES)
+cpp: $(CXXFILES)
+	$(CXX) -shared -o libpvkernel.so $(CXXFILES)
 
-cuda: $(CU_FILES)
-	$(CUDA) -shared -o libpvkernel.cu.so $(CU_FILES)
+cuda: $(CUFILES)
+	$(CUDA) -shared -o libpvkernel.cu.so $(CUFILES)
 
 clean:  # for some reason needs to do it twice
 	find . -name "*.o" -delete
 	find . -name "*.o" -delete
 
 
-# C files
-
-utils.o:
-	$(CXX) $(C_FLAGS) utils.cpp
-
-draw/draw.o:
-	cd ./draw; \
-	$(CXX) $(C_FLAGS) draw.cpp
-
-addons/imgfilter/cppblur.o:
-	cd ./addons/imgfilter; \
-	$(CXX) $(C_FLAGS) cppblur.cpp
-
-addons/glare/glare.o:
-	cd ./addons/glare; \
-	$(CXX) $(C_FLAGS) glare.cpp
-
-addons/smoke/smoke.o:
-	cd ./addons/smoke; \
-	$(CXX) $(C_FLAGS) smoke.cpp
-
-
 # Cuda files
 
 utils_cu.o:
-	$(CUDA) $(CU_FLAGS) utils.cpp -o utils_cu.o
+	$(CUDA) $(CUFLAGS) utils.cpp -o utils_cu.o
 
 addons/imgfilter/cublur.o:
 	cd ./addons/imgfilter; \
-	$(CUDA) $(CU_FLAGS) cublur.cu
+	$(CUDA) $(CUFLAGS) cublur.cu

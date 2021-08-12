@@ -16,3 +16,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
+
+#pragma once
+
+#ifdef __GNUC__
+    #define  MODS
+#else
+    #define  MODS  __host__ __device__
+#endif
+
+
+namespace Random {
+    void seed();
+
+    int randint(const int min, const int max);
+    double uniform(const double min, const double max);
+}
