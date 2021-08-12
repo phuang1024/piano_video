@@ -1,9 +1,26 @@
 Smoke Simulation
 ================
 
+*Written August 10, 2021*
+
+*Updated August 12, 2021*
+
 When a note is pressed, smoke will emit out of it.
 This is different to "Particles" which are small dots of light that
 also emit out of the note.
+
+Screenshot
+----------
+
+.. image:: smoke.png
+    :width: 300
+
+This is the smoke simulation algorithm on August 12.
+The default setting uses 20000 new smoke particles per second, which exports at about
+20 fps on my computer.
+
+The smoke starts rectangular, and then disperses into an amorphous shape. This kind of
+"echoes" the notes in the smoke, which I think is pretty cool.
 
 Method 1
 --------
