@@ -21,6 +21,7 @@
 #define  SIZE_FLT  sizeof(float)
 
 #define  AIR_RESIST  0.95
+#define  MAX_AGE     6
 
 #include <iostream>
 #include <cstring>
@@ -31,7 +32,14 @@
 
 
 struct Particle {
-    // Contains x, y, velocity x, velocity y
+    Particle() {
+        good = true;
+    }
+
+    bool good;  // Whether to read from cache
+
+    float age;  // Seconds
+
     // x, y are pixel locations.
     // vx, vy are pixel per frame values.
     float x, y, vx, vy;
@@ -49,7 +57,8 @@ void read_cache(std::vector<Particle>& ptcls, std::ifstream& fp) {
     for (int i = 0; i < count; i++) {
         Particle ptcl;
         fp.read((char*)(&ptcl), sizeof(Particle));
-        ptcls.push_back(ptcl);
+        if (ptcl.good)
+            ptcls.push_back(ptcl);
     }
 }
 
@@ -71,7 +80,7 @@ void write_cache(std::vector<Particle>& ptcls, std::ofstream& fp) {
 
 extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* const x_starts,
         CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max, CD y_vel_min, CD y_vel_max,
-        const char* const ip, const char* const op) {
+        const char* const ip, const char* const op, const int width, const int height) {
     /*
     Simulate one frame of smoke activity.
 
@@ -117,8 +126,17 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
         Particle& ptcl = ptcls[i];
         ptcl.x += ptcl.vx;
         ptcl.y += ptcl.vy;
+        if (!img_bounds(width, height, ptcl.x, ptcl.y)) {
+            ptcl.good = false;
+            continue;
+        }
+        if (ptcl.age > MAX_AGE) {
+            ptcl.good = false;
+            continue;
+        }
         ptcl.vx *= air_resist;
         ptcl.vy *= air_resist;
+        ptcl.age += 1/fps;
     }
 
     // Write to output
@@ -141,13 +159,15 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
     ptcls.reserve((int)1e6);
     read_cache(ptcls, fp);
 
-    const UCH white[3] = {255, 255, 255};
     const int size = ptcls.size();
 
     for (int i = 0; i < size; i++) {
         const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
 
         if (img_bounds(width, height, x, y)) {
+            const UCH value = 255 * (1-(ptcls[i].age/MAX_AGE));
+            const UCH white[3] = {value, value, value};
+
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
             img_mix(modified, original, white, intensity/10.0);

@@ -31,7 +31,7 @@ from pvkernel.utils import CUDA
 if CUDA and False:
     pass
 else:
-    LIB.smoke_sim.argtypes = (F64, I32, I32, AR_DBL, AR_DBL, *[F64 for _ in range(5)], AR_CH, AR_CH)
+    LIB.smoke_sim.argtypes = (F64, I32, I32, AR_DBL, AR_DBL, *[F64 for _ in range(5)], AR_CH, AR_CH, I32, I32)
     LIB.smoke_render.argtypes = (IMG, I32, I32, AR_CH, F64)
     sim_func = LIB.smoke_sim
     render_func = LIB.smoke_render
@@ -43,13 +43,13 @@ class SMOKE_PT_Props(pv.PropertyGroup):
     intensity = FloatProp(
         name="Intensity",
         description="Smoke opacity multiplier.",
-        default=0.4,
+        default=0.25,
     )
 
     pps = FloatProp(
         name="Particles/Second",
         description="Amount of smoke particles to emit per second per note.",
-        default=6000,
+        default=20000,
     )
 
 
@@ -105,7 +105,7 @@ def simulate(video: Video):
     key_ends = np.array(key_ends, dtype=np.float64)
 
     sim_func(video.fps, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
-        -10, 10, -75, -50, in_path, out_path)
+        -10, 10, -75, -50, in_path, out_path, *video.resolution)
 
 
 def render(video: Video):
