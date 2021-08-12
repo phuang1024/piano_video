@@ -31,7 +31,7 @@ from pvkernel.utils import CUDA
 if CUDA and False:
     pass
 else:
-    LIB.smoke_sim.argtypes = (I32, I32, I32, AR_DBL, AR_DBL, *[F32 for _ in range(5)], AR_CH, AR_CH)
+    LIB.smoke_sim.argtypes = (F64, I32, I32, AR_DBL, AR_DBL, *[F32 for _ in range(5)], AR_CH, AR_CH)
     sim_func = LIB.smoke_sim
 
 
@@ -64,8 +64,10 @@ class SMOKE_OT_Apply(pv.Operator):
         in_path = cache.join(str(frame-1)) \
             if frame>0 and cache.frame_exists(frame-1) else ""
         out_path = cache.join(str(frame))
+        in_path = np.array([x for x in in_path.encode()], dtype=np.int8)
+        out_path = np.array([x for x in out_path.encode()], dtype=np.int8)
 
-        ppf = video.props.smoke.pps / video.fps
+        ppf = int(video.props.smoke.pps / video.fps)
 
         key_starts = []
         key_ends = []
@@ -80,6 +82,11 @@ class SMOKE_OT_Apply(pv.Operator):
             -2, 2, -5, -8, in_path, out_path)
 
 
+class SMOKE_JT_Job(pv.Job):
+    idname = "smoke"
+    ops = ("smoke.apply",)
+
+
 class SMOKE_CT_Cache(pv.Cache):
     idname = "smoke"
     depends = ("smoke.pps",)
@@ -88,6 +95,7 @@ class SMOKE_CT_Cache(pv.Cache):
 classes = (
     SMOKE_PT_Props,
     SMOKE_OT_Apply,
+    SMOKE_JT_Job,
     SMOKE_CT_Cache,
 )
 

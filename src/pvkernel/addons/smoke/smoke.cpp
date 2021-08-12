@@ -20,6 +20,7 @@
 #define  SIZE_INT  sizeof(int)
 #define  SIZE_FLT  sizeof(float)
 
+#include <iostream>
 #include <cstring>
 #include <fstream>
 #include <vector>
@@ -35,7 +36,7 @@ struct Particle {
 };
 
 
-void smoke_sim(const int fps_int, const int num_new, const int num_notes, CD* const x_starts,
+extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* const x_starts,
         CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max, CD y_vel_min, CD y_vel_max,
         const char* ip, const char* op) {
     /*
@@ -51,8 +52,6 @@ void smoke_sim(const int fps_int, const int num_new, const int num_notes, CD* co
     :param op: Output file path.
     */
 
-    // Type and/or format conversion
-    CD fps = (double)fps_int;
     CD vx_min = x_vel_min/fps, vx_max = x_vel_max/fps;
     CD vy_min = y_vel_min/fps, vy_max = y_vel_max/fps;
 
