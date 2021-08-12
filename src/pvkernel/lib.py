@@ -24,7 +24,9 @@ Import the ``LIB`` variable in specific modules and define wrappers.
 
 __all__ = (
     "UCH",
+    "AR_CH",
     "AR_UCH",
+    "AR_DBL",
     "I32",
     "I64",
     "F32",
@@ -41,7 +43,9 @@ import numpy as np
 from .utils import CUDA, PARENT
 
 UCH = ctypes.c_uint8
+AR_CH = np.ctypeslib.ndpointer(dtype=np.int8, ndim=1, flags="aligned, c_contiguous")
 AR_UCH = np.ctypeslib.ndpointer(dtype=np.uint8, ndim=1, flags="aligned, c_contiguous")
+AR_DBL = np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags="aligned, c_contiguous")
 I32 = ctypes.c_int32
 I64 = ctypes.c_int64
 F32 = ctypes.c_float

@@ -28,6 +28,12 @@ from pvkernel import Video
 from pvkernel.lib import *
 from pvkernel.utils import CUDA
 
+if CUDA and False:
+    pass
+else:
+    LIB.smoke_sim.argtypes = (I32, I32, I32, AR_DBL, AR_DBL, *[F32 for _ in range(5)], AR_CH, AR_CH)
+    sim_func = LIB.smoke_sim
+
 
 class SMOKE_PT_Props(pv.PropertyGroup):
     idname = "smoke"
@@ -52,12 +58,37 @@ class SMOKE_OT_Apply(pv.Operator):
     description = "Render smoke on the render image."
 
     def execute(self, video: Video) -> None:
-        return super().execute(video)
+        cache: pv.Cache = video.caches.smoke
+        frame = video.frame
+
+        in_path = cache.join(str(frame-1)) \
+            if frame>0 and cache.frame_exists(frame-1) else ""
+        out_path = cache.join(str(frame))
+
+        ppf = video.props.smoke.pps / video.fps
+
+        key_starts = []
+        key_ends = []
+        for note in video.data.midi.notes_playing:
+            x, width = video.data.core.key_pos[note]
+            key_starts.append(x)
+            key_ends.append(x+width)
+        key_starts = np.array(key_starts, dtype=np.float64)
+        key_ends = np.array(key_ends, dtype=np.float64)
+
+        sim_func(video.fps, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
+            -2, 2, -5, -8, in_path, out_path)
+
+
+class SMOKE_CT_Cache(pv.Cache):
+    idname = "smoke"
+    depends = ("smoke.pps",)
 
 
 classes = (
     SMOKE_PT_Props,
     SMOKE_OT_Apply,
+    SMOKE_CT_Cache,
 )
 
 def register():

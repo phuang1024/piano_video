@@ -58,6 +58,9 @@ class Video:
     ops: Namespace
     data: Namespace
 
+    _frame: int
+    _render_img: np.ndarray
+
     def __init__(self, resolution: Tuple[int, int] = (1920, 1080), fps: float = 30.) -> None:
         """
         Initializes the Video.

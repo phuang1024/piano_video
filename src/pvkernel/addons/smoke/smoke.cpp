@@ -35,14 +35,16 @@ struct Particle {
 };
 
 
-void simulate(const int fps_int, const int num_new, CD x_start, CD x_end, CD y_start, CD x_vel_min, CD x_vel_max,
-        CD y_vel_min, CD y_vel_max, const char* ip, const char* op) {
+void smoke_sim(const int fps_int, const int num_new, const int num_notes, CD* const x_starts,
+        CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max, CD y_vel_min, CD y_vel_max,
+        const char* ip, const char* op) {
     /*
     Simulate one frame of smoke activity.
 
     :param fps: Video fps.
     :param num_new: Number of new particles to generate.
-    :param x_start, x_end: X coordinate boundaries.
+    :param num_notes: Number of notes that are playing.
+    :param x_starts, x_ends: X coordinate boundaries for each note.
     :param y_start: Y coordinate.
     :param x_vel_min, x_vel_max, y_vel_min, y_vel_max: Pixels per second bounds.
     :param ip: Input file path (leave blank if no input).
@@ -74,12 +76,15 @@ void simulate(const int fps_int, const int num_new, CD x_start, CD x_end, CD y_s
     }
 
     // Add new particles
-    for (int i = 0; i < num_new; i++) {
-        Particle ptcl;
-        ptcl.x = Random::uniform(x_start, x_end);
-        ptcl.y = y_start;
-        ptcl.vx = Random::uniform(vx_min, vx_max);
-        ptcl.vx = Random::uniform(vy_min, vy_max);
+    for (int i = 0; i < num_notes; i++) {
+        for (int j = 0; j < num_new; j++) {
+            Particle ptcl;
+            ptcl.x = Random::uniform(x_starts[i], x_ends[i]);
+            ptcl.y = y_start;
+            ptcl.vx = Random::uniform(vx_min, vx_max);
+            ptcl.vx = Random::uniform(vy_min, vy_max);
+            ptcls.push_back(ptcl);
+        }
     }
 
     const int size = ptcls.size();

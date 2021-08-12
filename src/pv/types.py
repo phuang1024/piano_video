@@ -122,10 +122,12 @@ class Cache:
 
         os.makedirs(self.path, exist_ok=True)
 
+    def join(self, *args) -> str:
+        """Join with cache base path."""
+        return os.path.join(self.path, *args)
+
     def fp(self, name: str, mode: str) -> IO:
-        """
-        Get the file pointer for a file name.
-        """
+        """Get the file pointer for a file name."""
         return open(os.path.join(self.path, name), mode)
 
     def fp_frame(self, mode: str, check_exist: bool = True) -> IO:
@@ -143,6 +145,15 @@ class Cache:
                 "Pass argument check_exist=False to override.")
 
         return open(os.path.join(self.path, str(frame)), mode)
+
+    def frame_exists(self, frame: int = ...) -> bool:
+        """
+        Check whether a frame exists.
+
+        :param frame: Frame to use. Defaults to current video frame.
+        """
+        frame = self._video.frame if frame == ... else frame
+        return frame in self._frames
 
     def _check_state(self):
         from .utils import multigetattr
