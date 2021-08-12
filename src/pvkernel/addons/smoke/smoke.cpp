@@ -23,45 +23,82 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
+#include "../../random.hpp"
 #include "../../utils.hpp"
 
 
 struct Particle {
     // Contains x, y, velocity x, velocity y
     // x, y are pixel locations.
-    // vx, vy are pixel per second values.
+    // vx, vy are pixel per frame values.
     float x, y, vx, vy;
 };
 
 
-void simulate(const int fps_int, const int num_new, const char* ip, const char* op) {
+void simulate(const int fps_int, const int num_new, CD x_start, CD x_end, CD y_start, CD x_vel_min, CD x_vel_max,
+        CD y_vel_min, CD y_vel_max, const char* ip, const char* op) {
     /*
     Simulate one frame of smoke activity.
 
     :param fps: Video fps.
     :param num_new: Number of new particles to generate.
+    :param x_start, x_end: X coordinate boundaries.
+    :param y_start: Y coordinate.
+    :param x_vel_min, x_vel_max, y_vel_min, y_vel_max: Pixels per second bounds.
     :param ip: Input file path (leave blank if no input).
     :param op: Output file path.
     */
 
-    CD fps = (double)fps_int;   // Using double because division later.
+    // Type and/or format conversion
+    CD fps = (double)fps_int;
+    CD vx_min = x_vel_min/fps, vx_max = x_vel_max/fps;
+    CD vy_min = y_vel_min/fps, vy_max = y_vel_max/fps;
 
-    int num_ptcls = 0;   // Avoid push_back() bc does a boundary check.
     std::vector<Particle> ptcls;
     ptcls.reserve((int)1e6);
 
+    // Read from input file
     if (strlen(ip) > 0) {
-        std::ifstream fp(ip);
+        std::ifstream fin(ip);
         int count;
-        fp.read((char*)(&count), SIZE_INT);
+        fin.read((char*)(&count), SIZE_INT);
 
         for (int i = 0; i < count; i++) {
             Particle ptcl;
-            fp.read((char*)(&ptcl.x), SIZE_FLT);
-            fp.read((char*)(&ptcl.y), SIZE_FLT);
-            fp.read((char*)(&ptcl.vx), SIZE_FLT);
-            fp.read((char*)(&ptcl.vy), SIZE_FLT);
-            ptcls[num_ptcls++] = ptcl;
+            fin.read((char*)(&ptcl.x), SIZE_FLT);
+            fin.read((char*)(&ptcl.y), SIZE_FLT);
+            fin.read((char*)(&ptcl.vx), SIZE_FLT);
+            fin.read((char*)(&ptcl.vy), SIZE_FLT);
+            ptcls.push_back(ptcl);
         }
+    }
+
+    // Add new particles
+    for (int i = 0; i < num_new; i++) {
+        Particle ptcl;
+        ptcl.x = Random::uniform(x_start, x_end);
+        ptcl.y = y_start;
+        ptcl.vx = Random::uniform(vx_min, vx_max);
+        ptcl.vx = Random::uniform(vy_min, vy_max);
+    }
+
+    const int size = ptcls.size();
+
+    // Simulate motion
+    for (int i = 0; i < size; i++) {
+        Particle& ptcl = ptcls[i];
+        ptcl.x += ptcl.vx;
+        ptcl.y += ptcl.vy;
+    }
+
+    // Write to output
+    std::ofstream fout(op);
+    fout.write((char*)(&size), SIZE_INT);
+    for (int i = 0; i < size; i++) {
+        const Particle& ptcl = ptcls[i];
+        fout.write((char*)(&ptcl.x), SIZE_FLT);
+        fout.write((char*)(&ptcl.y), SIZE_FLT);
+        fout.write((char*)(&ptcl.vx), SIZE_FLT);
+        fout.write((char*)(&ptcl.vy), SIZE_FLT);
     }
 }
