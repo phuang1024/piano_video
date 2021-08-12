@@ -26,7 +26,7 @@ import random
 import string
 import numpy as np
 import pv
-from pv.types import DataGroup, OpGroup, Operator, PropertyGroup
+from pv.types import Cache, DataGroup, OpGroup, Operator, PropertyGroup
 from pv.utils import get
 from typing import Sequence, Tuple, Type
 from .export import export
@@ -87,10 +87,6 @@ class Video:
         self._render_img = None
         self._frame = None
 
-        self._dgroups = []   # DataGroups
-        self._ogroups = []   # Operators
-        self._pgroups = []   # PropertyGroups.
-
         self._add_callbacks()
         self._add_default_jobs()
 
@@ -148,6 +144,7 @@ class Video:
         """
         Adds callbacks. Internal use.
         """
+        self.caches = Namespace()
         self.props = Namespace()
         self.ops = Namespace()
         self.data = Namespace()
@@ -155,6 +152,7 @@ class Video:
         pv.utils.add_callback(self._add_dgroup, ("dgroup",))
         pv.utils.add_callback(self._add_ogroup, ("ogroup",))
         pv.utils.add_callback(self._add_pgroup, ("pgroup",))
+        pv.utils.add_callback(self._add_cache, ("cache",))
 
         for cls in pv.utils._get_dgroups():
             self._add_dgroup(cls)
@@ -162,6 +160,8 @@ class Video:
             self._add_ogroup(cls)
         for cls in pv.utils._get_pgroups():
             self._add_pgroup(cls)
+        for cls in pv.utils._get_caches():
+            self._add_cache(cls)
 
     def _add_dgroup(self, cls: Type[DataGroup]) -> None:
         """
@@ -183,3 +183,6 @@ class Video:
         Callback function to add PropertyGroup props to internal list.
         """
         setattr(self.props, cls.idname, cls())
+
+    def _add_cache(self, cls: Type[Cache]) -> None:
+        setattr(self.caches, cls.idname, cls(self))

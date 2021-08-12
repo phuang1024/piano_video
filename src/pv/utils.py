@@ -18,13 +18,19 @@
 #
 
 from typing import Any, Callable, List, Sequence, Type
-from pv.types import DataGroup, Job, Operator, PropertyGroup
+from .types import Cache, DataGroup, Job, Operator, PropertyGroup
+
+_caches: List[Type[Cache]] = []
+_caches_callback: List[Callable] = []
 
 _dgroups: List[Type[DataGroup]] = []
 _dgroup_callback: List[Callable] = []
+
 _jobs: List[Type[Job]] = []
+
 _ops: List[Type[Operator]] = []
 _ops_callback: List[Callable] = []
+
 _pgroups: List[Type[PropertyGroup]] = []
 _pgroup_callback: List[Callable] = []
 
@@ -47,6 +53,10 @@ def register_class(cls: Type) -> None:
             func(cls)
     elif issubclass(cls, Job):
         _jobs.append(cls)
+    elif issubclass(cls, Cache):
+        _caches.append(cls)
+        for func in _caches_callback:
+            func(cls)
     else:
         raise ValueError(f"Cannot register {cls}")
 
@@ -59,6 +69,7 @@ def add_callback(func: Callable, classes: Sequence[str]) -> None:
     :param classes: A list of strings indicating which types of classes to listen for.
         Valid values:
 
+        * "cache": Cache
         * "dgroup": DataGroup
         * "pgroup": PropertyGroup
         * "ogroup": Operator
@@ -71,6 +82,8 @@ def add_callback(func: Callable, classes: Sequence[str]) -> None:
         _dgroup_callback.append(func)
     elif "ogroup" in classes:
         _ops_callback.append(func)
+    elif "cache" in classes:
+        _caches_callback.append(func)
 
 
 def get_exists(objs: Sequence[Any], idname: str) -> bool:
@@ -107,11 +120,14 @@ def multigetattr(obj, *attrs: str) -> Any:
     parts = ".".join(attrs).split(".")
     for p in parts:
         obj = getattr(obj, p)
-    obj()
+    return obj
 
 def call_op(video, *idnames: str) -> None:
     multigetattr(video.ops, *idnames)()
 
+
+def _get_caches() -> List[Type[Cache]]:
+    return _caches
 
 def _get_pgroups() -> List[Type[PropertyGroup]]:
     return _pgroups

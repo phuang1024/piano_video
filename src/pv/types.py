@@ -120,7 +120,7 @@ class Cache:
         self._state = os.path.join(self.path, ".state.json")
         self._frames = []
 
-        self._check_state()
+        os.makedirs(self.path, exist_ok=True)
 
     def fp(self, name: str, mode: str) -> IO:
         """
@@ -147,18 +147,18 @@ class Cache:
     def _check_state(self):
         from .utils import multigetattr
 
-        if not os.path.isfile(self._state):
-            info = {
-                "props": {name: multigetattr(self._video.props, name) for name in self.depends},
-            }
-            with open(self._state, "w") as fp:
-                json.dump(info, fp, indent=4)
+        if os.path.isfile(self._state):
+            with open(self._state, "r") as fp:
+                props = json.load(fp)["props"]
+            for attr in self.depends:
+                if multigetattr(self._video.props, attr) != props[attr]:
+                    self._frames = []
 
-        with open(self._state, "r") as fp:
-            props = json.load(fp)["props"]
-        for attr in self.depends:
-            if multigetattr(self._video.props, attr) != props[attr]:
-                self._frames = []
+        info = {
+            "props": {name: multigetattr(self._video.props, name) for name in self.depends},
+        }
+        with open(self._state, "w") as fp:
+            json.dump(info, fp, indent=4)
 
 
 class Operator:
