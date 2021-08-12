@@ -17,6 +17,7 @@ Piano Video
     enduser/install
     enduser/support
     enduser/env_vars
+    enduser/api
 
 .. toctree::
     :maxdepth: 1
@@ -25,7 +26,6 @@ Piano Video
 
     dev/intro.rst
     dev/build.rst
-    dev/file_tree.rst
     dev/gui.rst
     dev/api.rst
     dev/kernel.rst

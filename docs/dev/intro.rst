@@ -6,32 +6,52 @@ Thanks for considering contributing to Piano Video!
 As outlined in the `plan <../blog/plan.html>`__, Piano Video comes in three
 sections:
 
-GUI
----
+* `GUI <gui.html>`__
+* `API <api.html>`__
+* `Kernel <kernel.html>`__
 
-This is the interface for most end users. Currently, it does nothing, and I
-will likely not accept contributions to this area for now.
+Documentation on the sections can be found in their respective pages.
 
-It will probably be written in Python, with GUI libraries like Tkinter or Pygame.
 
-API
----
+General
+-------
 
-This is a pure Python library that doesn't do much computationally, but must
-be easy and intuitive for add-on developers.
+Most typo or conspicuous bug fixes are accepted. If you propose an incompatible API
+change or a major feature, please discuss with me first.
 
-The API cannot be changed without prior notice in the docs, so if you intend to
-improve this area, you will most likely be doing docstrings, type hinting, etc.
+Do not make patches for Windows or MacOS support. I will not support
+`malware <https://www.gnu.org/proprietary/proprietary.html>`__ in this project.
 
-Kernel
-------
+If you would like Windows or MacOS support, please fork the project and edit your own
+copy.
 
-This is the core rendering engine. The kernel can be further split into two parts:
-Rendering System and Built-in Add-ons.
 
-The rendering system is relatively simple. All it does is call the rendering functions
-in order and put together the final video. This is written in Python.
+File Structure
+--------------
 
-The built-in add-ons are complex. They are the actual rendering functions. They
-use Python to access the API, but may optionally call C++ libraries for a speed
-improvement.
+The Piano Video repository contains these folders:
+
+.. list-table:: File Structure
+    :widths: 25 75
+    :header-rows: 1
+
+    * - Path
+      - Description
+    * - ``/.github``
+      - GitHub workflows for testing.
+    * - ``/build``
+      - Build scripts for ``deb`` and ``whl``.
+    * - ``/docs``
+      - Documentation (mainly Sphinx).
+    * - ``/examples``
+      - Example MIDI and videos. They are licensed as CC0.
+    * - ``/src``
+      - Source code. Contains a few subdirectories.
+    * - ``/src/pv``
+      - `API <api.html>`__ source code.
+    * - ``/src/pvgui``
+      - `GUI <gui.html>`__ source code.
+    * - ``/src/pvkernel``
+      - `Kernel <kernel.html>`__ source code.
+    * - ``/tests``
+      - Testing scripts.

@@ -1,7 +1,9 @@
 GUI
 ===
 
-The GUI is the tool most end users will use. It provides a graphical interface
-to the API.
+This is the interface for most end users. Currently, it does nothing, and I
+will likely not accept contributions to this area for now.
 
-Still in development.
+It will probably be written in Python, with GUI libraries like Tkinter or Pygame.
+
+The GUI source can be found in ``/src/gui``
