@@ -111,7 +111,7 @@ double key_pos(CD start, CD end, const UCH key) {
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value) {
+void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value) {
     /*
     Sets pixel and channel of image to a value.
 
@@ -128,7 +128,7 @@ void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH c
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH r, const UCH g, const UCH b) {
+void img_setc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b) {
     /*
     Sets pixel to color. Equivalent to three calls of img_set()
 
@@ -146,7 +146,7 @@ void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH 
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value) {
+void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value) {
     /*
     Gets value at pixel and channel and modifies "value" param.
 
@@ -163,7 +163,7 @@ void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH c
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color) {
+void img_getc(UCH* img, const int width, const int x, const int y, UCH* color) {
     /*
     Gets value at pixel and modifies "value" param. Equivalent to 3 calls of img_get()
 

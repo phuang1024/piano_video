@@ -50,3 +50,16 @@ class SMOKE_OT_Apply(pv.Operator):
     idname = "apply"
     label = "Apply Smoke"
     description = "Render smoke on the render image."
+
+    def execute(self, video: Video) -> None:
+        return super().execute(video)
+
+
+classes = (
+    SMOKE_PT_Props,
+    SMOKE_OT_Apply,
+)
+
+def register():
+    for cls in classes:
+        pv.utils.register_class(cls)

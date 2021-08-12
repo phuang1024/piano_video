@@ -28,7 +28,6 @@ using std::min;
 using std::max;
 
 typedef  unsigned char       UCH;
-typedef  unsigned int        UINT;
 typedef  long long           LL;
 typedef  unsigned long long  ULL;
 typedef  const double        CD;
@@ -80,22 +79,22 @@ double key_pos(CD start, CD end, const UCH key);
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_set(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, const UCH value);
+void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value);
 
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_setc(UCH* img, const UINT width, const UINT x, const UINT y, const UCH r, const UCH g, const UCH b);
+void img_setc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b);
 
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_get(UCH* img, const UINT width, const UINT x, const UINT y, const UCH channel, UCH* value);
+void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value);
 
 #ifndef __GNUC__
 __host__ __device__
 #endif
-void img_getc(UCH* img, const UINT width, const UINT x, const UINT y, UCH* color);
+void img_getc(UCH* img, const int width, const int x, const int y, UCH* color);
 
 #ifndef __GNUC__
 __host__ __device__

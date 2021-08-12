@@ -22,7 +22,7 @@
 #include "../../utils.hpp"
 
 
-extern "C" void glare(UCH* img, const UINT width, const UINT height, CD intensity, CD radius,
+extern "C" void glare(UCH* img, const int width, const int height, CD intensity, CD radius,
         const UCH* notes, const UCH num_notes, CD x_start, CD x_end) {
     /*
     Add the glare.
@@ -39,14 +39,14 @@ extern "C" void glare(UCH* img, const UINT width, const UINT height, CD intensit
 
     CD mid = height / 2.0;
     const UCH white[3] = {255, 255, 255};
-    const UINT border = 25;
+    const int border = 25;
 
     for (UCH i = 0; i < num_notes; i++) {
         const UCH note = notes[i];
         CD x_pos = key_pos(x_start, x_end, note);
 
-        for (UINT x = x_pos-radius-border; x < x_pos+radius+border; x++) {
-            for (UINT y = mid-radius-border; y < mid+radius+border; y++) {
+        for (int x = x_pos-radius-border; x < x_pos+radius+border; x++) {
+            for (int y = mid-radius-border; y < mid+radius+border; y++) {
                 CD dx = abs(x-x_pos), dy = abs(y-mid);
                 CD dist = pythag(x-x_pos, y-mid);
                 CD dist_fac = dist / radius;

@@ -24,7 +24,7 @@ using std::min;
 using std::max;
 
 
-extern "C" void draw_line(UCH* img, const UINT width, const UINT height, CD x1, CD y1, CD x2, CD y2,
+extern "C" void draw_line(UCH* img, const int width, const int height, CD x1, CD y1, CD x2, CD y2,
         CD thick, CD r, CD g, CD b, CD a) {
     /*
     TODO buggy
@@ -63,7 +63,7 @@ extern "C" void draw_line(UCH* img, const UINT width, const UINT height, CD x1, 
     }
 }
 
-extern "C" void draw_circle(UCH* img, const UINT width, const UINT height, CD cx, CD cy,
+extern "C" void draw_circle(UCH* img, const int width, const int height, CD cx, CD cy,
         CD rad, CD border, CD r, CD g, CD b, CD a) {
     /*
     Draws a circle.
@@ -101,7 +101,7 @@ extern "C" void draw_circle(UCH* img, const UINT width, const UINT height, CD cx
     }
 }
 
-extern "C" void draw_rect(UCH* img, const UINT width, const UINT height, CD dx, CD dy, CD dw, CD dh,
+extern "C" void draw_rect(UCH* img, const int width, const int height, CD dx, CD dy, CD dw, CD dh,
         CD border, CD border_rad, CD tl_rad, CD tr_rad, CD bl_rad, CD br_rad, CD r, CD g, CD b, CD a) {
     /*
     Draws a rectangle.
