@@ -21,11 +21,10 @@ CXX = g++
 CUDA = nvcc
 
 CXXFLAGS = -Wall -O3 -c -fPIC
-CXXFILES = utils.o random.o draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o \
-	addons/smoke/smoke.o
+CXXFILES = utils.o random.o draw/draw.o addons/glare/glare.o addons/smoke/smoke.o
 
 CUFLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-CUFILES = utils_cu.o addons/imgfilter/cublur.o
+CUFILES = utils_cu.o
 
 .PHONY: clean cpp
 
@@ -46,7 +45,3 @@ clean:  # for some reason needs to do it twice
 
 utils_cu.o:
 	$(CUDA) $(CUFLAGS) utils.cpp -o utils_cu.o
-
-addons/imgfilter/cublur.o:
-	cd ./addons/imgfilter; \
-	$(CUDA) $(CUFLAGS) cublur.cu
