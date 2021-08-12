@@ -20,6 +20,8 @@
 #define  SIZE_INT  sizeof(int)
 #define  SIZE_FLT  sizeof(float)
 
+#define  AIR_RESIST  0.95
+
 #include <iostream>
 #include <cstring>
 #include <fstream>
@@ -108,12 +110,15 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
     }
 
     const int size = ptcls.size();
+    CD air_resist = std::pow(AIR_RESIST, 1/fps);
 
     // Simulate motion
     for (int i = 0; i < size; i++) {
         Particle& ptcl = ptcls[i];
         ptcl.x += ptcl.vx;
         ptcl.y += ptcl.vy;
+        ptcl.vx *= air_resist;
+        ptcl.vy *= air_resist;
     }
 
     // Write to output
@@ -142,11 +147,23 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
     for (int i = 0; i < size; i++) {
         const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
 
-        if ((0<=x && x<width) && (0<=y && y<height)) {
-            UCH original[3], bright[3];
+        if (img_bounds(width, height, x, y)) {
+            UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
-            img_mix(bright, original, white, intensity/10.0);
-            img_setc(img, width, x, y, bright);
+            img_mix(modified, original, white, intensity/10.0);
+            img_setc(img, width, x, y, modified);
+
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    const int nx = x+dx, ny = y+dy;
+                    if (img_bounds(width, height, nx, ny)) {
+                        UCH original[3], modified[3];
+                        img_getc(img, width, nx, ny, original);
+                        img_mix(modified, original, white, intensity/30.0);
+                        img_setc(img, width, nx, ny, modified);
+                    }
+                }
+            }
         }
     }
 }

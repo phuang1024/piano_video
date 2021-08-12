@@ -90,6 +90,10 @@ MODS double key_pos(CD start, CD end, const UCH key) {
 }
 
 
+MODS bool img_bounds(const int width, const int height, const int x, const int y) {
+    return ((0<=x && x<width) && (0<=y && y<height));
+}
+
 MODS void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value) {
     /*
     Sets pixel and channel of image to a value.

@@ -43,13 +43,13 @@ class SMOKE_PT_Props(pv.PropertyGroup):
     intensity = FloatProp(
         name="Intensity",
         description="Smoke opacity multiplier.",
-        default=1,
+        default=0.4,
     )
 
     pps = FloatProp(
         name="Particles/Second",
         description="Amount of smoke particles to emit per second per note.",
-        default=3000,
+        default=6000,
     )
 
 
@@ -99,13 +99,13 @@ def simulate(video: Video):
     key_ends = []
     for note in video.data.midi.notes_playing:
         x, width = video.data.core.key_pos[note]
-        key_starts.append(x)
-        key_ends.append(x+width)
+        key_starts.append(x+5)
+        key_ends.append(x+width-5)
     key_starts = np.array(key_starts, dtype=np.float64)
     key_ends = np.array(key_ends, dtype=np.float64)
 
     sim_func(video.fps, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
-        -3, 3, -75, -50, in_path, out_path)
+        -10, 10, -75, -50, in_path, out_path)
 
 
 def render(video: Video):

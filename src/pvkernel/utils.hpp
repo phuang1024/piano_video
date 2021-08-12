@@ -50,6 +50,7 @@ MODS double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max);
 MODS bool is_white(const UCH key);
 MODS double key_pos(CD start, CD end, const UCH key);
 
+MODS bool img_bounds(const int width, const int height, const int x, const int y);
 MODS void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value);
 MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b);
 MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH* color);
