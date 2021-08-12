@@ -94,11 +94,7 @@ MODS void img_set(UCH* img, const int width, const int x, const int y, const UCH
     /*
     Sets pixel and channel of image to a value.
 
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
-    :param channel: Channel number, corresponding to B, G, R.
+    :param channel: Channel number, corresponding to R, G, B.
     :param value: Number from 0 to 255.
     */
     img[3*(y*width + x) + channel] = value;
@@ -108,10 +104,6 @@ MODS void img_setc(UCH* img, const int width, const int x, const int y, const UC
     /*
     Sets pixel to color. Equivalent to three calls of img_set()
 
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
     :param r, g, b: R, G, B values.
     */
     img_set(img, width, x, y, 0, r);
@@ -119,15 +111,22 @@ MODS void img_setc(UCH* img, const int width, const int x, const int y, const UC
     img_set(img, width, x, y, 2, b);
 }
 
+MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH* color) {
+    /*
+    Sets pixel to color. Equivalent to three calls of img_set()
+
+    :param r, g, b: R, G, B values.
+    */
+    img_set(img, width, x, y, 0, color[0]);
+    img_set(img, width, x, y, 1, color[1]);
+    img_set(img, width, x, y, 2, color[2]);
+}
+
 MODS void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value) {
     /*
     Gets value at pixel and channel and modifies "value" param.
 
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
-    :param channel: Channel number, corresponding to B, G, R.
+    :param channel: Channel number, corresponding to R, G, B.
     :param value: Value pointer. Will be modified to be the obtained value.
     */
     value[0] = img[3*(y*width + x) + channel];
@@ -137,10 +136,6 @@ MODS void img_getc(UCH* img, const int width, const int x, const int y, UCH* col
     /*
     Gets value at pixel and modifies "value" param. Equivalent to 3 calls of img_get()
 
-    :param img: Image.
-    :param width: Image width.
-    :param x: X coordinate.
-    :param y: Y coordinate.
     :param value: Value pointer. Will be modified to be the obtained value.
     */
     img_get(img, width, x, y, 0, color+0);

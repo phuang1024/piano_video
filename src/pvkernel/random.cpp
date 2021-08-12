@@ -30,18 +30,18 @@
 
 
 namespace Random {
-    void seed() {
+    MODS void seed() {
         srand(std::time(nullptr));
     }
 
 
-    int randint(const int min, const int max) {
+    MODS int randint(const int min, const int max) {
         /* Return int NOT including max */
         return min + (rand() % (max-min));
     }
 
-    double uniform(const double min, const double max) {
-        const double num = (double)rand()/1e9 + rand();
+    MODS double uniform(const double min, const double max) {
+        const double num = ((double)rand())/1e9 + (double)rand();
         return min + (fmod(num, max-min));
     }
 }

@@ -36,9 +36,40 @@ struct Particle {
 };
 
 
+void read_cache(std::vector<Particle>& ptcls, std::ifstream& fp) {
+    if (!fp.good()) {
+        std::cerr << "WARNING: smoke.cpp, read_cache: Cannot read file." << std::endl;
+        return;
+    }
+    int count;
+    fp.read((char*)(&count), SIZE_INT);
+
+    for (int i = 0; i < count; i++) {
+        Particle ptcl;
+        fp.read((char*)(&ptcl), sizeof(Particle));
+        ptcls.push_back(ptcl);
+    }
+}
+
+void write_cache(std::vector<Particle>& ptcls, std::ofstream& fp) {
+    if (!fp.good()) {
+        std::cerr << "WARNING: smoke.cpp, write_cache: Cannot write file." << std::endl;
+        return;
+    }
+
+    const int size = ptcls.size();
+
+    fp.write((char*)(&size), SIZE_INT);
+    for (int i = 0; i < size; i++) {
+        const Particle& ptcl = ptcls[i];
+        fp.write((char*)(&ptcl), sizeof(Particle));
+    }
+}
+
+
 extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* const x_starts,
         CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max, CD y_vel_min, CD y_vel_max,
-        const char* ip, const char* op) {
+        const char* const ip, const char* const op) {
     /*
     Simulate one frame of smoke activity.
 
@@ -61,17 +92,7 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
     // Read from input file
     if (strlen(ip) > 0) {
         std::ifstream fin(ip);
-        int count;
-        fin.read((char*)(&count), SIZE_INT);
-
-        for (int i = 0; i < count; i++) {
-            Particle ptcl;
-            fin.read((char*)(&ptcl.x), SIZE_FLT);
-            fin.read((char*)(&ptcl.y), SIZE_FLT);
-            fin.read((char*)(&ptcl.vx), SIZE_FLT);
-            fin.read((char*)(&ptcl.vy), SIZE_FLT);
-            ptcls.push_back(ptcl);
-        }
+        read_cache(ptcls, fin);
     }
 
     // Add new particles
@@ -81,13 +102,12 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
             ptcl.x = Random::uniform(x_starts[i], x_ends[i]);
             ptcl.y = y_start;
             ptcl.vx = Random::uniform(vx_min, vx_max);
-            ptcl.vx = Random::uniform(vy_min, vy_max);
+            ptcl.vy = Random::uniform(vy_min, vy_max);
             ptcls.push_back(ptcl);
         }
     }
 
     const int size = ptcls.size();
-    std::cout << "SIZE: " << size << std::endl;
 
     // Simulate motion
     for (int i = 0; i < size; i++) {
@@ -98,12 +118,35 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
 
     // Write to output
     std::ofstream fout(op);
-    fout.write((char*)(&size), SIZE_INT);
+    write_cache(ptcls, fout);
+}
+
+
+extern "C" void smoke_render(UCH* img, const int width, const int height,
+        const char* const path, CD intensity) {
+    /*
+    Render smoke on the image.
+
+    :param path: Input cache path.
+    :param intensity: Intensity multiplier.
+    */
+
+    std::ifstream fp(path);
+    std::vector<Particle> ptcls;
+    ptcls.reserve((int)1e6);
+    read_cache(ptcls, fp);
+
+    const UCH white[3] = {255, 255, 255};
+    const int size = ptcls.size();
+
     for (int i = 0; i < size; i++) {
-        const Particle& ptcl = ptcls[i];
-        fout.write((char*)(&ptcl.x), SIZE_FLT);
-        fout.write((char*)(&ptcl.y), SIZE_FLT);
-        fout.write((char*)(&ptcl.vx), SIZE_FLT);
-        fout.write((char*)(&ptcl.vy), SIZE_FLT);
+        const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
+
+        if ((0<=x && x<width) && (0<=y && y<height)) {
+            UCH original[3], bright[3];
+            img_getc(img, width, x, y, original);
+            img_mix(bright, original, white, intensity/10.0);
+            img_setc(img, width, x, y, bright);
+        }
     }
 }

@@ -52,6 +52,7 @@ MODS double key_pos(CD start, CD end, const UCH key);
 
 MODS void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value);
 MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b);
+MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH* color);
 MODS void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value);
 MODS void img_getc(UCH* img, const int width, const int x, const int y, UCH* color);
 MODS void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac);

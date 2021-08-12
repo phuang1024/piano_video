@@ -27,8 +27,8 @@
 
 
 namespace Random {
-    void seed();
+    MODS void seed();
 
-    int randint(const int min, const int max);
-    double uniform(const double min, const double max);
+    MODS int randint(const int min, const int max);
+    MODS double uniform(const double min, const double max);
 }
