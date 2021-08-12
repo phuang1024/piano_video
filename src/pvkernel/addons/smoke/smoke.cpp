@@ -87,6 +87,7 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
     }
 
     const int size = ptcls.size();
+    std::cout << "SIZE: " << size << std::endl;
 
     // Simulate motion
     for (int i = 0; i < size; i++) {

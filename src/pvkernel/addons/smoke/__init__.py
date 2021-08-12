@@ -46,8 +46,8 @@ class SMOKE_PT_Props(pv.PropertyGroup):
 
     pps = FloatProp(
         name="Particles/Second",
-        description="Amount of smoke particles to emit per second.",
-        default=1000,
+        description="Amount of smoke particles to emit per second per note.",
+        default=3000,
     )
 
 
@@ -61,11 +61,13 @@ class SMOKE_OT_Apply(pv.Operator):
         cache: pv.Cache = video.caches.smoke
         frame = video.frame
 
-        in_path = cache.join(str(frame-1)) \
-            if frame>0 and cache.frame_exists(frame-1) else ""
-        out_path = cache.join(str(frame))
-        in_path = np.array([x for x in in_path.encode()], dtype=np.int8)
-        out_path = np.array([x for x in out_path.encode()], dtype=np.int8)
+        in_path = cache.frame_path(frame-1) if cache.frame_exists(frame-1) else ""
+        out_path = cache.frame_path(frame)
+        in_path = in_path.encode() + b"\x00"
+        out_path = out_path.encode() + b"\x00"
+        in_path = np.array([x for x in in_path], dtype=np.int8)
+        out_path = np.array([x for x in out_path], dtype=np.int8)
+        cache.fp_frame("w").close()
 
         ppf = int(video.props.smoke.pps / video.fps)
 

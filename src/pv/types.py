@@ -126,6 +126,11 @@ class Cache:
         """Join with cache base path."""
         return os.path.join(self.path, *args)
 
+    def frame_path(self, frame: float = ...) -> str:
+        """Abspath of frame. Defaults to video frame."""
+        frame = self._video.frame if frame == ... else frame
+        return os.path.join(self.path, str(frame))
+
     def fp(self, name: str, mode: str) -> IO:
         """Get the file pointer for a file name."""
         return open(os.path.join(self.path, name), mode)
