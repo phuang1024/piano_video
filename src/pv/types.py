@@ -20,13 +20,16 @@
 __all__ = (
     "PropertyGroup",
     "DataGroup",
+    "Cache",
     "Operator",
     "OpGroup",
     "Job",
 )
 
-from typing import List, TYPE_CHECKING, Any, Dict, Union
-from .props import BoolProp, Property
+import os
+import json
+from typing import IO, Any, Dict, List, Sequence, TYPE_CHECKING
+from .props import Property
 
 Video = None
 if TYPE_CHECKING:
@@ -45,7 +48,7 @@ class PropertyGroup:
 
     .. code-block:: py
 
-        class MyProps(pv.types.PropertyGroup):
+        class MyProps(pv.PropertyGroup):
             prop1 = pv.props.BoolProp(name="hi")
     """
     idname: str
@@ -93,6 +96,69 @@ class DataGroup:
         if not hasattr(self, "items"):
             object.__setattr__(self, "items", {})
         object.__getattribute__(self, "items")[name] = value
+
+class Cache:
+    """
+    Cache managing for a video.
+
+    You can read and write specific file names with ``cache.fp(name, mode)``,
+    or automatically set the name to the current frame with ``cache.fp_frame``.
+
+    To add a cache, inherit and define:
+
+    * ``idname``: Cache idname. Will also be the cache folder name.
+    * ``depends``: Tuple of property idnames this cache depends on.
+      If any of them change, the cache will be cleared. Default ``()``.
+    """
+    idname: str
+    depends: Sequence[str] = ()
+
+    def __init__(self, video: Video):
+        self.path = os.path.join(video.cache, self.idname)
+
+        self._video = video
+        self._state = os.path.join(self.path, ".state.json")
+        self._frames = []
+
+        self._check_state()
+
+    def fp(self, name: str, mode: str) -> IO:
+        """
+        Get the file pointer for a file name.
+        """
+        return open(os.path.join(self.path, name), mode)
+
+    def fp_frame(self, mode: str, check_exist: bool = True) -> IO:
+        """
+        Get the file pointer for the current frame.
+        Internal frame list will be updated.
+        """
+        self._check_state()
+
+        frame = self._video.frame
+        if mode.startswith("w") and frame not in self._frames:
+            self._frames.append(frame)
+        elif mode.startswith("r") and frame not in self._frames and check_exist:
+            raise ValueError(f"Frame {frame} does not exist in cache.",
+                "Pass argument check_exist=False to override.")
+
+        return open(os.path.join(self.path, str(frame)), mode)
+
+    def _check_state(self):
+        from .utils import multigetattr
+
+        if not os.path.isfile(self._state):
+            info = {
+                "props": {name: multigetattr(self._video.props, name) for name in self.depends},
+            }
+            with open(self._state, "w") as fp:
+                json.dump(info, fp, indent=4)
+
+        with open(self._state, "r") as fp:
+            props = json.load(fp)["props"]
+        for attr in self.depends:
+            if multigetattr(self._video.props, attr) != props[attr]:
+                self._frames = []
 
 
 class Operator:

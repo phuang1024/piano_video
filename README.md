@@ -1,6 +1,6 @@
 # Piano Video
 
-![](https://shields.io/github/license/phuang1024/piano_video)
+![](https://img.shields.io/badge/license-GPLv3-important)
 ![](https://shields.io/github/issues/phuang1024/piano_video)
 ![](https://shields.io/github/issues-pr/phuang1024/piano_video)
 ![](https://github.com/phuang1024/piano_video/workflows/Tests/badge.svg)

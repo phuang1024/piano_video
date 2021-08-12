@@ -26,12 +26,11 @@ import pv
 from pv.props import FloatProp
 from pvkernel import Video
 from pvkernel.lib import *
-from pvkernel.utils import CUDA
 
 LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64)
 
 
-class GLARE_PT_Props(pv.types.PropertyGroup):
+class GLARE_PT_Props(pv.PropertyGroup):
     idname = "glare"
 
     intensity = FloatProp(
@@ -47,7 +46,7 @@ class GLARE_PT_Props(pv.types.PropertyGroup):
     )
 
 
-class GLARE_OT_Apply(pv.types.Operator):
+class GLARE_OT_Apply(pv.Operator):
     group = "glare"
     idname = "apply"
     label = "Apply Glare"
@@ -66,7 +65,7 @@ class GLARE_OT_Apply(pv.types.Operator):
             notes, notes.shape[0], start, end)
 
 
-class GLARE_JT_Job(pv.types.Job):
+class GLARE_JT_Job(pv.Job):
     idname = "glare"
     ops = ("glare.apply",)
 

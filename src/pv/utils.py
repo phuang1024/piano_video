@@ -98,12 +98,19 @@ def get(objs: Sequence[Any], idname: str) -> Any:
     return objs[get_index(objs, idname)]
 
 
-def call_op(video, *idnames: str) -> None:
-    parts = ".".join(idnames).split(".")
-    obj = video.ops
+def multigetattr(obj, *attrs: str) -> Any:
+    """
+    getattr but can handle multiple attrs.
+
+    e.g. multigetattr(asdf, "asdf.bsdf.csdf", "dsdf.esdf")
+    """
+    parts = ".".join(attrs).split(".")
     for p in parts:
         obj = getattr(obj, p)
     obj()
+
+def call_op(video, *idnames: str) -> None:
+    multigetattr(video.ops, *idnames)()
 
 
 def _get_pgroups() -> List[Type[PropertyGroup]]:

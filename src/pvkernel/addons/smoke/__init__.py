@@ -18,44 +18,35 @@
 #
 
 """
-Core properties and operators.
-
-Will register:
-
-* Property group ``keyboard``
+Smoke effects.
 """
 
+import numpy as np
 import pv
 from pv.props import FloatProp
 from pvkernel import Video
+from pvkernel.lib import *
+from pvkernel.utils import CUDA
 
 
-class BUILTIN_PT_Piano(pv.PropertyGroup):
-    idname = "keyboard"
+class SMOKE_PT_Props(pv.PropertyGroup):
+    idname = "smoke"
 
-    left_offset = FloatProp(
-        name="Left Offset",
-        description="Piano left side pixel offset.",
-        default=0,
+    intensity = FloatProp(
+        name="Intensity",
+        description="Smoke opacity multiplier.",
+        default=1,
     )
 
-    right_offset = FloatProp(
-        name="Right Offset",
-        description="Piano right side pixel offset",
-        default=0,
-    )
-
-    black_width_fac = FloatProp(
-        name="Black Width Factor",
-        description="Black key width factor respective to white key.",
-        default=0.55,
+    pps = FloatProp(
+        name="Particles/Second",
+        description="Amount of smoke particles to emit per second.",
+        default=1000,
     )
 
 
-classes = (
-    BUILTIN_PT_Piano,
-)
-
-def register():
-    for cls in classes:
-        pv.utils.register_class(cls)
+class SMOKE_OT_Apply(pv.Operator):
+    group = "smoke"
+    idname = "apply"
+    label = "Apply Smoke"
+    description = "Render smoke on the render image."

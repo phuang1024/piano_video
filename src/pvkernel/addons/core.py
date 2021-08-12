@@ -33,7 +33,7 @@ from pv.props import FloatProp
 from pvkernel import Video
 
 
-class BUILTIN_PT_Core(pv.types.PropertyGroup):
+class BUILTIN_PT_Core(pv.PropertyGroup):
     idname = "core"
 
     pause_start = FloatProp(
@@ -49,11 +49,11 @@ class BUILTIN_PT_Core(pv.types.PropertyGroup):
     )
 
 
-class BUILTIN_DT_Core(pv.types.DataGroup):
+class BUILTIN_DT_Core(pv.DataGroup):
     idname = "core"
 
 
-class BUILTIN_OT_RunningTime(pv.types.Operator):
+class BUILTIN_OT_RunningTime(pv.Operator):
     group = "core"
     idname = "running_time"
     label = "Running Time"
@@ -68,7 +68,7 @@ class BUILTIN_OT_RunningTime(pv.types.Operator):
         video.data.core.running_time = int(total)
 
 
-class BUILTIN_OT_KeyPos(pv.types.Operator):
+class BUILTIN_OT_KeyPos(pv.Operator):
     group = "core"
     idname = "key_pos"
     label = "Key Positions"
@@ -102,7 +102,7 @@ class BUILTIN_OT_KeyPos(pv.types.Operator):
         assert None not in video.data.core.key_pos, "Error calculating key position."
 
 
-class BUILTIN_JT_Core(pv.types.Job):
+class BUILTIN_JT_Core(pv.Job):
     idname = "core"
     ops = ("core.running_time", "core.key_pos")
 

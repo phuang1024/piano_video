@@ -33,12 +33,14 @@ The API has a few classes for storing and accessing data.
 
 .. autoclass:: pv.DataGroup
 
+.. autoclass:: pv.Cache
+
 Operators
 ---------
 
 Operators are functions that operate on a video and can be displayed in the GUI.
 
-.. autoclass:: pv.types.Operator
+.. autoclass:: pv.Operator
 
 Jobs
 ----

@@ -35,7 +35,7 @@ from pvkernel import draw
 from utils import block_pos, first_note
 
 
-class BUILTIN_PT_Blocks(pv.types.PropertyGroup):
+class BUILTIN_PT_Blocks(pv.PropertyGroup):
     idname = "blocks"
 
     block_speed = FloatProp(
@@ -45,7 +45,7 @@ class BUILTIN_PT_Blocks(pv.types.PropertyGroup):
     )
 
 
-class BUILTIN_OT_BlocksRender(pv.types.Operator):
+class BUILTIN_OT_BlocksRender(pv.Operator):
     group = "blocks"
     idname = "render"
     label = "Render Blocks"
@@ -64,7 +64,7 @@ class BUILTIN_OT_BlocksRender(pv.types.Operator):
                 draw_block(video.render_img, (x, top, width, bottom-top))
 
 
-class BUILTIN_JT_Blocks(pv.types.Job):
+class BUILTIN_JT_Blocks(pv.Job):
     idname = "blocks"
     ops = ("blocks.render",)
 

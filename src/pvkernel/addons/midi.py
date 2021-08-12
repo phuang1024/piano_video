@@ -83,7 +83,7 @@ class Note:
         self.velocity = velocity
 
 
-class MIDI_PT_Midi(pv.types.PropertyGroup):
+class MIDI_PT_Midi(pv.PropertyGroup):
     idname = "midi"
 
     paths = StrProp(
@@ -98,11 +98,11 @@ class MIDI_PT_Midi(pv.types.PropertyGroup):
     )
 
 
-class MIDI_DT_Midi(pv.types.DataGroup):
+class MIDI_DT_Midi(pv.DataGroup):
     idname = "midi"
 
 
-class MIDI_OT_Parse(pv.types.Operator):
+class MIDI_OT_Parse(pv.Operator):
     group = "midi"
     idname = "parse"
     label = "Parse MIDI"
@@ -140,7 +140,7 @@ class MIDI_OT_Parse(pv.types.Operator):
         video.data.midi.notes = notes
 
 
-class MIDI_OT_NotesPlaying(pv.types.Operator):
+class MIDI_OT_NotesPlaying(pv.Operator):
     group = "midi"
     idname = "notes_playing"
     label = "Notes Playing"
@@ -157,12 +157,12 @@ class MIDI_OT_NotesPlaying(pv.types.Operator):
                 video.data.midi.notes_playing.append(note.note)
 
 
-class MIDI_JT_Init(pv.types.Job):
+class MIDI_JT_Init(pv.Job):
     idname = "midi"
     ops = ("midi.parse",)
 
 
-class MIDI_JT_FrameInit(pv.types.Job):
+class MIDI_JT_FrameInit(pv.Job):
     idname = "midi_frame_init"
     ops = ("midi.notes_playing",)
 

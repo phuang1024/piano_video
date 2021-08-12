@@ -21,7 +21,7 @@ import pv
 from pvkernel import Video
 
 
-class IMGFILTER_OT_Blur(pv.types.Operator):
+class IMGFILTER_OT_Blur(pv.Operator):
     group = "imgfilter"
     idname = "blur"
     label = "Blur"
