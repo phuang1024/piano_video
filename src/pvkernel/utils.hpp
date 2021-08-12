@@ -19,6 +19,12 @@
 
 #pragma once
 
+#ifdef __GNUC__
+    #define  MODS
+#else
+    #define  MODS  __host__ __device__
+#endif
+
 #define  PI  3.14159265
 
 #include <cmath>
@@ -33,70 +39,19 @@ typedef  unsigned long long  ULL;
 typedef  const double        CD;
 
 
-#ifndef __GNUC__
-__host__ __device__
-#endif
-double radians(CD deg);
+MODS double radians(CD deg);
+MODS double degrees(CD rad);
+MODS double pythag(CD dx, CD dy);
 
-#ifndef __GNUC__
-__host__ __device__
-#endif
-double degrees(CD rad);
+MODS int ibounds(const int v, const int vmin = 0, const int vmax = 1);
+MODS double dbounds(CD v, CD vmin = 0, CD vmax = 1);
+MODS double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max);
 
-#ifndef __GNUC__
-__host__ __device__
-#endif
-double pythag(CD dx, CD dy);
+MODS bool is_white(const UCH key);
+MODS double key_pos(CD start, CD end, const UCH key);
 
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-int ibounds(const int v, const int vmin = 0, const int vmax = 1);
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-double dbounds(CD v, CD vmin = 0, CD vmax = 1);
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max);
-
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-bool is_white(const UCH key);
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-double key_pos(CD start, CD end, const UCH key);
-
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value);
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-void img_setc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b);
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value);
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-void img_getc(UCH* img, const int width, const int x, const int y, UCH* color);
-
-#ifndef __GNUC__
-__host__ __device__
-#endif
-void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac);
+MODS void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value);
+MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b);
+MODS void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value);
+MODS void img_getc(UCH* img, const int width, const int x, const int y, UCH* color);
+MODS void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac);

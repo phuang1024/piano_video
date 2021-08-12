@@ -22,7 +22,8 @@ CUDA = nvcc
 
 C_FLAGS = -Wall -O3 -c -fPIC
 CU_FLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-C_FILES = utils.o draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o
+C_FILES = utils.o draw/draw.o addons/imgfilter/cppblur.o addons/glare/glare.o \
+	addons/smoke/smoke.o
 CU_FILES = utils_cu.o addons/imgfilter/cublur.o
 
 .PHONY: clean cpp
@@ -56,6 +57,10 @@ addons/imgfilter/cppblur.o:
 addons/glare/glare.o:
 	cd ./addons/glare; \
 	$(CXX) $(C_FLAGS) glare.cpp
+
+addons/smoke/smoke.o:
+	cd ./addons/smoke; \
+	$(CXX) $(C_FLAGS) smoke.cpp
 
 
 # Cuda files
