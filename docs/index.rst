@@ -39,6 +39,7 @@ Piano Video
     blog/render_jobs.rst
     blog/cuda.rst
     blog/smoke.rst
+    blog/particles.rst
 
 A free piano visualizer.
 
