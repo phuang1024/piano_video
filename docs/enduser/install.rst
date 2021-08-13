@@ -15,11 +15,16 @@ section below.
 
 To install the Debian package:
 
-``sudo dpkg -i pvid_x.x.x.deb``
+.. code-block:: bash
+
+    sudo dpkg -i pvid_x.x.x.deb
 
 To install the wheel files:
 
-``pip install pv_...whl``
+.. code-block:: bash
+
+    pip install pv_...whl
+    pip install pvkernel_...whl
 
 File names vary.
 
@@ -34,7 +39,7 @@ Windows and Mac
 ---------------
 
 If you are using Windows or MacOS, switch to GNU/Linux and
-`give yourself some freedom <https://www.youtube.com/watch?v=Ag1AKIl_2GM>`__
+`give yourself some freedom <https://gnu.org/philosophy/free-sw.html>`__
 
 Piano Video is developed and tested on GNU/Linux and may or may not work on other
 operating systems.
