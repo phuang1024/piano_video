@@ -17,8 +17,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <vector>
 #include "smoke.hpp"
+#include "../../utils.hpp"
 
 
-__global__ void smoke_sim_diff(std::vector<SmokePtcl>& ptcls);
+__global__ void smoke_sim_diff(SmokePtcl* ptcls, const int size, CD strength);

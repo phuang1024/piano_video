@@ -19,10 +19,16 @@
 
 #pragma once
 
-#ifdef __GNUC__
-    #define  MODS
-#else
+#ifdef __CUDACC__
     #define  MODS  __host__ __device__
+    #define  CPP  false
+
+    // Typical GPU has 1500 cores so going above won't help
+    #define  CU_BLOCK_SIZE  256
+    #define  CU_BLOCK_CNT   6
+#else
+    #define  MODS
+    #define  CPP  true
 #endif
 
 #define  PI  3.14159265

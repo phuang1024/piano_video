@@ -28,11 +28,16 @@ from pvkernel import Video
 from pvkernel.lib import *
 from pvkernel.utils import CUDA
 
+sim_args = (F64, I32, I32, AR_DBL, AR_DBL, *[F64 for _ in range(5)], AR_CH, AR_CH, I32, I32)
+render_args = (IMG, I32, I32, AR_CH, F64)
 if CUDA and False:
-    pass
+    CULIB.smoke_sim.argtypes = sim_args
+    CULIB.smoke_render.argtypes = render_args
+    sim_func = CULIB.smoke_sim
+    render_func = CULIB.smoke_render
 else:
-    LIB.smoke_sim.argtypes = (F64, I32, I32, AR_DBL, AR_DBL, *[F64 for _ in range(5)], AR_CH, AR_CH, I32, I32)
-    LIB.smoke_render.argtypes = (IMG, I32, I32, AR_CH, F64)
+    LIB.smoke_sim.argtypes = sim_args
+    LIB.smoke_render.argtypes = render_args
     sim_func = LIB.smoke_sim
     render_func = LIB.smoke_render
 

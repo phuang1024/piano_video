@@ -25,7 +25,7 @@
 #include "../../utils.hpp"
 #include "smoke.hpp"
 
-#ifdef __GNUC__
+#if CPP
     #include "cppsmoke.hpp"
 #else
     #include "cusmoke.cuh"
@@ -80,6 +80,7 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
     :param ip: Input file path (leave blank if no input).
     :param op: Output file path.
     */
+    std::cout << "STARTING WITH " << CPP << std::endl;
 
     CD vx_min = x_vel_min/fps, vx_max = x_vel_max/fps;
     CD vy_min = y_vel_min/fps, vy_max = y_vel_max/fps;
@@ -125,8 +126,14 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
         ptcl.vy *= air_resist;
         ptcl.age += 1/fps;
     }
-    if (diffusion)
-        smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
+    if (diffusion) {
+        #if CPP
+            smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
+        #else
+            std::cout << "CALL CUDA" << std::endl;
+            smoke_sim_diff<<<CU_BLOCK_CNT, CU_BLOCK_SIZE>>>(&(ptcls[0]), size, DIFF_STR/fps);
+        #endif
+    }
 
     // Write to output
     std::ofstream fout(op);

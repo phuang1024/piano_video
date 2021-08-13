@@ -17,13 +17,13 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifdef __GNUC__
+#include "utils.hpp"
+
+#if CPP
     #define  MODS
 #else
     #define  MODS  __host__ __device__
 #endif
-
-#include "utils.hpp"
 
 
 MODS double radians(CD deg) {
@@ -38,7 +38,11 @@ MODS double degrees(CD rad) {
 
 MODS double pythag(CD dx, CD dy) {
     /* Pythagorean distance. */
-    return std::pow((dx*dx) + (dy*dy), 0.5);
+    #if CPP
+        return std::pow((dx*dx) + (dy*dy), 0.5);
+    #else
+        return pow((dx*dx) + (dy*dy), 0.5);
+    #endif
 }
 
 MODS int ibounds(const int v, const int vmin, const int vmax) {
