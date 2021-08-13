@@ -21,10 +21,11 @@ CXX = g++
 CUDA = nvcc
 
 CXXFLAGS = -Wall -O3 -c -fPIC
-CXXFILES = utils.o random.o draw/draw.o addons/glare/glare.o addons/smoke/smoke.o
+CXXFILES = utils.o random.o draw/draw.o addons/glare/glare.o addons/smoke/smoke.o \
+	addons/smoke/cppsmoke.o
 
 CUFLAGS = -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-CUFILES = utils_cu.o
+CUFILES = utils_cu.o addons/smoke/smoke.o addons/smoke/cusmoke.o
 
 .PHONY: clean cpp
 
@@ -45,3 +46,7 @@ clean:  # for some reason needs to do it twice
 
 utils_cu.o:
 	$(CUDA) $(CUFLAGS) utils.cpp -o utils_cu.o
+
+addons/smoke/cusmoke.o:
+	cd ./addons/smoke; \
+	$(CUDA) $(CUFLAGS) cusmoke.cu -o cusmoke.o

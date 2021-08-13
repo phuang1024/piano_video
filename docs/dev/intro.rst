@@ -25,6 +25,11 @@ Do not make patches for Windows or MacOS support. I will not support
 If you would like Windows or MacOS support, please fork the project and edit your own
 copy.
 
+To start working on a task, please either look through the
+`projects <https://github.com/phuang1024/piano_video/projects>`__ or
+`issues <https://github.com/phuang1024/piano_video/issues>`__ on GitHub and choose
+one that interests you.
+
 
 File Structure
 --------------

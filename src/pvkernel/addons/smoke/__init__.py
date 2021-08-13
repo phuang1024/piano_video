@@ -23,7 +23,7 @@ Smoke effects.
 
 import numpy as np
 import pv
-from pv.props import FloatProp
+from pv.props import BoolProp, FloatProp
 from pvkernel import Video
 from pvkernel.lib import *
 from pvkernel.utils import CUDA
@@ -50,6 +50,12 @@ class SMOKE_PT_Props(pv.PropertyGroup):
         name="Particles/Second",
         description="Amount of smoke particles to emit per second per note.",
         default=20000,
+    )
+
+    diffusion = BoolProp(
+        name="Diffusion",
+        description="Whether to simulate diffusion. Will be slow.",
+        default=False,
     )
 
 
@@ -105,7 +111,7 @@ def simulate(video: Video):
     key_ends = np.array(key_ends, dtype=np.float64)
 
     sim_func(video.fps, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
-        -10, 10, -75, -50, in_path, out_path, *video.resolution)
+        -10, 10, -75, -50, in_path, out_path, *video.resolution, video.props.smoke.diffusion)
 
 
 def render(video: Video):
