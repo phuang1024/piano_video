@@ -124,10 +124,9 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
         ptcl.vx *= air_resist;
         ptcl.vy *= air_resist;
         ptcl.age += 1/fps;
-
-        if (diffusion)
-            smoke_sim_diff(ptcls);
     }
+    if (diffusion)
+        smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
 
     // Write to output
     std::ofstream fout(op);

@@ -17,8 +17,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <vector>
 #include "smoke.hpp"
 
 
-void smoke_sim_diff(std::vector<SmokePtcl>& ptcls);
+void smoke_sim_diff(SmokePtcl* ptcls, const int size, CD strength);

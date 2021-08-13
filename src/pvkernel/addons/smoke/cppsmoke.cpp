@@ -17,9 +17,31 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <vector>
+#include <iostream>
 #include "smoke.hpp"
+#include "../../utils.hpp"
 
 
-void smoke_sim_diff(std::vector<SmokePtcl>& ptcls) {
+void smoke_sim_diff(SmokePtcl* ptcls, const int size, CD strength) {
+    for (int i = 0; i < size-1; i++) {
+        for (int j = i+1; j < size; j++) {
+            SmokePtcl* p1 = &ptcls[i];
+            SmokePtcl* p2 = &ptcls[j];
+            CD dx = p1->x - p2->x, dy = p1->y - p2->y;
+            CD dist = pythag(dx, dy);
+
+            if (dist <= DIFF_DIST) {
+                CD curr_strength = strength * (1-(dist/DIFF_DIST));
+
+                // ddx = delta (delta x) = change in velocity
+                CD total_vel = dx + dy;
+                CD ddx = curr_strength * (dx/total_vel), ddy = curr_strength * (dy/total_vel);
+
+                p1->vx += ddx;
+                p1->vy += ddy;
+                p2->vx -= ddx;
+                p2->vy -= ddy;
+            }
+        }
+    }
 }
