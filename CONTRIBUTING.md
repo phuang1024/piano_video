@@ -4,9 +4,7 @@ Full contributing docs can be found [here][docs]
 
 ## Editing Source
 
-Piano Video is currently in development, and the structure of the source code
-may change unpredictably. If you wish to make a patch, please fork and make
-a pull request on GitHub.
+Please follow the guidelines (above), and make a pull request on GitHub.
 
 ## Bug Reports or Feature Requests
 

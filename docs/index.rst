@@ -42,5 +42,3 @@ Piano Video
     blog/particles.rst
 
 A free piano visualizer.
-
-Piano Video is in development.
