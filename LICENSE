@@ -10,10 +10,10 @@ GNU General Public License v3
 This license can be found at licenses/GPLv3
 It applies to these files:
 
-.github/*
-build/*
-src/*
-tests/*
+.github/**
+build/**
+src/**
+tests/**
 /.gitignore
 /*.md
 /*.txt
@@ -26,7 +26,7 @@ GNU Free Documentation License
 This license can be found at licenses/GFDLv1-3
 It applies to these files:
 
-docs/*
+docs/**
 
 
 Creative Commons 0
@@ -35,4 +35,4 @@ Creative Commons 0
 A link to the license can be found at licenses/CC0
 It applies to these files:
 
-examples/*
+examples/**
