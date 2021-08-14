@@ -23,9 +23,10 @@ __all__ = (
     "IntProp",
     "FloatProp",
     "StrProp",
+    "RGBProp",
 )
 
-from typing import Any, Type
+from typing import Any, List, Sequence, Type
 
 
 class Property:
@@ -136,3 +137,17 @@ class StrProp(Property):
 
     def set(self, value: Any) -> None:
         self.value = self.type(value)[:self.max_len]
+
+
+class RGBProp(Property):
+    """
+    Color property.
+    """
+    type = list
+
+    def __init__(self, name: str = "", description: str = "", default: List[int] = [0, 0, 0]):
+        self.name = name
+        self.description = description
+        self.default = default
+
+        super().__init__()
