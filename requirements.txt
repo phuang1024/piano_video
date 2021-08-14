@@ -1,4 +1,5 @@
 mido
 numpy
 opencv-python
+termcolor
 tqdm

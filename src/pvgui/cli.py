@@ -19,8 +19,39 @@
 
 import argparse
 import shlex
+import pvkernel
+from termcolor import colored
+
+BASE_CMDS = ("ls", "workon")
 
 
 def cli():
+    parser = argparse.ArgumentParser(description="Enter your commands to the CLI interface.")
+    parser.add_argument("mode", nargs="?", choices=BASE_CMDS, help="Base command.")
+    parser.add_argument("options", nargs="*", help="Options for the base command.")
+
+    videos = [pvkernel.Video()]
+    workon = 0
+
     while True:
-        args = shlex.split(input(">>>"))
+        inputs = shlex.split(input(">>> "))
+        args = parser.parse_args(inputs)
+        mode = args.mode
+        opts = args.options
+
+        if mode == "ls":
+            print(f"{len(videos)} videos in session.")
+            for i, vid in enumerate(videos):
+                color = "green" if i == workon else "white"
+                prefix = "* " if i == workon else "  "
+                print(colored(f"{prefix}{i}. fps={vid.fps}, resolution={vid.resolution}", color))
+
+        elif mode == "workon":
+            if len(opts) >= 1 and opts[0].isdigit():
+                num = int(opts[0])
+                if 0 <= num < len(videos):
+                    workon = num
+                else:
+                    print("Number out of range.")
+            else:
+                print("Invalid argument number or format.")
