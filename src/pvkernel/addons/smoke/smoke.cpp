@@ -64,10 +64,10 @@ void smoke_write_cache(std::vector<SmokePtcl>& ptcls, std::ofstream& fp) {
 }
 
 
-extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* const x_starts,
-        CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max, CD y_vel_min, CD y_vel_max,
-        const char* const ip, const char* const op, const int width, const int height,
-        const bool diffusion) {
+extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int num_notes,
+        CD* const x_starts, CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max,
+        CD y_vel_min, CD y_vel_max, const char* const ip, const char* const op,
+        const int width, const int height, const bool diffusion) {
     /*
     Simulate one frame of smoke activity.
 
@@ -95,11 +95,24 @@ extern "C" void smoke_sim(CD fps, const int num_new, const int num_notes, CD* co
 
     // Add new particles
     for (int i = 0; i < num_notes; i++) {
+        // Add a bit of jitter to the emission
+        // so looks more random.
+        CD start = x_starts[i], end = x_ends[i];
+        CD x_size = end - start;
+
+        CD phase = sin(i+frame/10.0);
+        CD gap = (phase+1)/2.0 * (x_size/2.0);
+
+        CD real_start = start + gap;
+        CD real_end = start + gap + x_size/2.0;
+        CD real_vmin = vx_min + phase/5.0;
+        CD real_vmax = vx_max + phase/5.0;
+
         for (int j = 0; j < num_new; j++) {
             SmokePtcl ptcl;
-            ptcl.x = Random::uniform(x_starts[i], x_ends[i]);
+            ptcl.x = Random::uniform(real_start, real_end);
             ptcl.y = y_start;
-            ptcl.vx = Random::uniform(vx_min, vx_max);
+            ptcl.vx = Random::uniform(real_vmin, real_vmax);
             ptcl.vy = Random::uniform(vy_min, vy_max);
             ptcls.push_back(ptcl);
         }
@@ -159,7 +172,8 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
         const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
 
         if (img_bounds(width, height, x, y)) {
-            const UCH value = 255 * (1-(ptcls[i].age/MAX_AGE));
+            // Use an inverse quadratic interp to make it fade slowly, and suddenly go away.
+            const UCH value = 255 * (1-pow(ptcls[i].age/MAX_AGE, 2));
             const UCH white[3] = {value, value, value};
 
             UCH original[3], modified[3];

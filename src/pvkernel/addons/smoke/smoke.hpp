@@ -23,7 +23,7 @@
 #define  SIZE_FLT  sizeof(float)
 
 #define  AIR_RESIST  0.95
-#define  MAX_AGE     6
+#define  MAX_AGE     8
 #define  DIFF_DIST   4
 #define  DIFF_STR    1
 
