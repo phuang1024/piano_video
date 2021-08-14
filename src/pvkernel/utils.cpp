@@ -17,13 +17,12 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include <cmath>
+#include <algorithm>
 #include "utils.hpp"
 
-#if CPP
-    #define  MODS
-#else
-    #define  MODS  __host__ __device__
-#endif
+using std::min;
+using std::max;
 
 
 MODS double radians(CD deg) {

@@ -21,11 +21,10 @@ CXX = g++
 CUDA = nvcc
 
 CXXFLAGS = -Wall -O3 -c -fPIC
-CXXFILES = utils.o random.o draw/draw.o addons/glare/glare.o addons/smoke/smoke.o \
-	addons/smoke/cppsmoke.o
+CXXFILES = utils.o random.o draw/draw.o addons/glare/glare.o addons/smoke/smoke.o
 
 CUFLAGS = -dc -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
-CUFILES = utils_cu.o random_cu.o addons/smoke/cusmoke.o addons/smoke/cusmokelib.o
+CUFILES = utils_cu.o random_cu.o
 
 .PHONY: all cpp cuda clean
 
@@ -51,11 +50,3 @@ utils_cu.o:
 
 random_cu.o:
 	$(CUDA) $(CUFLAGS) random.cpp -o random_cu.o
-
-addons/smoke/cusmoke.o:
-	cd ./addons/smoke; \
-	$(CUDA) $(CUFLAGS) smoke.cpp -o cusmoke.o
-
-addons/smoke/cusmokelib.o:
-	cd ./addons/smoke; \
-	$(CUDA) $(CUFLAGS) cusmoke.cu -o cusmokelib.o

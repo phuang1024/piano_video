@@ -18,18 +18,32 @@
 //
 
 #include <iostream>
+#include <cmath>
 #include <cstring>
 #include <fstream>
 #include <vector>
 #include "../../random.hpp"
 #include "../../utils.hpp"
-#include "smoke.hpp"
 
-#if CPP
-    #include "cppsmoke.hpp"
-#else
-    #include "cusmoke.cuh"
-#endif
+#define  AIR_RESIST  0.95
+#define  MAX_AGE     8
+#define  DIFF_DIST   4
+#define  DIFF_STR    1
+
+
+struct SmokePtcl {
+    SmokePtcl() {
+        good = true;
+    }
+
+    bool good;  // Whether to read from cache
+
+    float age;  // Seconds
+
+    // x, y are pixel locations.
+    // vx, vy are pixel per frame values.
+    float x, y, vx, vy;
+};
 
 
 void smoke_read_cache(std::vector<SmokePtcl>& ptcls, std::ifstream& fp) {
@@ -38,7 +52,7 @@ void smoke_read_cache(std::vector<SmokePtcl>& ptcls, std::ifstream& fp) {
         return;
     }
     int count;
-    fp.read((char*)(&count), SIZE_INT);
+    fp.read((char*)(&count), sizeof(count));
 
     for (int i = 0; i < count; i++) {
         SmokePtcl ptcl;
@@ -54,12 +68,37 @@ void smoke_write_cache(std::vector<SmokePtcl>& ptcls, std::ofstream& fp) {
         return;
     }
 
-    const int size = ptcls.size();
+    const int count = ptcls.size();
 
-    fp.write((char*)(&size), SIZE_INT);
-    for (int i = 0; i < size; i++) {
+    fp.write((char*)(&count), sizeof(count));
+    for (int i = 0; i < count; i++) {
         const SmokePtcl& ptcl = ptcls[i];
         fp.write((char*)(&ptcl), sizeof(SmokePtcl));
+    }
+}
+
+
+void smoke_sim_diff(SmokePtcl* ptcls, const int size, CD strength) {
+    for (int i = 0; i < size-1; i++) {
+        for (int j = i+1; j < size; j++) {
+            SmokePtcl* p1 = &ptcls[i];
+            SmokePtcl* p2 = &ptcls[j];
+            CD dx = p1->x - p2->x, dy = p1->y - p2->y;
+            CD dist = pythag(dx, dy);
+
+            if (dist <= DIFF_DIST) {
+                CD curr_strength = strength * (1-(dist/DIFF_DIST));
+
+                // ddx = delta (delta x) = change in velocity
+                CD total_vel = dx + dy;
+                CD ddx = curr_strength * (dx/total_vel), ddy = curr_strength * (dy/total_vel);
+
+                p1->vx += ddx;
+                p1->vy += ddy;
+                p2->vx -= ddx;
+                p2->vy -= ddy;
+            }
+        }
     }
 }
 
@@ -138,13 +177,8 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
         ptcl.vy *= air_resist;
         ptcl.age += 1/fps;
     }
-    if (diffusion) {
-        #if CPP
-            smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
-        #else
-            smoke_sim_diff<<<CU_BLOCK_CNT, CU_BLOCK_SIZE>>>(&(ptcls[0]), size, DIFF_STR/fps);
-        #endif
-    }
+    if (diffusion)
+        smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
 
     // Write to output
     std::ofstream fout(op);

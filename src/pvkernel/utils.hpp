@@ -33,12 +33,6 @@
 
 #define  PI  3.14159265
 
-#include <cmath>
-#include <algorithm>
-
-using std::min;
-using std::max;
-
 typedef  unsigned char       UCH;
 typedef  long long           LL;
 typedef  unsigned long long  ULL;
