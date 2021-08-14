@@ -29,7 +29,7 @@ Will register:
 
 import numpy as np
 import pv
-from pv.props import FloatProp
+from pv.props import BoolProp, FloatProp, RGBProp
 from pvkernel import Video
 from pvkernel import draw
 from utils import block_pos, first_note
@@ -41,7 +41,31 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
     block_speed = FloatProp(
         name="Block Speed",
         description="Screens per second speed.",
-        default=0.2
+        default=0.2,
+    )
+
+    rounding = FloatProp(
+        name="Rounding",
+        description="Corner rounding radius in pixels.",
+        default=5,
+    )
+
+    border = FloatProp(
+        name="Border",
+        description="Border thickness in pixels.",
+        default=1,
+    )
+
+    color = RGBProp(
+        name="Inside Color",
+        description="Color of the inside of the block.",
+        default=[128, 200, 218],
+    )
+
+    border_color = RGBProp(
+        name="Border Color",
+        description="Color of the border.",
+        default=[255, 255, 255],
     )
 
 
@@ -61,7 +85,7 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
             if not (bottom < 0 or top > threshold):
                 x, width = video.data.core.key_pos[note.note]
                 bottom = min(bottom, threshold+10)
-                draw_block(video.render_img, (x, top, width, bottom-top))
+                draw_block(video, (x, top, width, bottom-top))
 
 
 class BUILTIN_JT_Blocks(pv.Job):
@@ -69,9 +93,13 @@ class BUILTIN_JT_Blocks(pv.Job):
     ops = ("blocks.render",)
 
 
-def draw_block(img: np.ndarray, rect):
-    draw.rect(img, (255, 255, 255, 200), rect, border_radius=5)
-    draw.rect(img, (255, 255, 255, 255), rect, border_radius=5, border=3)
+def draw_block(video: Video, rect):
+    props = video.props.blocks
+    rounding = props.rounding
+
+    draw.rect(video.render_img, props.color, rect, border_radius=rounding)
+    if props.border > 0:
+        draw.rect(video.render_img, props.border_color, rect, border=props.border, border_radius=rounding)
 
 
 classes = (
