@@ -28,7 +28,7 @@ from pvkernel import Video
 from pvkernel.lib import *
 from pvkernel.utils import CUDA
 
-sim_args = (F64, I32, I32, AR_DBL, AR_DBL, *[F64 for _ in range(5)], AR_CH, AR_CH, I32, I32)
+sim_args = (F64, I32, I32, I32, AR_DBL, AR_DBL, *[F64 for _ in range(5)], AR_CH, AR_CH, I32, I32)
 render_args = (IMG, I32, I32, AR_CH, F64)
 if CUDA and False:
     CULIB.smoke_sim.argtypes = sim_args
@@ -48,7 +48,7 @@ class SMOKE_PT_Props(pv.PropertyGroup):
     intensity = FloatProp(
         name="Intensity",
         description="Smoke opacity multiplier.",
-        default=0.25,
+        default=0.15,
     )
 
     pps = FloatProp(
@@ -115,8 +115,8 @@ def simulate(video: Video):
     key_starts = np.array(key_starts, dtype=np.float64)
     key_ends = np.array(key_ends, dtype=np.float64)
 
-    sim_func(video.fps, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
-        -10, 10, -75, -50, in_path, out_path, *video.resolution, video.props.smoke.diffusion)
+    sim_func(video.fps, video.frame, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
+        -10, 10, -125, -100, in_path, out_path, *video.resolution, video.props.smoke.diffusion)
 
 
 def render(video: Video):
