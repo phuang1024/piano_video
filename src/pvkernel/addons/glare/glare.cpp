@@ -20,10 +20,11 @@
 #include <cmath>
 #include <algorithm>
 #include "../../utils.hpp"
+#include "../../random.hpp"
 
 
 extern "C" void glare(UCH* img, const int width, const int height, CD intensity, CD radius,
-        const UCH* notes, const UCH num_notes, CD x_start, CD x_end) {
+        const UCH* notes, const UCH num_notes, CD x_start, CD x_end, CD jitter) {
     /*
     Add the glare.
 
@@ -44,6 +45,7 @@ extern "C" void glare(UCH* img, const int width, const int height, CD intensity,
     for (UCH i = 0; i < num_notes; i++) {
         const UCH note = notes[i];
         CD x_pos = key_pos(x_start, x_end, note);
+        CD curr_intensity = intensity - Random::uniform(0, jitter);
 
         for (int x = x_pos-radius-border; x < x_pos+radius+border; x++) {
             for (int y = mid-radius-border; y < mid+radius+border; y++) {
@@ -56,8 +58,8 @@ extern "C" void glare(UCH* img, const int width, const int height, CD intensity,
                 CD angle_dist = std::min(abs(angle-23), abs(angle-54));
                 CD angle_fac = dbounds(map_range(angle_dist, 0, 5, 0.96, 1));
 
-                CD fac = dbounds(angle_fac * dist_fac);   // 0 = full white, 1 = no white
-                CD real_fac = 1 - ((1-fac)*intensity);    // Account for intensity
+                CD fac = dbounds(angle_fac * dist_fac);      // 0 = full white, 1 = no white
+                CD real_fac = 1 - ((1-fac)*curr_intensity);  // Account for intensity
                 UCH original[3], modified[3];
                 img_getc(img, width, x, y, original);
                 img_mix(modified, white, original, real_fac);
