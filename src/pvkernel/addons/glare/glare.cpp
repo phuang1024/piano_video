@@ -53,7 +53,7 @@ extern "C" void glare(UCH* img, const int width, const int height, CD intensity,
 
                 // Streaks
                 CD angle = degrees(atan(dy/dx));
-                CD angle_dist = min(abs(angle-23), abs(angle-54));
+                CD angle_dist = std::min(abs(angle-23), abs(angle-54));
                 CD angle_fac = dbounds(map_range(angle_dist, 0, 5, 0.96, 1));
 
                 CD fac = dbounds(angle_fac * dist_fac);   // 0 = full white, 1 = no white

@@ -21,6 +21,8 @@ displayed properly.
 
 .. autoclass:: pv.StrProp
 
+.. autoclass:: pv.RGBProp
+
 A PropertyGroup is a collection of properties.
 
 .. autoclass:: pv.PropertyGroup

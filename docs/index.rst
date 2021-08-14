@@ -8,6 +8,7 @@ Piano Video
 
     general/about
     general/thanks
+    general/release
 
 .. toctree::
     :maxdepth: 1

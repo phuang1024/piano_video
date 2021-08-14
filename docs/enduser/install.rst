@@ -7,6 +7,9 @@ GNU/Linux
 Pre-Built
 ^^^^^^^^^
 
+The latest release can be found
+`here <https://github.com/phuang1024/piano_video/releases/latest>`__.
+
 All releases (starting from ``v0.2.0``) have pre-built binaries.
 There will be a Debian package for Ubuntu and Debian, and two Python wheel files.
 
