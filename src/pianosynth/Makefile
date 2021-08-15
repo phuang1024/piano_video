@@ -17,25 +17,14 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: docs
+.PHONY: all dirs psmidi
 
-help:
-	# Please see https://piano-video.rtfd.io for support.
+all: dirs psmidi
 
-build:
-	cd ./src/pvkernel; \
-	make cpp; \
-	make cuda; \
-	make clean;
+dirs:
+	mkdir -p ./include
+	mkdir -p ./lib
 
-dist:
-	cd ./build; \
-	python main.py;
-
-docs:
-	cd ./docs; \
-	make html;
-
-ps:   # pianosynth
-	cd ./src/pianosynth; \
+psmidi:
+	cd ./psmidi; \
 	make;

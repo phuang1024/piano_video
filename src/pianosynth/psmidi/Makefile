@@ -17,25 +17,19 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: docs
+CXX = g++
+CXXFLAGS = -Wall -O3 -c -fPIC
+CXXFILES = psmidi.o
 
-help:
-	# Please see https://piano-video.rtfd.io for support.
 
-build:
-	cd ./src/pvkernel; \
-	make cpp; \
-	make cuda; \
-	make clean;
+.PHONY: all compile clean
 
-dist:
-	cd ./build; \
-	python main.py;
+all: compile clean
 
-docs:
-	cd ./docs; \
-	make html;
+compile: $(CXXFILES)
+	$(CXX) -shared $(CXXFILES) -o libpsmidi.so
+	cp *.hpp ../include
+	cp libpsmidi.so ../lib
 
-ps:   # pianosynth
-	cd ./src/pianosynth; \
-	make;
+clean:
+	rm *.o
