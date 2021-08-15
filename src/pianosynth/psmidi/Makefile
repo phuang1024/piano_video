@@ -33,3 +33,4 @@ compile: $(CXXFILES)
 
 clean:
 	rm *.o
+	rm *.so
