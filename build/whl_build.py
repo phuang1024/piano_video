@@ -23,8 +23,16 @@ Will be called through subprocess because setuptools
 can only handle one call per process.
 """
 
+import os
 import sys
 import setuptools
+import glob
+
+PARENT = os.path.dirname(os.path.realpath(__file__))
+
+non_py_extensions = ("*.cpp", "*.hpp", "*.cu", "*.cuh", "Makefile")
+non_py_files = [glob.iglob(os.path.join(PARENT, f"**/{ext}"), recursive=True) for ext in non_py_extensions]
+non_py_files = [path for gl in non_py_files for path in gl]
 
 name = sys.argv[3]
 description = sys.argv[4]
@@ -51,4 +59,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     include_package_data=True,
+    package_data={"": non_py_files},
 )
