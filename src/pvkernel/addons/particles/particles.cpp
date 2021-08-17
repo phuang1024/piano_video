@@ -17,5 +17,191 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <cmath>
+#include <vector>
 #include "../../utils.hpp"
 #include "../../random.hpp"
+
+#define  AIR_RESIST  0.95
+#define  MAX_AGE     8
+
+#define  VX_MIN  -10
+#define  VX_MAX  10
+#define  VY_MIN  -125
+#define  VY_MAX  -100
+
+
+struct Particle {
+    Particle() {
+        good = true;
+    }
+
+    bool good;  // Whether to read from cache
+
+    float age;  // Seconds
+
+    // x, y are pixel locations.
+    // vx, vy are pixel per frame values.
+    float x, y, vx, vy;
+};
+
+
+void ptcl_read_cache(std::vector<Particle>& ptcls, std::ifstream& fp) {
+    if (!fp.good()) {
+        std::cerr << "WARNING: smoke.cpp, ptcl_read_cache: Cannot read file." << std::endl;
+        return;
+    }
+    int count;
+    fp.read((char*)(&count), sizeof(count));
+
+    for (int i = 0; i < count; i++) {
+        Particle ptcl;
+        fp.read((char*)(&ptcl), sizeof(Particle));
+        if (ptcl.good)
+            ptcls.push_back(ptcl);
+    }
+}
+
+void ptcl_write_cache(std::vector<Particle>& ptcls, std::ofstream& fp) {
+    if (!fp.good()) {
+        std::cerr << "WARNING: smoke.cpp, ptcl_write_cache: Cannot write file." << std::endl;
+        return;
+    }
+
+    const int count = ptcls.size();
+
+    fp.write((char*)(&count), sizeof(count));
+    for (int i = 0; i < count; i++) {
+        const Particle& ptcl = ptcls[i];
+        fp.write((char*)(&ptcl), sizeof(Particle));
+    }
+}
+
+
+extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int num_notes,
+        CD* x_starts, CD* x_ends, CD y_start, const char* ip, const char* op, const int width,
+        const int height) {
+    /*
+    Simulate one frame of smoke activity.
+
+    :param fps: Video fps.
+    :param num_new: Number of new particles to generate.
+    :param num_notes: Number of notes that are playing.
+    :param x_starts, x_ends: X coordinate boundaries for each note.
+    :param y_start: Y coordinate.
+    :param ip: Input file path (leave blank if no input).
+    :param op: Output file path.
+    */
+
+    CD vx_min = VX_MIN/fps, vx_max = VX_MAX/fps;
+    CD vy_min = VY_MIN/fps, vy_max = VY_MAX/fps;
+
+    std::vector<Particle> ptcls;
+    ptcls.reserve((int)1e6);
+
+    // Read from input file
+    if (strlen(ip) > 0) {
+        std::ifstream fin(ip);
+        ptcl_read_cache(ptcls, fin);
+    }
+
+    // Add new particles
+    for (int i = 0; i < num_notes; i++) {
+        // Add a bit of jitter to the emission
+        // so looks more random.
+        CD start = x_starts[i], end = x_ends[i];
+        CD x_size = end - start;
+
+        CD phase = sin(i+frame/10.0);
+        CD gap = (phase+1)/2.0 * (x_size/2.0);
+
+        CD real_start = start + gap;
+        CD real_end = start + gap + x_size/2.0;
+        CD real_vmin = vx_min + phase/5.0;
+        CD real_vmax = vx_max + phase/5.0;
+
+        const int curr_new = num_new*(phase/4) + 0.75;
+
+        for (int j = 0; j < num_new; j++) {
+            Particle ptcl;
+            ptcl.x = Random::uniform(real_start, real_end);
+            ptcl.y = y_start;
+            ptcl.vx = Random::uniform(real_vmin, real_vmax);
+            ptcl.vy = Random::uniform(vy_min, vy_max);
+            ptcls.push_back(ptcl);
+        }
+    }
+
+    const int size = ptcls.size();
+    CD air_resist = std::pow(AIR_RESIST, 1/fps);
+
+    // Simulate motion
+    for (int i = 0; i < size; i++) {
+        Particle& ptcl = ptcls[i];
+        ptcl.x += ptcl.vx;
+        ptcl.y += ptcl.vy;
+        if (!img_bounds(width, height, ptcl.x, ptcl.y)) {
+            ptcl.good = false;
+            continue;
+        }
+        if (ptcl.age > MAX_AGE) {
+            ptcl.good = false;
+            continue;
+        }
+        ptcl.vx *= air_resist;
+        ptcl.vy *= air_resist;
+        ptcl.age += 1/fps;
+    }
+
+    // Write to output
+    std::ofstream fout(op);
+    ptcl_write_cache(ptcls, fout);
+}
+
+
+extern "C" void smoke_render(UCH* img, const int width, const int height,
+        const char* const path, CD intensity) {
+    /*
+    Render smoke on the image.
+
+    :param path: Input cache path.
+    :param intensity: Intensity multiplier.
+    */
+
+    std::ifstream fp(path);
+    std::vector<Particle> ptcls;
+    ptcls.reserve((int)1e6);
+    ptcl_read_cache(ptcls, fp);
+
+    const int size = ptcls.size();
+
+    for (int i = 0; i < size; i++) {
+        const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
+
+        if (img_bounds(width, height, x, y)) {
+            // Use an inverse quadratic interp to make it fade slowly, and suddenly go away.
+            const UCH value = 255 * (1-pow(ptcls[i].age/MAX_AGE, 2));
+            const UCH white[3] = {value, value, value};
+
+            UCH original[3], modified[3];
+            img_getc(img, width, x, y, original);
+            img_mix(modified, original, white, intensity/10.0);
+            img_setc(img, width, x, y, modified);
+
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    const int nx = x+dx, ny = y+dy;
+                    if (img_bounds(width, height, nx, ny)) {
+                        UCH original[3], modified[3];
+                        img_getc(img, width, nx, ny, original);
+                        img_mix(modified, original, white, intensity/30.0);
+                        img_setc(img, width, nx, ny, modified);
+                    }
+                }
+            }
+        }
+    }
+}
