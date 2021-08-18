@@ -27,6 +27,8 @@
 
 #define  AIR_RESIST  0.95
 #define  MAX_AGE     8
+#define  ATTR_DIST   4
+#define  ATTR_STR    4
 
 #define  VX_MIN  -10
 #define  VX_MAX  10
@@ -51,7 +53,7 @@ struct Particle {
 
 void ptcl_read_cache(std::vector<Particle>& ptcls, std::ifstream& fp) {
     if (!fp.good()) {
-        std::cerr << "WARNING: smoke.cpp, ptcl_read_cache: Cannot read file." << std::endl;
+        std::cerr << "WARNING: particles.cpp, ptcl_read_cache: Cannot read file." << std::endl;
         return;
     }
     int count;
@@ -67,7 +69,7 @@ void ptcl_read_cache(std::vector<Particle>& ptcls, std::ifstream& fp) {
 
 void ptcl_write_cache(std::vector<Particle>& ptcls, std::ofstream& fp) {
     if (!fp.good()) {
-        std::cerr << "WARNING: smoke.cpp, ptcl_write_cache: Cannot write file." << std::endl;
+        std::cerr << "WARNING: particles.cpp, ptcl_write_cache: Cannot write file." << std::endl;
         return;
     }
 
@@ -81,7 +83,7 @@ void ptcl_write_cache(std::vector<Particle>& ptcls, std::ofstream& fp) {
 }
 
 
-extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int num_notes,
+extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int num_notes,
         CD* x_starts, CD* x_ends, CD y_start, const char* ip, const char* op, const int width,
         const int height) {
     /*
@@ -100,7 +102,7 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
     CD vy_min = VY_MIN/fps, vy_max = VY_MAX/fps;
 
     std::vector<Particle> ptcls;
-    ptcls.reserve((int)1e6);
+    ptcls.reserve((int)1e4);
 
     // Read from input file
     if (strlen(ip) > 0) {
@@ -122,8 +124,6 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
         CD real_end = start + gap + x_size/2.0;
         CD real_vmin = vx_min + phase/5.0;
         CD real_vmax = vx_max + phase/5.0;
-
-        const int curr_new = num_new*(phase/4) + 0.75;
 
         for (int j = 0; j < num_new; j++) {
             Particle ptcl;
@@ -156,13 +156,36 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
         ptcl.age += 1/fps;
     }
 
+    // Simulate attracted to each other
+    for (int i = 0; i < size-1; i++) {
+        for (int j = i+1; j < size; j++) {
+            Particle* p1 = &ptcls[i];
+            Particle* p2 = &ptcls[j];
+            CD dx = p1->x - p2->x, dy = p1->y - p2->y;
+            CD dist = pythag(dx, dy);
+
+            if ((dist <= ATTR_DIST) && (abs(dx+dy) >= 1)) {
+                CD curr_strength = ATTR_STR/fps * (1-(dist/ATTR_DIST));
+
+                // ddx = delta (delta x) = change in velocity
+                CD total_vel = dx + dy;
+                CD ddx = curr_strength * (dx/total_vel), ddy = curr_strength * (dy/total_vel);
+
+                p1->vx -= ddx;
+                p1->vy -= ddy;
+                p2->vx += ddx;
+                p2->vy += ddy;
+            }
+        }
+    }
+
     // Write to output
     std::ofstream fout(op);
     ptcl_write_cache(ptcls, fout);
 }
 
 
-extern "C" void smoke_render(UCH* img, const int width, const int height,
+extern "C" void ptcl_render(UCH* img, const int width, const int height,
         const char* const path, CD intensity) {
     /*
     Render smoke on the image.
@@ -173,7 +196,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
 
     std::ifstream fp(path);
     std::vector<Particle> ptcls;
-    ptcls.reserve((int)1e6);
+    ptcls.reserve((int)1e4);
     ptcl_read_cache(ptcls, fp);
 
     const int size = ptcls.size();
@@ -188,7 +211,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
 
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
-            img_mix(modified, original, white, intensity/10.0);
+            img_mix(modified, original, white, intensity);
             img_setc(img, width, x, y, modified);
 
             for (int dx = -1; dx <= 1; dx++) {
@@ -197,7 +220,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
                     if (img_bounds(width, height, nx, ny)) {
                         UCH original[3], modified[3];
                         img_getc(img, width, nx, ny, original);
-                        img_mix(modified, original, white, intensity/30.0);
+                        img_mix(modified, original, white, intensity/3.0);
                         img_setc(img, width, nx, ny, modified);
                     }
                 }

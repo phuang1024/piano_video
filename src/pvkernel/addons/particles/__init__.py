@@ -21,9 +21,18 @@
 Particle effects.
 """
 
+import numpy as np
 import pv
 from pv.props import FloatProp
 from pvkernel import Video
+from pvkernel.lib import *
+
+sim_args = (F64, I32, I32, I32, AR_DBL, AR_DBL, F64, AR_CH, AR_CH, I32, I32)
+render_args = (IMG, I32, I32, AR_CH, F64)
+LIB.ptcl_sim.argtypes = sim_args
+LIB.ptcl_render.argtypes = render_args
+sim_func = LIB.ptcl_sim
+render_func = LIB.ptcl_render
 
 
 class PTCLS_PT_Props(pv.PropertyGroup):
@@ -44,7 +53,7 @@ class PTCLS_PT_Props(pv.PropertyGroup):
     pps = FloatProp(
         name="Particles/Second",
         description="Amount of particles to emit per second per note.",
-        default=40,
+        default=60,
     )
 
 
@@ -55,7 +64,8 @@ class PTCLS_OT_Apply(pv.Operator):
     description = "Render particles on the render image."
 
     def execute(self, video: Video) -> None:
-        pass
+        simulate(video)
+        render(video)
 
 
 class PTCLS_JT_Job(pv.Job):
@@ -66,6 +76,46 @@ class PTCLS_JT_Job(pv.Job):
 class PTCLS_CT_Cache(pv.Cache):
     idname = "ptcls"
     depends = ("ptcls.attraction", "ptcls.pps")
+
+
+def get_cpath(cache: pv.Cache, frame, default="", check_exist=True):
+    if check_exist:
+        path = cache.frame_path(frame) if cache.frame_exists(frame) else default
+    else:
+        path = cache.frame_path(frame)
+    return cpath(path)
+
+def simulate(video: Video):
+    """Call ptcls simulation library."""
+    cache: pv.Cache = video.caches.ptcls
+    frame = video.frame
+
+    in_path = get_cpath(cache, frame-1)
+    out_path = get_cpath(cache, frame, check_exist=False)
+    cache.fp_frame("w").close()
+
+    ppf = int(video.props.ptcls.pps / video.fps)
+
+    key_starts = []
+    key_ends = []
+    for note in video.data.midi.notes_playing:
+        x, width = video.data.core.key_pos[note]
+        key_starts.append(x+5)
+        key_ends.append(x+width-5)
+    key_starts = np.array(key_starts, dtype=np.float64)
+    key_ends = np.array(key_ends, dtype=np.float64)
+
+    sim_func(video.fps, video.frame, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
+        in_path, out_path, *video.resolution)
+
+
+def render(video: Video):
+    """Call ptcls render library."""
+    cache: pv.Cache = video.caches.ptcls
+    frame = video.frame
+
+    path = get_cpath(cache, frame)
+    render_func(video.render_img, *video.resolution, path, video.props.ptcls.intensity)
 
 
 classes = (

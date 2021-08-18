@@ -84,9 +84,7 @@ def get_cpath(cache: pv.Cache, frame, default="", check_exist=True):
         path = cache.frame_path(frame) if cache.frame_exists(frame) else default
     else:
         path = cache.frame_path(frame)
-    path = path.encode() + b"\x00"
-    path = np.array([x for x in path], dtype=np.int8)
-    return path
+    return cpath(path)
 
 
 def simulate(video: Video):
