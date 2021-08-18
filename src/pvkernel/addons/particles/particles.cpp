@@ -117,7 +117,7 @@ extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int n
         CD start = x_starts[i], end = x_ends[i];
         CD x_size = end - start;
 
-        CD phase = sin(i+frame/10.0);
+        CD phase = sin(12+i+1.2*frame/10.0);
         CD gap = (phase+1)/2.0 * (x_size/2.0);
 
         CD real_start = start + gap;
