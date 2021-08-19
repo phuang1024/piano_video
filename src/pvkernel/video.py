@@ -141,6 +141,7 @@ class Video:
         self.add_job("core", "init")
         self.add_job("midi_frame_init", "frame_init")
         self.add_job("smoke", "frame")
+        self.add_job("ptcls", "frame")
         self.add_job("blocks", "frame")
         self.add_job("glare", "frame")
 

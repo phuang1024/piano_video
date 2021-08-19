@@ -18,65 +18,64 @@
 #
 
 """
-Smoke effects.
+Particle effects.
 """
 
 import numpy as np
 import pv
-from pv.props import BoolProp, FloatProp
+from pv.props import FloatProp
 from pvkernel import Video
 from pvkernel.lib import *
-from pvkernel.utils import CUDA
 
-sim_args = (F64, I32, I32, I32, AR_DBL, AR_DBL, *[F64 for _ in range(5)], AR_CH, AR_CH, I32, I32)
+sim_args = (F64, I32, I32, I32, AR_DBL, AR_DBL, F64, AR_CH, AR_CH, I32, I32)
 render_args = (IMG, I32, I32, AR_CH, F64)
-LIB.smoke_sim.argtypes = sim_args
-LIB.smoke_render.argtypes = render_args
-sim_func = LIB.smoke_sim
-render_func = LIB.smoke_render
+LIB.ptcl_sim.argtypes = sim_args
+LIB.ptcl_render.argtypes = render_args
+sim_func = LIB.ptcl_sim
+render_func = LIB.ptcl_render
 
 
-class SMOKE_PT_Props(pv.PropertyGroup):
-    idname = "smoke"
+class PTCLS_PT_Props(pv.PropertyGroup):
+    idname = "ptcls"
 
     intensity = FloatProp(
         name="Intensity",
-        description="Smoke opacity multiplier.",
-        default=0.1,
+        description="Particle brightness multiplier.",
+        default=1,
+    )
+
+    attraction = FloatProp(
+        name="Attraction",
+        description="Multiplier for how much particles clump up",
+        default=1,
     )
 
     pps = FloatProp(
         name="Particles/Second",
-        description="Amount of smoke particles to emit per second per note.",
-        default=20000,
-    )
-
-    diffusion = BoolProp(
-        name="Diffusion",
-        description="Whether to simulate diffusion. Will be slow.",
-        default=False,
+        description="Amount of particles to emit per second per note.",
+        default=60,
     )
 
 
-class SMOKE_OT_Apply(pv.Operator):
-    group = "smoke"
+class PTCLS_OT_Apply(pv.Operator):
+    group = "ptcls"
     idname = "apply"
-    label = "Apply Smoke"
-    description = "Render smoke on the render image."
+    label = "Apply Particles"
+    description = "Render particles on the render image."
 
     def execute(self, video: Video) -> None:
         simulate(video)
         render(video)
 
 
-class SMOKE_JT_Job(pv.Job):
-    idname = "smoke"
-    ops = ("smoke.apply",)
+class PTCLS_JT_Job(pv.Job):
+    idname = "ptcls"
+    ops = ("ptcls.apply",)
 
 
-class SMOKE_CT_Cache(pv.Cache):
-    idname = "smoke"
-    depends = ("smoke.pps",)
+class PTCLS_CT_Cache(pv.Cache):
+    idname = "ptcls"
+    depends = ("ptcls.attraction", "ptcls.pps")
 
 
 def get_cpath(cache: pv.Cache, frame, default="", check_exist=True):
@@ -86,17 +85,16 @@ def get_cpath(cache: pv.Cache, frame, default="", check_exist=True):
         path = cache.frame_path(frame)
     return cpath(path)
 
-
 def simulate(video: Video):
-    """Call smoke simulation library."""
-    cache: pv.Cache = video.caches.smoke
+    """Call ptcls simulation library."""
+    cache: pv.Cache = video.caches.ptcls
     frame = video.frame
 
     in_path = get_cpath(cache, frame-1)
     out_path = get_cpath(cache, frame, check_exist=False)
     cache.fp_frame("w").close()
 
-    ppf = int(video.props.smoke.pps / video.fps)
+    ppf = int(video.props.ptcls.pps / video.fps)
 
     key_starts = []
     key_ends = []
@@ -108,23 +106,23 @@ def simulate(video: Video):
     key_ends = np.array(key_ends, dtype=np.float64)
 
     sim_func(video.fps, video.frame, ppf, key_starts.shape[0], key_starts, key_ends, video.resolution[1]/2,
-        -10, 10, -125, -100, in_path, out_path, *video.resolution, video.props.smoke.diffusion)
+        in_path, out_path, *video.resolution)
 
 
 def render(video: Video):
-    """Call smoke render library."""
-    cache: pv.Cache = video.caches.smoke
+    """Call ptcls render library."""
+    cache: pv.Cache = video.caches.ptcls
     frame = video.frame
 
     path = get_cpath(cache, frame)
-    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity)
+    render_func(video.render_img, *video.resolution, path, video.props.ptcls.intensity)
 
 
 classes = (
-    SMOKE_PT_Props,
-    SMOKE_OT_Apply,
-    SMOKE_JT_Job,
-    SMOKE_CT_Cache,
+    PTCLS_PT_Props,
+    PTCLS_OT_Apply,
+    PTCLS_JT_Job,
+    PTCLS_CT_Cache,
 )
 
 def register():

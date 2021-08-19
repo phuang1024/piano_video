@@ -21,9 +21,6 @@ import sys
 import os
 import argparse
 
-from cli import cli
-from gui import gui
-
 try:
     import pv
     import pvkernel
@@ -32,7 +29,10 @@ except ModuleNotFoundError:
     print("pvgui: exiting")
     sys.exit(1)
 
-VERSION = "0.2.1"
+from cli import cli
+from gui import gui
+
+VERSION = "0.2.2"
 
 
 def main():
@@ -44,3 +44,6 @@ def main():
         cli()
     else:
         gui()
+
+
+main()

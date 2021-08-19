@@ -17,16 +17,14 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: docs
+.PHONY: help build dist docs ps
 
 help:
 	# Please see https://piano-video.rtfd.io for support.
 
 build:
 	cd ./src/pvkernel; \
-	make cpp; \
-	make cuda; \
-	make clean;
+	make;
 
 dist:
 	cd ./build; \
@@ -35,3 +33,7 @@ dist:
 docs:
 	cd ./docs; \
 	make html;
+
+ps:   # pianosynth
+	cd ./src/pianosynth; \
+	make;

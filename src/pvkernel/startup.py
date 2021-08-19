@@ -36,7 +36,13 @@ def register_addons():
         sys.path.pop(0)
 
 
+def clean():
+    p3 = Popen(["make", "clean"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
+    p3.wait()
+
 def build():
+    clean()
+
     p1 = Popen(["make", "cpp"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
     p1.wait()
     if p1.returncode != 0:
@@ -48,5 +54,4 @@ def build():
         if p2.returncode != 0:
             print("pvkernel: cuda compilation failed.")
 
-    p3 = Popen(["make", "clean"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
-    p3.wait()
+    clean()

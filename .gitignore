@@ -3,6 +3,9 @@
 __pycache__
 .pvcache
 
+include
+lib
+
 *.json
 *.out
 *.mid
