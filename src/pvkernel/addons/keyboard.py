@@ -48,7 +48,7 @@ class BUILTIN_PT_Piano(pv.PropertyGroup):
     black_width_fac = FloatProp(
         name="Black Width Factor",
         description="Black key width factor respective to white key.",
-        default=0.55,
+        default=0.5,
     )
 
 

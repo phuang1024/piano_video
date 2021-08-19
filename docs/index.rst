@@ -15,10 +15,10 @@ Piano Video
     :hidden:
     :caption: End User
 
-    enduser/manual
     enduser/install
     enduser/support
-    enduser/env_vars
+    enduser/manual
+    enduser/options
     enduser/api
 
 .. toctree::

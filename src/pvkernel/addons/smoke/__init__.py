@@ -42,7 +42,7 @@ class SMOKE_PT_Props(pv.PropertyGroup):
     intensity = FloatProp(
         name="Intensity",
         description="Smoke opacity multiplier.",
-        default=0.1,
+        default=1,
     )
 
     pps = FloatProp(
@@ -117,7 +117,7 @@ def render(video: Video):
     frame = video.frame
 
     path = get_cpath(cache, frame)
-    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity)
+    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity/10)
 
 
 classes = (

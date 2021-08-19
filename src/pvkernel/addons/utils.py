@@ -46,7 +46,7 @@ def block_pos(video: Video, note, first_note: float) -> Tuple[float, float]:
     frame = video.frame
     height = video.resolution[1]
     threshold = height / 2
-    speed = video.props.blocks.block_speed * height / video.fps   # pixels per frame
+    speed = video.props.blocks.speed * height / video.fps   # pixels per frame
 
     start = note.start - first_note - frame
     end = note.end - first_note - frame

@@ -38,7 +38,7 @@ from utils import block_pos, first_note
 class BUILTIN_PT_Blocks(pv.PropertyGroup):
     idname = "blocks"
 
-    block_speed = FloatProp(
+    speed = FloatProp(
         name="Block Speed",
         description="Screens per second speed.",
         default=0.2,

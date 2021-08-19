@@ -44,7 +44,7 @@ class PTCLS_PT_Props(pv.PropertyGroup):
         default=1,
     )
 
-    attraction = FloatProp(
+    attraction = FloatProp(   # currently not used
         name="Attraction",
         description="Multiplier for how much particles clump up",
         default=1,

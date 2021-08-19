@@ -36,7 +36,7 @@ class GLARE_PT_Props(pv.PropertyGroup):
     intensity = FloatProp(
         name="Intensity",
         description="Glare brightness multiplier.",
-        default=0.55,
+        default=1,
     )
 
     radius = FloatProp(
@@ -68,7 +68,7 @@ class GLARE_OT_Apply(pv.Operator):
         radius = props.radius
         notes = np.array(video.data.midi.notes_playing, dtype=np.uint8)
 
-        LIB.glare(video.render_img, width, height, intensity, radius,
+        LIB.glare(video.render_img, width, height, intensity/2, radius,
             notes, notes.shape[0], start, end, props.jitter)
 
 
