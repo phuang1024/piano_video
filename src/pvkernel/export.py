@@ -18,6 +18,7 @@
 #
 
 import numpy as np
+import cv2
 from tqdm import trange
 from typing import TYPE_CHECKING
 from pv.utils import call_op
@@ -51,4 +52,5 @@ def export(context: Video, path: str) -> None:
             for op in context.get_jobs("modifiers"):
                 call_op(context, op)
 
-            video.write(context.render_img[..., :3])
+            img = cv2.cvtColor(context.render_img, cv2.COLOR_BGR2RGB)
+            video.write(img)

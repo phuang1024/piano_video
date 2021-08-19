@@ -23,11 +23,11 @@ Apply glare when a key is pressed.
 
 import numpy as np
 import pv
-from pv.props import FloatProp
+from pv.props import BoolProp, FloatProp
 from pvkernel import Video
 from pvkernel.lib import *
 
-LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64)
+LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64, F64)
 
 
 class GLARE_PT_Props(pv.PropertyGroup):
@@ -45,6 +45,12 @@ class GLARE_PT_Props(pv.PropertyGroup):
         default=75,
     )
 
+    jitter = FloatProp(
+        name="Jitter",
+        description="Amount to randomize intensity by.",
+        default=0.1,
+    )
+
 
 class GLARE_OT_Apply(pv.Operator):
     group = "glare"
@@ -54,15 +60,16 @@ class GLARE_OT_Apply(pv.Operator):
 
     def execute(self, video: Video) -> None:
         width, height = video.resolution
+        props = video.props.glare
 
         start = video.props.keyboard.left_offset
         end = video.props.keyboard.right_offset + width
-        intensity = video.props.glare.intensity
-        radius = video.props.glare.radius
+        intensity = props.intensity
+        radius = props.radius
         notes = np.array(video.data.midi.notes_playing, dtype=np.uint8)
 
         LIB.glare(video.render_img, width, height, intensity, radius,
-            notes, notes.shape[0], start, end)
+            notes, notes.shape[0], start, end, props.jitter)
 
 
 class GLARE_JT_Job(pv.Job):

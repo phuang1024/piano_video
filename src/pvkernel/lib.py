@@ -35,6 +35,8 @@ __all__ = (
 
     "LIB",
     "CULIB",
+
+    "cpath",
 )
 
 import os
@@ -61,3 +63,10 @@ if CUDA:
     CULIB = ctypes.CDLL(os.path.join(PARENT, "libpvkernel.cu.so"))
 else:
     CULIB = None
+
+
+def cpath(path: str) -> np.ndarray:
+    """Get the C path of a string (numpy array of chars, null terminated)."""
+    data = [x for x in path.encode()]
+    data.append(0)
+    return np.array([x for x in data], dtype=np.int8)

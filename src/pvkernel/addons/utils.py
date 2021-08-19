@@ -18,10 +18,9 @@
 #
 
 """
-Not an addon.
+Utils for use by builtin addons.
 """
 
-import pv
 from pvkernel import Video
 from typing import Tuple
 
@@ -47,11 +46,15 @@ def block_pos(video: Video, note, first_note: float) -> Tuple[float, float]:
     frame = video.frame
     height = video.resolution[1]
     threshold = height / 2
-    speed = video.props.blocks.block_speed * height / video.fps
+    speed = video.props.blocks.block_speed * height / video.fps   # pixels per frame
 
     start = note.start - first_note - frame
     end = note.end - first_note - frame
-    top = threshold - end*speed
-    bottom = threshold - start*speed
+    if video.props.midi.reverse:
+        top = threshold + start*speed
+        bottom = threshold + end*speed
+    else:
+        top = threshold - end*speed
+        bottom = threshold - start*speed
 
     return (top, bottom)

@@ -31,7 +31,7 @@ Will register:
 import os
 import mido
 import pv
-from pv.props import FloatProp, StrProp
+from pv.props import BoolProp, FloatProp, StrProp
 from pvkernel import Video
 from utils import block_pos, first_note
 from typing import Any, Dict
@@ -95,6 +95,12 @@ class MIDI_PT_Midi(pv.PropertyGroup):
         name="Minimum Length",
         description="Minimum note length in seconds.",
         default=0.1,
+    )
+
+    reverse = BoolProp(
+        name="Reverse Notes",
+        description="Notes start from the piano and go up instead.",
+        default=False,
     )
 
 

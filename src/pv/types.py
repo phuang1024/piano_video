@@ -70,6 +70,19 @@ class PropertyGroup:
         """
         return object.__getattribute__(self, name)
 
+    def help(self, name: str) -> str:
+        """
+        Get help string of a property.
+
+        :param name: Property idname.
+        """
+        prop = self._get_prop(name)
+        return f"PropertyGroup {self.idname} help:" \
+               f"* idname: {name}" \
+               f"* name: {prop.name}" \
+               f"* description: {prop.description}" \
+               f"* type: {prop.__class__.__name__}"
+
 
 class DataGroup:
     """

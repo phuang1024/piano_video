@@ -17,14 +17,14 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-pv, the API to the kernel.
+.PHONY: all dirs psmidi
 
-Import from Python to modify kernel behavior.
-"""
+all: dirs psmidi
 
-__version__ = "0.2.2"
+dirs:
+	mkdir -p ./include
+	mkdir -p ./lib
 
-from .props import *
-from .types import *
-from . import utils
+psmidi:
+	cd ./psmidi; \
+	make;

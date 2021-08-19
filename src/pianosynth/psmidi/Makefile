@@ -17,14 +17,20 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""
-pv, the API to the kernel.
+CXX = g++
+CXXFLAGS = -Wall -O3 -c -fPIC
+CXXFILES = psmidi.o
 
-Import from Python to modify kernel behavior.
-"""
 
-__version__ = "0.2.2"
+.PHONY: all compile clean
 
-from .props import *
-from .types import *
-from . import utils
+all: compile clean
+
+compile: $(CXXFILES)
+	$(CXX) -shared $(CXXFILES) -o libpsmidi.so
+	cp *.hpp ../include
+	cp libpsmidi.so ../lib
+
+clean:
+	rm *.o
+	rm *.so

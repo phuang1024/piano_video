@@ -31,6 +31,7 @@ Piano Video
     dev/gui.rst
     dev/api.rst
     dev/kernel.rst
+    dev/synth.rst
 
 .. toctree::
     :maxdepth: 1
