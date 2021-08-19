@@ -9,7 +9,7 @@ Recording
 To record a piano song, you need a camera, and a piano with a MIDI output with 
 cable. Prop your camera so that it faces downwards onto the piano. Connect the
 cable onto your computer, and start recording. Make sure you have a MIDI app
-that can take thekeys pressed into a MIDI file. When you are done recording,
+that can take the keys pressed into a MIDI file. When you are done recording,
 see below to make your first video.
 
 
