@@ -42,7 +42,7 @@ class SMOKE_PT_Props(pv.PropertyGroup):
     intensity = FloatProp(
         name="Intensity",
         description="Smoke opacity multiplier.",
-        default=0.15,
+        default=0.1,
     )
 
     pps = FloatProp(

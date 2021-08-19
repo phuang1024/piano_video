@@ -26,7 +26,7 @@
 #include "../../random.hpp"
 
 #define  AIR_RESIST  0.95
-#define  MAX_AGE     8
+#define  MAX_AGE     4
 #define  ATTR_DIST   4
 #define  ATTR_STR    4
 
@@ -204,7 +204,7 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height,
     for (int i = 0; i < size; i++) {
         const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
 
-        if (img_bounds(width, height, x, y)) {
+        if (ptcls[i].age < MAX_AGE && img_bounds(width, height, x, y)) {
             // Use an inverse quadratic interp to make it fade slowly, and suddenly go away.
             const UCH value = 255 * (1-pow(ptcls[i].age/MAX_AGE, 2));
             const UCH white[3] = {value, value, value};
