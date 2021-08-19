@@ -15,7 +15,7 @@ Piano Video
     :hidden:
     :caption: End User
 
-    enduser/start
+    enduser/manual
     enduser/install
     enduser/support
     enduser/env_vars
