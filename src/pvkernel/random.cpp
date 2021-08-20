@@ -17,16 +17,18 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#ifdef __GNUC__
-    #define  MODS
-#else
-    #define  MODS  __host__ __device__
-#endif
 
 #include <cstdlib>
 #include <cmath>
 #include <ctime>
+#include "utils.hpp"
 #include "random.hpp"
+
+#if CPP
+    #define  MODS
+#else
+    #define  MODS  __host__ __device__
+#endif
 
 
 namespace Random {
