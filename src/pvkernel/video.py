@@ -26,7 +26,7 @@ import random
 import string
 import numpy as np
 import pv
-from pv.types import Cache, DataGroup, OpGroup, Operator, PropertyGroup
+from pv.types import Cache, DataGroup, Job, OpGroup, Operator, PropertyGroup
 from pv.utils import get
 from typing import Sequence, Tuple, Type
 from .export import export
@@ -128,9 +128,9 @@ class Video:
         """
         jobs = pv.utils._get_jobs()
         job = get(jobs, idname)
-        self._jobs[slot].extend(job.ops)
+        self._jobs[slot].append(job())
 
-    def get_jobs(self, slot: str) -> Sequence[str]:
+    def get_jobs(self, slot: str) -> Sequence[Job]:
         """
         Get the jobs in a slot.
         """

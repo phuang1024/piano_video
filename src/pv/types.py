@@ -249,6 +249,10 @@ class Job:
 
     * ``idname``: Job idname.
     * ``ops``: List of operator idnames (``"group.idname"``) to run.
+    * ``execute``: This function will run before running the operators. Default does nothing.
     """
     idname: str
     ops: List[str]
+
+    def execute(self, video: Video) -> None:
+        ...

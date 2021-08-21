@@ -26,11 +26,11 @@ Will register:
 """
 
 import pv
-from pv.props import FloatProp
+from pv.props import FloatProp, StrProp
 from pvkernel import Video
 
 
-class BUILTIN_PT_Piano(pv.PropertyGroup):
+class KEYBOARD_PT_Props(pv.PropertyGroup):
     idname = "keyboard"
 
     left_offset = FloatProp(
@@ -51,9 +51,36 @@ class BUILTIN_PT_Piano(pv.PropertyGroup):
         default=0.5,
     )
 
+    video_path = StrProp(
+        name="Path",
+        description="Video file path",
+    )
+
+    video_start = FloatProp(
+        name="Video Start",
+        description="Time you start playing in the video in seconds",
+    )
+
+
+class KEYBOARD_OT_Render(pv.Operator):
+    group = "keyboard"
+    idname = "render"
+    label = "Render"
+    description = "Render keyboard on render image."
+
+    def execute(self, video: Video) -> None:
+        pass
+
+
+class KEYBOARD_JT_Init(pv.Job):
+    idname = "keyboard_init"
+
+    def execute(self, video: Video) -> None:
+        pass
+
 
 classes = (
-    BUILTIN_PT_Piano,
+    KEYBOARD_PT_Props,
 )
 
 def register():

@@ -21,6 +21,7 @@ import numpy as np
 import cv2
 from tqdm import trange
 from typing import TYPE_CHECKING
+from pv import Job
 from pv.utils import call_op
 from .videoio import VideoWriter
 
@@ -29,12 +30,16 @@ if TYPE_CHECKING:
     from .video import Video
 
 
+def exe_job(video: Video, job: Job):
+    job.execute(video)
+    for op in job.ops:
+        call_op(video, op)
+
+
 def export(context: Video, path: str) -> None:
-    """
-    Exports the video from a video.
-    """
-    for op in context.get_jobs("init"):
-        call_op(context, op)
+    """Exports the video from a video."""
+    for job in context.get_jobs("init"):
+        exe_job(context, job)
 
     res = context.resolution
     with VideoWriter(path, res, int(context.fps)) as video:
@@ -43,14 +48,17 @@ def export(context: Video, path: str) -> None:
             context._frame = int(frame - intro)
             context._render_img = np.zeros((res[1], res[0], 3), dtype=np.uint8)
 
-            for op in context.get_jobs("frame_init"):
-                call_op(context, op)
-            for op in context.get_jobs("frame"):
-                call_op(context, op)
-            for op in context.get_jobs("frame_deinit"):
-                call_op(context, op)
-            for op in context.get_jobs("modifiers"):
-                call_op(context, op)
+            for job in context.get_jobs("frame_init"):
+                exe_job(context, job)
+            for job in context.get_jobs("frame"):
+                exe_job(context, job)
+            for job in context.get_jobs("frame_deinit"):
+                exe_job(context, job)
+            for job in context.get_jobs("modifiers"):
+                exe_job(context, job)
 
             img = cv2.cvtColor(context.render_img, cv2.COLOR_BGR2RGB)
             video.write(img)
+
+    for job in context.get_jobs("deinit"):
+        exe_job(context, job)
