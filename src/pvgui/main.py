@@ -32,7 +32,7 @@ except ModuleNotFoundError:
 from cli import cli
 from gui import gui
 
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 
 
 def main():
