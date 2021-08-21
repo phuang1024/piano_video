@@ -18,13 +18,17 @@
 #
 
 import os
+import shutil
 from typing import Any, Dict
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 ADDON_PATHS = (
     os.path.join(PARENT, "addons"),
 )
+
 CUDA = ("PV_USE_CUDA" in os.environ)
+FFMPEG = shutil.which("ffmpeg")
+HAS_FFMPEG = (FFMPEG is not None)
 
 
 class Namespace:

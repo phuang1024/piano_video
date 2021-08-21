@@ -23,7 +23,7 @@ from tqdm import trange
 from typing import TYPE_CHECKING
 from pv import Job
 from pv.utils import call_op
-from .videoio import VideoWriter
+from .videoio import VideoWriter, VideoWriterFFmpeg
 
 Video = None
 if TYPE_CHECKING:
@@ -42,7 +42,8 @@ def export(context: Video, path: str) -> None:
         exe_job(context, job)
 
     res = context.resolution
-    with VideoWriter(path, res, int(context.fps)) as video:
+    video_writer = VideoWriterFFmpeg if context.ffmpeg else VideoWriter
+    with video_writer(path, res, int(context.fps), context) as video:
         intro = context.props.core.pause_start * context.fps
         for frame in trange(context.data.core.running_time, desc="Rendering video"):
             context._frame = int(frame - intro)

@@ -30,7 +30,7 @@ from pv.types import Cache, DataGroup, Job, OpGroup, Operator, PropertyGroup
 from pv.utils import get
 from typing import Sequence, Tuple, Type
 from .export import export
-from .utils import Namespace
+from .utils import HAS_FFMPEG, Namespace
 
 
 class Video:
@@ -53,6 +53,7 @@ class Video:
     """
     resolution: Tuple[int, int]
     fps: float
+    ffmpeg: bool
 
     props: Namespace
     ops: Namespace
@@ -61,16 +62,18 @@ class Video:
     _frame: int
     _render_img: np.ndarray
 
-    def __init__(self, resolution: Tuple[int, int] = (1920, 1080), fps: float = 30.) -> None:
+    def __init__(self, resolution: Tuple[int, int] = (1920, 1080), fps: float = 30.0, ffmpeg: bool = ...) -> None:
         """
         Initializes the Video.
 
         :param resolution: (X, Y) pixel resolution.
         :param fps: Frames per second. Can be float, but will be rounded down in export.
+        :param ffmpeg: Use FFmpeg to compile video. Default True if ffmpeg is present.
         :return: None
         """
         self.resolution = resolution
         self.fps = fps
+        self.ffmpeg = HAS_FFMPEG if ffmpeg == ... else ffmpeg
 
         rand = "".join(random.choices(string.ascii_letters+string.digits, k=32))
         self.cache = os.path.join(os.getcwd(), ".pvcache", rand)
