@@ -11,4 +11,6 @@
 
 A free piano visualizer.
 
+![](https://github.com/phuang1024/piano_video/blob/main/examples/aug_20_2021.png?raw=true)
+
 [Documentation](https://piano-video.rtfd.io)
