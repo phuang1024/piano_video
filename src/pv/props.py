@@ -23,7 +23,7 @@ __all__ = (
     "IntProp",
     "FloatProp",
     "StrProp",
-    "ColorProp",
+    "ListProp",
 )
 
 from typing import Any, List, Type
@@ -139,13 +139,14 @@ class StrProp(Property):
         self.value = self.type(value)[:self.max_len]
 
 
-class ColorProp(Property):
+class ListProp(Property):
     """
-    Color property. May or may not have alpha.
+    List property. Use this for color.
+    May contain a list of lists.
     """
     type = list
 
-    def __init__(self, name: str = "", description: str = "", default: List[int] = [0, 0, 0]):
+    def __init__(self, name: str = "", description: str = "", default: List[int] = [0, 0, 0, 0]):
         self.name = name
         self.description = description
         self.default = default

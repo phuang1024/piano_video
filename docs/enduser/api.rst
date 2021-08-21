@@ -21,7 +21,7 @@ displayed properly.
 
 .. autoclass:: pv.StrProp
 
-.. autoclass:: pv.ColorProp
+.. autoclass:: pv.ListProp
 
 A PropertyGroup is a collection of properties.
 

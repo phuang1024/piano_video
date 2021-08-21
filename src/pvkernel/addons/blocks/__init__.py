@@ -29,7 +29,7 @@ Will register:
 
 import numpy as np
 import pv
-from pv.props import BoolProp, FloatProp, ColorProp
+from pv.props import BoolProp, FloatProp, ListProp
 from pvkernel import Video
 from pvkernel import draw
 from utils import block_pos, first_note
@@ -62,19 +62,19 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
         default=True,
     )
 
-    color = ColorProp(
+    color = ListProp(
         name="Inside Color",
         description="Color of the inside of the block.",
         default=[128, 200, 218, 255],
     )
 
-    border_color = ColorProp(
+    border_color = ListProp(
         name="Border Color",
         description="Color of the border.",
         default=[255, 255, 255, 255],
     )
 
-    glow_color = ColorProp(
+    glow_color = ListProp(
         name="Glow Color",
         description="Color of the glow.",
         default=[255, 255, 255, 150],
