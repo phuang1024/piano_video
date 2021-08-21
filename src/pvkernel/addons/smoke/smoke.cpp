@@ -26,7 +26,7 @@
 #include "../../utils.hpp"
 
 #define  AIR_RESIST  0.95
-#define  MAX_AGE     8
+#define  MAX_AGE     10
 #define  DIFF_DIST   4
 #define  DIFF_STR    1
 
@@ -134,18 +134,21 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
 
     // Add new particles
     for (int i = 0; i < num_notes; i++) {
-        // Add a bit of jitter to the emission
-        // so looks more random.
-        CD start = x_starts[i], end = x_ends[i];
-        CD x_size = end - start;
+        // Add a bit of jitter to the emission so looks more random.
+        // Currently disabled.
 
-        CD phase = sin(i+frame/10.0);
-        CD gap = (phase+1)/2.0 * (x_size/2.0);
+        // CD start = x_starts[i], end = x_ends[i];
+        // CD x_size = end - start;
 
-        CD real_start = start + gap;
-        CD real_end = start + gap + x_size/2.0;
-        CD real_vmin = vx_min + phase/5.0;
-        CD real_vmax = vx_max + phase/5.0;
+        // CD phase = sin(i+frame/10.0);
+        // CD gap = (phase+1)/2.0 * (x_size/2.0);
+
+        // CD real_start = start + gap;
+        // CD real_end = start + gap + x_size/2.0;
+        // CD real_vmin = vx_min + phase/5.0;
+        // CD real_vmax = vx_max + phase/5.0;
+        CD real_start = x_starts[i], real_end = x_ends[i];
+        CD real_vmin = vx_min, real_vmax = vx_max;
 
         for (int j = 0; j < num_new; j++) {
             SmokePtcl ptcl;
