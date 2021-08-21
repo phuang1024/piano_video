@@ -117,7 +117,7 @@ def render(video: Video):
     frame = video.frame
 
     path = get_cpath(cache, frame)
-    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity/10)
+    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity/8)
 
 
 classes = (

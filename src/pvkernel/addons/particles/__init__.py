@@ -53,7 +53,7 @@ class PTCLS_PT_Props(pv.PropertyGroup):
     pps = FloatProp(
         name="Particles/Second",
         description="Amount of particles to emit per second per note.",
-        default=60,
+        default=100,
     )
 
 
