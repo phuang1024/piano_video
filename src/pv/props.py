@@ -23,10 +23,10 @@ __all__ = (
     "IntProp",
     "FloatProp",
     "StrProp",
-    "RGBProp",
+    "ColorProp",
 )
 
-from typing import Any, List, Sequence, Type
+from typing import Any, List, Type
 
 
 class Property:
@@ -139,9 +139,9 @@ class StrProp(Property):
         self.value = self.type(value)[:self.max_len]
 
 
-class RGBProp(Property):
+class ColorProp(Property):
     """
-    Color property.
+    Color property. May or may not have alpha.
     """
     type = list
 

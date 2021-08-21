@@ -29,7 +29,7 @@ Will register:
 
 import numpy as np
 import pv
-from pv.props import BoolProp, FloatProp, RGBProp
+from pv.props import BoolProp, FloatProp, ColorProp
 from pvkernel import Video
 from pvkernel import draw
 from utils import block_pos, first_note
@@ -56,16 +56,28 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
         default=1,
     )
 
-    color = RGBProp(
-        name="Inside Color",
-        description="Color of the inside of the block.",
-        default=[128, 200, 218],
+    glow = BoolProp(
+        name="Glow",
+        description="Whether to add glow to the blocks.",
+        default=True,
     )
 
-    border_color = RGBProp(
+    color = ColorProp(
+        name="Inside Color",
+        description="Color of the inside of the block.",
+        default=[128, 200, 218, 255],
+    )
+
+    border_color = ColorProp(
         name="Border Color",
         description="Color of the border.",
-        default=[255, 255, 255],
+        default=[255, 255, 255, 255],
+    )
+
+    glow_color = ColorProp(
+        name="Glow Color",
+        description="Color of the glow.",
+        default=[255, 255, 255, 150],
     )
 
 
@@ -97,6 +109,9 @@ def draw_block(video: Video, rect):
     props = video.props.blocks
     rounding = props.rounding
 
+    if props.glow:
+        new_rect = (rect[0]-2, rect[1]-2, rect[2]+4, rect[3]+4)
+        draw.rect(video.render_img, props.glow_color, new_rect, border_radius=rounding)
     draw.rect(video.render_img, props.color, rect, border_radius=rounding)
     if props.border > 0:
         draw.rect(video.render_img, props.border_color, rect, border=props.border, border_radius=rounding)
