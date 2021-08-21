@@ -90,14 +90,13 @@ class BUILTIN_OT_KeyPos(pv.Operator):
 
         white_width = width / 52
         black_width = white_width * video.props.keyboard.black_width_fac
-        black_offset = white_width - black_width/2
         x = left
         for key in range(88):
             if self.is_white(key):
                 video.data.core.key_pos[key] = (x, white_width)
                 x += white_width
             else:
-                video.data.core.key_pos[key] = (x-black_offset, black_width)
+                video.data.core.key_pos[key] = (x-black_width/2, black_width)
 
         assert None not in video.data.core.key_pos, "Error calculating key position."
 

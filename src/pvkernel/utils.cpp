@@ -76,7 +76,10 @@ MODS bool is_white(const UCH key) {
 }
 
 MODS double key_pos(CD start, CD end, const UCH key) {
-    /* Returns the MIDDLE of the key, not the left. */
+    /*
+    Returns the MIDDLE of the key, not the left.
+    For some reason we need to subtract one white width from the pos
+    */
     CD white_width = (end-start) / 52.0;
 
     double x = start;
@@ -85,7 +88,7 @@ MODS double key_pos(CD start, CD end, const UCH key) {
             if (i == key) return x - white_width/2.0;
             x += white_width;
         } else {
-            if (i == key) return x - 1.5*white_width;
+            if (i == key) return x - white_width;
         }
     }
 

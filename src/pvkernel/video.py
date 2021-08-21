@@ -73,7 +73,7 @@ class Video:
         """
         self.resolution = resolution
         self.fps = fps
-        self.ffmpeg = HAS_FFMPEG if ffmpeg == ... else ffmpeg
+        self.ffmpeg = False #HAS_FFMPEG if ffmpeg == ... else ffmpeg
 
         rand = "".join(random.choices(string.ascii_letters+string.digits, k=32))
         self.cache = os.path.join(os.getcwd(), ".pvcache", rand)
