@@ -6,7 +6,7 @@ Render Jobs
 *Updated August 10, 2021*
 
 In order to be easily extensible, I will develop the rendering process with *jobs*:
-Jobs will be included in *Job Slots*, which are specific to each Video class.
+Jobs will be included in *Job Slots*, which are specific to each Video class instance.
 
 * ``init``: Prepare for rendering
 * ``intro``: Text introduction
@@ -16,8 +16,6 @@ Jobs will be included in *Job Slots*, which are specific to each Video class.
 * ``outro``: Text outroduction
 * ``modifiers``: Modifies the whole image
 * ``deinit``: Free memory (if applicable), close files, etc.
-
-The slot idnames are the names above lowercase.
 
 API
 ---

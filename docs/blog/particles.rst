@@ -3,9 +3,17 @@ Particles
 
 *Written August 12, 2021*
 
+*Updated August 20, 2021*
+
 For simulating particles, we need to do something different than
 `smoke <smoke.html>`__. Otherwise, the particles will just spread out evenly,
 which looks boring.
+
+Update
+------
+
+I didn't implement the algorithm described below, and instead took a different approach,
+which is just simulating particles without any outer forces.
 
 Algorithm
 ---------
