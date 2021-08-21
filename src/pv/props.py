@@ -26,7 +26,7 @@ __all__ = (
     "ListProp",
 )
 
-from typing import Any, List, Type
+from typing import Any, List, Sequence, Type
 
 
 class Property:
@@ -125,18 +125,23 @@ class StrProp(Property):
     """
     type = bool
     max_len: int
+    choices: Sequence[str]
 
     def __init__(self, name: str = "", description: str = "", default: str = "",
-            max_len: int = 1000) -> None:
+            max_len: int = 1000, choices: Sequence[str] = []) -> None:
         self.name = name
         self.description = description
         self.default = default
         self.max_len = max_len
+        self.choices = choices
 
         super().__init__()
 
     def set(self, value: Any) -> None:
-        self.value = self.type(value)[:self.max_len]
+        value = self.type(value)[:self.max_len]
+        if len(self.choices) > 0:
+            assert value in self.choices, f"StrProp: {value} not in choices {self.choices}"
+        self.value = value
 
 
 class ListProp(Property):
@@ -146,7 +151,7 @@ class ListProp(Property):
     """
     type = list
 
-    def __init__(self, name: str = "", description: str = "", default: List[int] = [0, 0, 0, 0]):
+    def __init__(self, name: str = "", description: str = "", default: List[Any] = [0, 0, 0, 0]):
         self.name = name
         self.description = description
         self.default = default

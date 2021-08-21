@@ -24,7 +24,7 @@ Keyboard rendering.
 import numpy as np
 import cv2
 import pv
-from pv.props import FloatProp, StrProp
+from pv.props import FloatProp, ListProp, StrProp
 from pvkernel import Video
 
 
@@ -57,6 +57,12 @@ class KEYBOARD_PT_Props(pv.PropertyGroup):
     video_start = FloatProp(
         name="Video Start",
         description="Time you start playing in the video in seconds",
+    )
+
+    crop = ListProp(
+        name="Crop",
+        description="Corner locations in clockwise starting from top left.",
+        default=[[0, 0], [1920, 0], [1920, 1080], [0, 1080]],
     )
 
 
