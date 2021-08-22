@@ -24,7 +24,6 @@ namespace PS {
 namespace Midi {
 
 int read_int(std::ifstream& fp) {
-    /* Read variable length integer */
     int value = 0;
     while (true) {
         char num;
@@ -37,7 +36,6 @@ int read_int(std::ifstream& fp) {
 }
 
 void write_int(std::ofstream& fp, int value) {
-    /* Write variable length integer */
     while (true) {
         const char n = value & 127;
         value = value >> 7;

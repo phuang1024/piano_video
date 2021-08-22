@@ -22,10 +22,29 @@
 namespace PS {
 namespace Midi {
 
+/** Read variable length quantity integer. */
 int read_int(std::ifstream& fp);
+
+/** Write variable length quantity integer. */
 void write_int(std::ofstream& fp, int value);
 
+/**
+ * Class for reading a MIDI file.
+ */
 class MidiRead {
+public:
+    MThd header;
+};
+
+/**
+ * MIDI header chunk.
+ */
+class MThd {
+public:
+    ~MThd();
+    MThd(std::ifstream* fp);
+
+    char format;
 };
 
 }  // namespace Midi
