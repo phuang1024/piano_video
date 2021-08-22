@@ -17,18 +17,20 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: all dirs psmidi psbytes
+CXX = g++
+CXXFLAGS = -Wall -O3 -c -fPIC
+CXXFILES = psbytes.o
 
-all: dirs psmidi psbytes
 
-dirs:
-	mkdir -p ./include
-	mkdir -p ./lib
+.PHONY: all compile clean
 
-psmidi:
-	cd ./psmidi; \
-	make;
+all: compile clean
 
-psbytes:
-	cd ./psbytes; \
-	make;
+compile: $(CXXFILES)
+	$(CXX) -shared $(CXXFILES) -o libpsbytes.so
+	cp *.hpp ../include
+	cp libpsbytes.so ../lib
+
+clean:
+	rm *.o
+	rm *.so

@@ -17,36 +17,10 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <fstream>
 
 namespace PS {
-namespace Midi {
-
-/** Read variable length quantity integer. */
-int read_int(std::ifstream& fp);
-
-/** Write variable length quantity integer. */
-void write_int(std::ofstream& fp, int value);
+namespace Bytes {
 
 
-/**
- * MIDI header chunk.
- */
-class MThd {
-public:
-    ~MThd();
-    MThd(std::ifstream* fp);
-
-    char format;
-};
-
-/**
- * Class for reading a MIDI file.
- */
-class MidiRead {
-public:
-    MThd header;
-};
-
-}  // namespace Midi
 }  // namespace PS
+}  // namespace Bytes
