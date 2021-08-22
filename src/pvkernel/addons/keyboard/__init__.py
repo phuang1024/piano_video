@@ -89,6 +89,11 @@ class KEYBOARD_JT_Init(pv.Job):
         video.data.keyboard.fps = video.data.keyboard.video.fps
 
 
+class KEYBOARD_JT_Render(pv.Job):
+    idname = "keyboard_render"
+    ops = ("keyboard.render",)
+
+
 class KEYBOARD_JT_Deinit(pv.Job):
     idname = "keyboard_init"
 
@@ -106,7 +111,7 @@ def read_frame(video: Video, frame: int) -> np.ndarray:
     data = video.data.keyboard
     props = video.props.keyboard
 
-    real_frame = props.video_start*data.fps + frame
+    real_frame = int(props.video_start*data.fps + frame/video.fps*data.fps)
     data.video.set(1, real_frame)
 
     ret, img = data.video.read()
@@ -120,6 +125,7 @@ classes = (
     KEYBOARD_OT_Render,
     KEYBOARD_DT_Data,
     KEYBOARD_JT_Init,
+    KEYBOARD_JT_Render,
     KEYBOARD_JT_Deinit,
 )
 

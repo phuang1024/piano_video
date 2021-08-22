@@ -142,11 +142,16 @@ class Video:
     def _add_default_jobs(self):
         self.add_job("midi", "init")
         self.add_job("core", "init")
+        self.add_job("keyboard_init", "init")
+
         self.add_job("midi_frame_init", "frame_init")
         self.add_job("blocks", "frame")
+        self.add_job("keyboard_render", "frame")
         self.add_job("smoke", "frame")
         self.add_job("ptcls", "frame")
         self.add_job("glare", "frame")
+
+        self.add_job("keyboard_deinit", "deinit")
 
     def _add_callbacks(self) -> None:
         """
