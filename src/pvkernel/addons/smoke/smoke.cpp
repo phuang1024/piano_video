@@ -216,7 +216,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
             img_mix(modified, original, white, intensity/10.0);
-            img_setc(img, width, x, y, modified);
+            img_addc(img, width, x, y, modified);
 
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
@@ -225,7 +225,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
                         UCH original[3], modified[3];
                         img_getc(img, width, nx, ny, original);
                         img_mix(modified, original, white, intensity/30.0);
-                        img_setc(img, width, nx, ny, modified);
+                        img_addc(img, width, nx, ny, modified);
                     }
                 }
             }

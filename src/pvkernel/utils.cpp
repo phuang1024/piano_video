@@ -122,14 +122,25 @@ MODS void img_setc(UCH* img, const int width, const int x, const int y, const UC
 }
 
 MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH* color) {
+    img_setc(img, width, x, y, color[0], color[1], color[2]);
+}
+
+MODS void img_addc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b) {
     /*
-    Sets pixel to color. Equivalent to three calls of img_set()
+    Same as img_setc except takes max of R, G, B.
 
     :param r, g, b: R, G, B values.
     */
-    img_set(img, width, x, y, 0, color[0]);
-    img_set(img, width, x, y, 1, color[1]);
-    img_set(img, width, x, y, 2, color[2]);
+    UCH current[3];
+    img_getc(img, width, x, y, current);
+
+    img_set(img, width, x, y, 0, max(r, current[0]));
+    img_set(img, width, x, y, 1, max(g, current[1]));
+    img_set(img, width, x, y, 2, max(b, current[2]));
+}
+
+MODS void img_addc(UCH* img, const int width, const int x, const int y, const UCH* color) {
+    img_addc(img, width, x, y, color[0], color[1], color[2]);
 }
 
 MODS void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value) {

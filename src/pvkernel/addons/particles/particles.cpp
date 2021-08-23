@@ -206,22 +206,26 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height,
 
         if (ptcls[i].age < MAX_AGE && img_bounds(width, height, x, y)) {
             // Use an inverse quadratic interp to make it fade slowly, and suddenly go away.
-            const UCH value = 255 * (1-pow(ptcls[i].age/MAX_AGE, 2));
+            const UCH value = 255 * (1 - pow(ptcls[i].age/MAX_AGE, 2));
+            const UCH border_value = ibounds(map_range(value, 150, 255, 0, 255), 0, 255);
             const UCH white[3] = {value, value, value};
+            const UCH border_white[3] = {border_value, border_value, border_value};
 
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
             img_mix(modified, original, white, intensity);
-            img_setc(img, width, x, y, modified);
+            img_addc(img, width, x, y, modified);
 
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dy = -1; dy <= 1; dy++) {
-                    const int nx = x+dx, ny = y+dy;
-                    if (img_bounds(width, height, nx, ny)) {
-                        UCH original[3], modified[3];
-                        img_getc(img, width, nx, ny, original);
-                        img_mix(modified, original, white, intensity/3.0);
-                        img_setc(img, width, nx, ny, modified);
+            if (border_white > 0) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        const int nx = x+dx, ny = y+dy;
+                        if (img_bounds(width, height, nx, ny)) {
+                            UCH original[3], modified[3];
+                            img_getc(img, width, nx, ny, original);
+                            img_mix(modified, original, border_white, intensity/3.0);
+                            img_addc(img, width, nx, ny, modified);
+                        }
                     }
                 }
             }
