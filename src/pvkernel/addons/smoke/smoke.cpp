@@ -103,22 +103,20 @@ void smoke_sim_diff(SmokePtcl* ptcls, const int size, CD strength) {
 }
 
 
+/**
+ * Simulate one frame of smoke activity.
+ * @param fps Video fps.
+ * @param num_new Number of new particles to generate.
+ * @param num_notes Number of notes that are playing.
+ * @param x_starts x_ends: X coordinate boundaries for each note.
+ * @param y_start Y coordinate.
+ * @param ip Input file path (leave blank if no input).
+ * @param op Output file path.
+ */
 extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int num_notes,
         CD* const x_starts, CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max,
         CD y_vel_min, CD y_vel_max, const char* const ip, const char* const op,
         const int width, const int height, const bool diffusion) {
-    /*
-    Simulate one frame of smoke activity.
-
-    :param fps: Video fps.
-    :param num_new: Number of new particles to generate.
-    :param num_notes: Number of notes that are playing.
-    :param x_starts, x_ends: X coordinate boundaries for each note.
-    :param y_start: Y coordinate.
-    :param x_vel_min, x_vel_max, y_vel_min, y_vel_max: Pixels per second bounds.
-    :param ip: Input file path (leave blank if no input).
-    :param op: Output file path.
-    */
 
     CD vx_min = x_vel_min/fps, vx_max = x_vel_max/fps;
     CD vy_min = y_vel_min/fps, vy_max = y_vel_max/fps;
@@ -189,15 +187,13 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
 }
 
 
+/**
+ * Render smoke on the image.
+ * @param path Input cache path.
+ * @param intensity Intensity multiplier.
+ */
 extern "C" void smoke_render(UCH* img, const int width, const int height,
         const char* const path, CD intensity) {
-    /*
-    Render smoke on the image.
-
-    :param path: Input cache path.
-    :param intensity: Intensity multiplier.
-    */
-
     std::ifstream fp(path);
     std::vector<SmokePtcl> ptcls;
     ptcls.reserve((int)1e6);

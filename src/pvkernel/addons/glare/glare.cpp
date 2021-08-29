@@ -23,21 +23,19 @@
 #include "../../random.hpp"
 
 
+/**
+ * Render the glare on an image.
+ * @param img Image.
+ * @param width height: Image dimensions.
+ * @param intensity Glare intensity factor.
+ * @param radius Glare radius.
+ * @param notes Array of notes to add glare to (0 is lowest note).
+ * @param num_notes Number of notes.
+ * @param x_start X pixel start of piano.
+ * @param x_end X pixel end of piano.
+ */
 extern "C" void glare(UCH* img, const int width, const int height, CD intensity, CD radius,
         const UCH* notes, const UCH num_notes, CD x_start, CD x_end, CD jitter) {
-    /*
-    Add the glare.
-
-    :param img: Image.
-    :param width, height: Image dimensions.
-    :param intensity: Glare intensity factor.
-    :param radius: Glare radius.
-    :param notes: Array of notes to add glare to (0 is lowest note).
-    :param num_notes: Number of notes.
-    :param x_start: X pixel start of piano.
-    :param x_end: X pixel end of piano.
-    */
-
     CD mid = height / 2.0;
     const UCH white[3] = {255, 255, 255};
     const int border = 25;

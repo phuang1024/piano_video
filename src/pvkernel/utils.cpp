@@ -26,17 +26,14 @@ using std::max;
 
 
 MODS double radians(CD deg) {
-    /* Convert degrees to radians. */
     return deg / 180 * PI;
 }
 
 MODS double degrees(CD rad) {
-    /* Radians to degrees. */
     return rad / PI * 180;
 }
 
 MODS double pythag(CD dx, CD dy) {
-    /* Pythagorean distance. */
     #if CPP
         return std::pow((dx*dx) + (dy*dy), 0.5);
     #else
@@ -45,17 +42,14 @@ MODS double pythag(CD dx, CD dy) {
 }
 
 MODS int ibounds(const int v, const int vmin, const int vmax) {
-    /* Integer bounds. */
     return min(max(v, vmin), vmax);
 }
 
 MODS double dbounds(CD v, CD vmin, CD vmax) {
-    /* Double bounds. */
     return min(max(v, vmin), vmax);
 }
 
 MODS double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max) {
-    /* Map value from one range to another */
     CD fac = (v-old_min) / (old_max-old_min);
     CD mapped = fac * (new_max-new_min) + new_min;
     return mapped;
@@ -63,7 +57,6 @@ MODS double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max) {
 
 
 MODS bool is_white(const UCH key) {
-    /* Is the key white on piano */
     const UCH num = (key-3) % 12;
     switch (num) {
         case 1: return false;
@@ -76,10 +69,7 @@ MODS bool is_white(const UCH key) {
 }
 
 MODS double key_pos(CD start, CD end, const UCH key) {
-    /*
-    Returns the MIDDLE of the key, not the left.
-    For some reason we need to subtract one white width from the pos
-    */
+    // For some reason we need to subtract one white width from the pos
     CD white_width = (end-start) / 52.0;
 
     double x = start;
@@ -101,21 +91,10 @@ MODS bool img_bounds(const int width, const int height, const int x, const int y
 }
 
 MODS void img_set(UCH* img, const int width, const int x, const int y, const UCH channel, const UCH value) {
-    /*
-    Sets pixel and channel of image to a value.
-
-    :param channel: Channel number, corresponding to R, G, B.
-    :param value: Number from 0 to 255.
-    */
     img[3*(y*width + x) + channel] = value;
 }
 
 MODS void img_setc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b) {
-    /*
-    Sets pixel to color. Equivalent to three calls of img_set()
-
-    :param r, g, b: R, G, B values.
-    */
     img_set(img, width, x, y, 0, r);
     img_set(img, width, x, y, 1, g);
     img_set(img, width, x, y, 2, b);
@@ -126,11 +105,6 @@ MODS void img_setc(UCH* img, const int width, const int x, const int y, const UC
 }
 
 MODS void img_addc(UCH* img, const int width, const int x, const int y, const UCH r, const UCH g, const UCH b) {
-    /*
-    Same as img_setc except takes max of R, G, B.
-
-    :param r, g, b: R, G, B values.
-    */
     UCH current[3];
     img_getc(img, width, x, y, current);
 
@@ -144,35 +118,16 @@ MODS void img_addc(UCH* img, const int width, const int x, const int y, const UC
 }
 
 MODS void img_get(UCH* img, const int width, const int x, const int y, const UCH channel, UCH* value) {
-    /*
-    Gets value at pixel and channel and modifies "value" param.
-
-    :param channel: Channel number, corresponding to R, G, B.
-    :param value: Value pointer. Will be modified to be the obtained value.
-    */
     value[0] = img[3*(y*width + x) + channel];
 }
 
 MODS void img_getc(UCH* img, const int width, const int x, const int y, UCH* color) {
-    /*
-    Gets value at pixel and modifies "value" param. Equivalent to 3 calls of img_get()
-
-    :param value: Value pointer. Will be modified to be the obtained value.
-    */
     img_get(img, width, x, y, 0, color+0);
     img_get(img, width, x, y, 1, color+1);
     img_get(img, width, x, y, 2, color+2);
 }
 
 MODS void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac) {
-    /*
-    Mixes two colors with a factor.
-
-    :param dest: Destination array. Will be modified.
-    :param c1: Color 1.
-    :param c2: Color 2.
-    :param fac: Factor. 0 = full c1, 1 = full c2
-    */
     for (int i = 0; i < 3; i++)
         dest[i] = ibounds(c1[i]*(1-fac) + c2[i]*fac, 0, 255);
 }

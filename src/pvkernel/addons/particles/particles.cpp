@@ -83,20 +83,19 @@ void ptcl_write_cache(std::vector<Particle>& ptcls, std::ofstream& fp) {
 }
 
 
+/**
+ * Simulate one frame of smoke activity.
+ * @param fps Video fps.
+ * @param num_new Number of new particles to generate.
+ * @param num_notes Number of notes that are playing.
+ * @param x_starts x_ends: X coordinate boundaries for each note.
+ * @param y_start Y coordinate.
+ * @param ip Input file path (leave blank if no input).
+ * @param op Output file path.
+ */
 extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int num_notes,
         CD* x_starts, CD* x_ends, CD y_start, const char* ip, const char* op, const int width,
         const int height) {
-    /*
-    Simulate one frame of smoke activity.
-
-    :param fps: Video fps.
-    :param num_new: Number of new particles to generate.
-    :param num_notes: Number of notes that are playing.
-    :param x_starts, x_ends: X coordinate boundaries for each note.
-    :param y_start: Y coordinate.
-    :param ip: Input file path (leave blank if no input).
-    :param op: Output file path.
-    */
 
     CD vx_min = VX_MIN/fps, vx_max = VX_MAX/fps;
     CD vy_min = VY_MIN/fps, vy_max = VY_MAX/fps;
@@ -185,14 +184,13 @@ extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int n
 }
 
 
+/**
+ * Render smoke on the image.
+ * @param path Input cache path.
+ * @param intensity Intensity multiplier.
+ */
 extern "C" void ptcl_render(UCH* img, const int width, const int height,
         const char* const path, CD intensity) {
-    /*
-    Render smoke on the image.
-
-    :param path: Input cache path.
-    :param intensity: Intensity multiplier.
-    */
 
     std::ifstream fp(path);
     std::vector<Particle> ptcls;
