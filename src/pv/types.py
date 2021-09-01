@@ -252,7 +252,7 @@ class Job:
     * ``execute``: This function will run before running the operators. Default does nothing.
     """
     idname: str
-    ops: List[str]
+    ops: Sequence[str] = ()
 
     def execute(self, video: Video) -> None:
         ...

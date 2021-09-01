@@ -21,6 +21,7 @@
 Keyboard rendering.
 """
 
+import math
 import numpy as np
 import cv2
 import pv
@@ -65,6 +66,12 @@ class KEYBOARD_PT_Props(pv.PropertyGroup):
         default=[[0, 0], [1920, 0], [1920, 1080], [0, 1080]],
     )
 
+    mask = FloatProp(
+        name="Mask",
+        description="Amount of space under the keyboard to show (pixels).",
+        default=200,
+    )
+
 
 class KEYBOARD_OT_Render(pv.Operator):
     group = "keyboard"
@@ -73,7 +80,17 @@ class KEYBOARD_OT_Render(pv.Operator):
     description = "Render keyboard on render image."
 
     def execute(self, video: Video) -> None:
-        pass
+        width, height = video.resolution
+
+        data = video.data.keyboard
+        props = video.props.keyboard
+
+        size = data.size
+
+        img = read_frame(video, video.frame)
+        img = cv2.warpPerspective(img, data.crop, (size[0], size[1]))
+
+        video.render_img[height//2:, ...] = img[:540, ...]
 
 
 class KEYBOARD_DT_Data(pv.DataGroup):
@@ -84,9 +101,31 @@ class KEYBOARD_JT_Init(pv.Job):
     idname = "keyboard_init"
 
     def execute(self, video: Video) -> None:
-        path = video.props.keyboard.video_path
-        video.data.keyboard.video = cv2.VideoCapture(path)
-        video.data.keyboard.fps = video.data.keyboard.video.fps
+        width, height = video.resolution
+
+        data = video.data.keyboard
+        props = video.props.keyboard
+
+        points = props.crop
+        mask = props.mask
+
+        # Using np.float64 returns inf when dividing by 0, which is what we want
+        with np.errstate(divide="ignore"):
+            slope1 = np.float64(points[0][1]-points[3][1]) / (points[0][0]-points[3][0])
+            x5, y5 = points[3][0]+(mask/slope1), points[3][1]+mask
+
+            slope2 = np.float64(points[1][1]-points[2][1]) / (points[1][0]-points[2][0])
+            x6, y6 = points[2][0]+(mask/slope2), points[2][1]+mask
+
+        height_fac = math.hypot(*points[0], x5, y5) / math.hypot(*points[0], *points[1])
+        mask_height_fac = mask / math.hypot(*points[0], *points[1])
+        src_points = np.array([points[0], points[1], [x6, y6], [x5, y5]]).astype(np.float32)
+        dst_points = np.array([[0, 0], [width, 0], [width, width*height_fac], [0, width*height_fac]]).astype(np.float32)
+
+        data.video = cv2.VideoCapture(props.video_path)
+        data.fps = video.data.keyboard.video.get(cv2.CAP_PROP_FPS)
+        data.crop = cv2.getPerspectiveTransform(src_points, dst_points)
+        data.size = list(map(int, [width, width*height_fac, width*(height_fac-mask_height_fac)]))
 
 
 class KEYBOARD_JT_Render(pv.Job):
@@ -95,7 +134,7 @@ class KEYBOARD_JT_Render(pv.Job):
 
 
 class KEYBOARD_JT_Deinit(pv.Job):
-    idname = "keyboard_init"
+    idname = "keyboard_deinit"
 
     def execute(self, video: Video) -> None:
         video.data.keyboard.video.release()
