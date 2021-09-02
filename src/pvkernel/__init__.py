@@ -23,7 +23,7 @@ pvkernel, the kernel for Piano Video.
 This library is a Python module, and handles rendering, effects, MIDI parsing, etc.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 import os
 from .startup import PARENT, build, register_addons
