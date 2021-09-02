@@ -157,3 +157,9 @@ class ListProp(Property):
         self.default = default
 
         super().__init__()
+
+    def __getitem__(self, idx: int) -> Any:
+        return self.value[idx]
+
+    def __setitem__(self, idx: int, value: Any) -> None:
+        self.value[idx] = value
