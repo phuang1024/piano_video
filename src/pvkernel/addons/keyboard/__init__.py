@@ -66,6 +66,12 @@ class KEYBOARD_PT_Props(pv.PropertyGroup):
         default=[[0, 0], [1920, 0], [1920, 1080], [0, 1080]],
     )
 
+    height_fac = FloatProp(
+        name="Height Factor",
+        description="Multiplier for the resulting keyboard height",
+        default=1
+    )
+
     mask = FloatProp(
         name="Mask",
         description="Amount of space under the keyboard to show (pixels).",
@@ -81,6 +87,7 @@ class KEYBOARD_OT_Render(pv.Operator):
 
     def execute(self, video: Video) -> None:
         width, height = video.resolution
+        height_mid = height // 2
 
         data = video.data.keyboard
         props = video.props.keyboard
@@ -88,9 +95,12 @@ class KEYBOARD_OT_Render(pv.Operator):
         size = data.size
 
         img = read_frame(video, video.frame)
-        img = cv2.warpPerspective(img, data.crop, (size[0], size[1]))
+        img = cv2.warpPerspective(img, data.crop, size)
+        img = cv2.resize(img, size)
+        img = cv2.resize(img, (0, 0), fx=1, fy=props.height_fac)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        video.render_img[height//2:, ...] = img[:540, ...]
+        video.render_img[height_mid:height_mid+img.shape[0], ...] = img[:height_mid, ...]
 
 
 class KEYBOARD_DT_Data(pv.DataGroup):
@@ -101,6 +111,12 @@ class KEYBOARD_JT_Init(pv.Job):
     idname = "keyboard_init"
 
     def execute(self, video: Video) -> None:
+        self.compute_crop(video)
+
+    def compute_crop(self, video: Video):
+        """
+        Find perspective warp and store in data.
+        """
         width, height = video.resolution
 
         data = video.data.keyboard
@@ -109,23 +125,45 @@ class KEYBOARD_JT_Init(pv.Job):
         points = props.crop
         mask = props.mask
 
+        data.video = cv2.VideoCapture(props.video_path)
+        data.fps = video.data.keyboard.video.get(cv2.CAP_PROP_FPS)
+
+        #
+        #  REMEMBER: The lists are zero indexed and this diagram
+        #  is 1 indexed.
+        #
+        #  p1-----------------------p2
+        #  |        keyboard         |
+        #  p4-----------------------p3
+        #  |      below keyboard     |
+        #  p5-----------------------p6
+        #
+
         # Using np.float64 returns inf when dividing by 0, which is what we want
         with np.errstate(divide="ignore"):
+            # Find p5 by using slope of p1 and p4
             slope1 = np.float64(points[0][1]-points[3][1]) / (points[0][0]-points[3][0])
             x5, y5 = points[3][0]+(mask/slope1), points[3][1]+mask
 
+            # Find p6 by using slope of p2 and p3
             slope2 = np.float64(points[1][1]-points[2][1]) / (points[1][0]-points[2][0])
             x6, y6 = points[2][0]+(mask/slope2), points[2][1]+mask
 
+        # height_fac = vertical / horizontal
+        # mask_height_fac = mask_size / horizontal
         height_fac = math.hypot(*points[0], x5, y5) / math.hypot(*points[0], *points[1])
         mask_height_fac = mask / math.hypot(*points[0], *points[1])
+
+        # Compute start and end points for perspective warp
         src_points = np.array([points[0], points[1], [x6, y6], [x5, y5]]).astype(np.float32)
         dst_points = np.array([[0, 0], [width, 0], [width, width*height_fac], [0, width*height_fac]]).astype(np.float32)
 
-        data.video = cv2.VideoCapture(props.video_path)
-        data.fps = video.data.keyboard.video.get(cv2.CAP_PROP_FPS)
+        data.points = [*points, [x5, y5], [x6, y6]]
         data.crop = cv2.getPerspectiveTransform(src_points, dst_points)
-        data.size = list(map(int, [width, width*height_fac, width*(height_fac-mask_height_fac)]))
+        data.size = tuple(map(int, [width, width*height_fac]))
+
+        print("FROM:", src_points)
+        print("TO:", dst_points)
 
 
 class KEYBOARD_JT_Render(pv.Job):
