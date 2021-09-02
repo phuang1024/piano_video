@@ -78,6 +78,24 @@ class KEYBOARD_PT_Props(pv.PropertyGroup):
         default=200,
     )
 
+    sub_dim = FloatProp(
+        name="Subtractive Dim",
+        description="Subtractive dimming to the cropped keyboard (0 to 255)",
+        default=10,
+    )
+
+    mult_dim = FloatProp(
+        name="Multiplicative Dim",
+        description="Multiply each pixel by this value.",
+        default=0.8,
+    )
+
+    rgb_mod = ListProp(
+        name="RGB Modify",
+        description="R, G, B multiplicative factors.",
+        default=[1, 1, 1],
+    )
+
 
 class KEYBOARD_OT_Render(pv.Operator):
     group = "keyboard"
@@ -94,11 +112,18 @@ class KEYBOARD_OT_Render(pv.Operator):
 
         size = data.size
 
+        # Read and warp frame to rectangle.
         img = read_frame(video, video.frame)
         img = cv2.warpPerspective(img, data.crop, size)
         img = cv2.resize(img, size)
         img = cv2.resize(img, (0, 0), fx=1, fy=props.height_fac)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        # Perform color manipulations
+        img = np.maximum(img.astype(np.int16)-props.sub_dim, 0).astype(np.uint8)
+        img = img * props.mult_dim
+        for i in range(3):
+            img[..., i] *= props.rgb_mod[i]
 
         video.render_img[height_mid:height_mid+img.shape[0], ...] = img[:height_mid, ...]
 
@@ -162,8 +187,8 @@ class KEYBOARD_JT_Init(pv.Job):
         data.crop = cv2.getPerspectiveTransform(src_points, dst_points)
         data.size = tuple(map(int, [width, width*height_fac]))
 
-        print("FROM:", src_points)
-        print("TO:", dst_points)
+        # print("FROM:", src_points)
+        # print("TO:", dst_points)
 
 
 class KEYBOARD_JT_Render(pv.Job):
