@@ -19,20 +19,13 @@
 
 """
 Block rendering.
-
-Will register:
-
-* Property group ``blocks``
-* Operator group ``blocks``
-* Job ``blocks``
 """
 
-import numpy as np
 import pv
-from pv.props import BoolProp, FloatProp, ListProp
+from pv.props import BoolProp, FloatProp, ListProp, StrProp
 from pvkernel import Video
-from pvkernel import draw
 from utils import block_pos, first_note
+from .solid import draw_block_solid
 
 
 class BUILTIN_PT_Blocks(pv.PropertyGroup):
@@ -44,6 +37,17 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
         default=0.2,
     )
 
+    style = StrProp(
+        name="Style",
+        description="Block style.",
+        default="SOLID",
+        choices=["SOLID"],
+    )
+
+
+class BUILTIN_PT_BlocksSolid(pv.PropertyGroup):
+    idname = "blocks_solid"
+
     rounding = FloatProp(
         name="Rounding",
         description="Corner rounding radius in pixels.",
@@ -53,7 +57,7 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
     border = FloatProp(
         name="Border",
         description="Border thickness in pixels.",
-        default=1,
+        default=0,
     )
 
     glow = BoolProp(
@@ -64,20 +68,20 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
 
     color = ListProp(
         name="Inside Color",
-        description="Color of the inside of the block.",
-        default=[128, 200, 218, 255],
+        description="RGBA color of the inside of the block.",
+        default=[255, 218, 79, 255],
     )
 
     border_color = ListProp(
         name="Border Color",
-        description="Color of the border.",
+        description="RGBA color of the border.",
         default=[255, 255, 255, 255],
     )
 
     glow_color = ListProp(
         name="Glow Color",
         description="Color of the glow.",
-        default=[255, 255, 255, 150],
+        default=[255, 224, 136, 100],
     )
 
 
@@ -90,6 +94,7 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
     def execute(self, video: Video) -> None:
         height = video.resolution[1]
         threshold = height / 2
+        style = video.props.blocks.style
         first = first_note(video)
 
         for note in video.data.midi.notes:
@@ -97,7 +102,11 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
             if not (bottom < 0 or top > threshold):
                 x, width = video.data.core.key_pos[note.note]
                 bottom = min(bottom, threshold+10)
-                draw_block(video, (x, top, width, bottom-top))
+
+                if style == "SOLID":
+                    draw_block_solid(video, (x, top, width, bottom-top))
+                else:
+                    raise ValueError(f"Unknown block style: {style}")
 
 
 class BUILTIN_JT_Blocks(pv.Job):
@@ -105,20 +114,9 @@ class BUILTIN_JT_Blocks(pv.Job):
     ops = ("blocks.render",)
 
 
-def draw_block(video: Video, rect):
-    props = video.props.blocks
-    rounding = props.rounding
-
-    if props.glow:
-        new_rect = (rect[0]-2, rect[1]-2, rect[2]+4, rect[3]+4)
-        draw.rect(video.render_img, props.glow_color, new_rect, border_radius=rounding)
-    draw.rect(video.render_img, props.color, rect, border_radius=rounding)
-    if props.border > 0:
-        draw.rect(video.render_img, props.border_color, rect, border=props.border, border_radius=rounding)
-
-
 classes = (
     BUILTIN_PT_Blocks,
+    BUILTIN_PT_BlocksSolid,
     BUILTIN_OT_BlocksRender,
     BUILTIN_JT_Blocks,
 )
