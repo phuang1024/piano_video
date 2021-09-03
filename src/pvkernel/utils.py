@@ -53,3 +53,7 @@ class Namespace:
 
 def rgba(color):
     return (*color, 255) if len(color) == 3 else color
+
+
+def bounds(v: float, vmin: float = 0, vmax: float = 1) -> float:
+    return min(max(v, vmin), vmax)
