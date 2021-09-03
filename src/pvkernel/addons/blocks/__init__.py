@@ -44,6 +44,12 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
         choices=["SOLID"],
     )
 
+    x_offset = FloatProp(
+        name="X Offset",
+        description="Horizontal offset of blocks.",
+        default=0,
+    )
+
 
 class BUILTIN_PT_BlocksSolid(pv.PropertyGroup):
     idname = "blocks_solid"
@@ -101,6 +107,7 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
             top, bottom = block_pos(video, note, first)
             if not (bottom < 0 or top > threshold):
                 x, width = video.data.core.key_pos[note.note]
+                x += video.props.blocks.x_offset
                 bottom = min(bottom, threshold+10)
 
                 if style == "SOLID":
