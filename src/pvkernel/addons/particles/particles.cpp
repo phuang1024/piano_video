@@ -35,6 +35,9 @@
 #define  VY_MIN  -125
 #define  VY_MAX  -100
 
+#define  STREAK_LEN    8
+#define  STREAK_ANGLE  50 * PI / 180
+
 
 struct Particle {
     Particle() {
@@ -163,7 +166,7 @@ extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int n
             CD dx = p1->x - p2->x, dy = p1->y - p2->y;
             CD dist = pythag(dx, dy);
 
-            if ((dist <= ATTR_DIST) && (abs(dx+dy) >= 1)) {
+            if ((dist <= ATTR_DIST) && (fabs(dx+dy) >= 1)) {
                 CD curr_strength = ATTR_STR/fps * (1-(dist/ATTR_DIST));
 
                 // ddx = delta (delta x) = change in velocity
@@ -204,24 +207,79 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height,
 
         if (ptcls[i].age < MAX_AGE && img_bounds(width, height, x, y)) {
             // Use an inverse quadratic interp to make it fade slowly, and suddenly go away.
-            const UCH value = 255 * (1 - pow(ptcls[i].age/MAX_AGE, 2));
-            const UCH border_value = ibounds(map_range(value, 150, 255, 0, 255), 0, 255);
-            const UCH white[3] = {value, value, value};
-            const UCH border_white[3] = {border_value, border_value, border_value};
+            // color_main = color of the main particle
+            // color_border = color of the side particles.
+            // color_streak = color of the streak.
+            const UCH value_main = 255 * (1 - pow(ptcls[i].age/MAX_AGE, 2));
+            const UCH value_border = ibounds(map_range(value_main, 150, 255, 0, 255), 0, 255);
+            const UCH value_streak = value_border;
+            const UCH color_main[3] = {value_main, value_main, value_main};
+            const UCH color_border[3] = {value_border, value_border, value_border};
+            const UCH color_streak[3] = {value_streak, value_streak/1.08, value_streak/1.06};
 
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
-            img_mix(modified, original, white, intensity);
+            img_mix(modified, original, color_main, intensity);
             img_addc(img, width, x, y, modified);
 
-            if (border_white > 0) {
+            // Render pixels surrounding particle
+            if (value_border > 0) {
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         const int nx = x+dx, ny = y+dy;
                         if (img_bounds(width, height, nx, ny)) {
                             UCH original[3], modified[3];
                             img_getc(img, width, nx, ny, original);
-                            img_mix(modified, original, border_white, intensity/3.0);
+                            img_mix(modified, original, color_border, intensity/3.0);
+                            img_addc(img, width, nx, ny, modified);
+                        }
+                    }
+                }
+            }
+
+            /**
+             * TODO this shouldnt be a documentation comment
+             *
+             * Streaks look like this (length is STREAK_LEN):
+             *
+             *   \     ^  j-hat           | -
+             *    \    |                  |
+             *     O   |----->  i-hat     -----> +
+             *
+             * Then, do a linear transform to make it (new length is 1):
+             *
+             *   |     ^  j-hat           | +
+             *   |     |                  |
+             *   O     |----->  i-hat     -----> +
+             */
+
+            // Render streak
+            const float x_size = 0.2;   // x size in terms of y size
+
+            // transform[4] stores {ihat_x, ihat_y, jhat_x, jhat_y}
+            const float sin_len = sin(STREAK_ANGLE) * STREAK_LEN;
+            const float cos_len = cos(STREAK_ANGLE) * STREAK_LEN;
+            const float inv_transform[4] = {cos_len, -sin_len, -sin_len, -cos_len};
+            float transform[4];
+            mat_2x2inv(transform, inv_transform);
+
+            for (int dx = -STREAK_LEN; dx <= 0; dx++) {
+                for (int dy = -STREAK_LEN; dy <= 0; dy++) {
+                    const int nx = x+dx, ny = y+dy;
+                    if (img_bounds(width, height, nx, ny)) {
+                        // tx = transformed x
+                        const float tx = transform[0]*dx + transform[2]*dy;
+                        const float ty = transform[1]*dx + transform[3]*dy;
+
+                        const float y_fac = dbounds(1 - ty);
+                        const float curr_x_size = x_size * y_fac;
+                        const float x_fac = dbounds((fabs(1-tx) - (1-curr_x_size)) / curr_x_size);
+                        const float final_fac = x_fac * y_fac;
+
+                        if (final_fac > 0) {
+                            UCH original[3], modified[3];
+                            img_getc(img, width, nx, ny, original);
+                            img_mix(modified, original, color_border, final_fac/5.0);
                             img_addc(img, width, nx, ny, modified);
                         }
                     }

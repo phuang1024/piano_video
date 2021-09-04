@@ -55,6 +55,14 @@ MODS double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max) {
     return mapped;
 }
 
+MODS void mat_2x2inv(float dest[4], const float src[4]) {
+    CD det = src[0]*src[3] - src[1]*src[2];
+    dest[0] = src[3] / det;
+    dest[1] = -src[1] / det;
+    dest[2] = -src[2] / det;
+    dest[3] = src[0] / det;
+}
+
 
 MODS bool is_white(const UCH key) {
     const UCH num = (key-3) % 12;

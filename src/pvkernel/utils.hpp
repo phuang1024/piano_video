@@ -70,6 +70,11 @@ MODS double dbounds(CD v, CD vmin = 0, CD vmax = 1);
 MODS double map_range(CD v, CD old_min, CD old_max, CD new_min, CD new_max);
 
 /**
+ * Inverse of a 2x2 matrix.
+ */
+MODS void mat_2x2inv(float dest[4], const float src[4]);
+
+/**
  * Whether a piano key is white. 0 = lowest.
  */
 MODS bool is_white(const UCH key);
