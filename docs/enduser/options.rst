@@ -26,7 +26,7 @@ General
 
 * ``lighting.on``: Whether to use CG lighting.
 * ``lighting.piano_width``: Width of all of the piano keys combined in meters.
-* ``lighting.lights``: List of lights. See `lighting </lighting.html`__ for more info.
+* ``lighting.lights``: List of lights. See `lighting <lighting.html>`__ for more info.
 
 * ``midi.paths``: MIDI file paths. Separate multiple with pathsep (``:``).
 * ``midi.min_len``: Minimum note length in seconds.

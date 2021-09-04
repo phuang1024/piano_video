@@ -4,13 +4,10 @@ User Manual
 Recording
 ---------
 
-*** NOTE THAT THE CAMERA RECORDING FEATURE IS NOT YET CREATED. ***
+Set up a camera and a piano keyboard capable of MIDI recording. Record a video
+and MIDI file. This tutorial assumes they are titled ``midi.mid`` and ``video.mp4``.
 
-To record a piano song, you need a camera, and a piano with a MIDI output with
-cable. Prop your camera so that it faces downwards onto the piano. Connect the
-cable onto your computer, and start recording. Make sure you have a MIDI app
-that can take the keys pressed into a MIDI file. When you are done recording,
-see below to make your first video.
+You might want to save these in a new folder dedicated to this piano recording.
 
 
 Your First Video
@@ -49,3 +46,17 @@ Almost done! We just have to export the video using the code
 
 Hooray! You have your first video exported! With the default settings, this can take
 a few minutes.
+
+
+Properties
+----------
+
+Each video class instance has it's own collection of property values. The available
+properties are defined by *add-ons* (covered below). Detailed property documentation
+can be found `here <options.rst>`__.
+
+Let's change the block color to blue (add this line before the export):
+
+.. code-block:: python
+
+    video.props.blocks_solid.color = (100, 100, 200)
