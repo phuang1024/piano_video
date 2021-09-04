@@ -27,6 +27,7 @@ import pv
 from pv.props import FloatProp, ListProp, StrProp
 from pvkernel import Video
 from .crop import KEYBOARD_JT_Init
+from .studio import register as reg_studio, apply_lighting
 
 
 class KEYBOARD_PT_Props(pv.PropertyGroup):
@@ -116,9 +117,14 @@ class KEYBOARD_OT_Render(pv.Operator):
         img = read_frame(video, video.frame)
         img = cv2.warpPerspective(img, data.crop, size)
         img = cv2.resize(img, size)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        # Apply studio lighting
+        apply_lighting(video, img)
+
+        # Final processing
         img = img * data.mask_img
         img = cv2.resize(img, (0, 0), fx=1, fy=props.height_fac)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # Perform color manipulations
         img = np.maximum(img.astype(np.int16)-props.sub_dim, 0).astype(np.uint8)
@@ -176,3 +182,4 @@ classes = (
 def register():
     for cls in classes:
         pv.utils.register_class(cls)
+    reg_studio()

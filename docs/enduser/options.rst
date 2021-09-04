@@ -14,6 +14,19 @@ General
 * ``keyboard.right_offset``: Pixel offset between the right of the screen and the
   right of the piano.
 * ``keyboard.black_width_fac``: Black key width factor respective to white key.
+* ``keyboard.video_path``: Path to video file.
+* ``keyboard.video_start``: Time you start playing the first note in seconds.
+* ``keyboard.crop``: List of locations of the corner of the keys starting from
+  top left and going clockwise.
+* ``keyboard.height_fac``: Keyboard height multiplier for rendered image.
+* ``keyboard.mask``: Amount of space to show under the keyboard in pixels.
+* ``keyboard.sub_dim``: Subtractive dimming from 0 to 255.
+* ``keyboard.mult_dim``: Multiplicative dimming.
+* ``keyboard.rgb_mod``: ``[R, G, B]`` intensity factors.
+
+* ``lighting.on``: Whether to use CG lighting.
+* ``lighting.piano_width``: Width of all of the piano keys combined in meters.
+* ``lighting.lights``: List of lights. See `lighting </lighting.html`__ for more info.
 
 * ``midi.paths``: MIDI file paths. Separate multiple with pathsep (``:``).
 * ``midi.min_len``: Minimum note length in seconds.
