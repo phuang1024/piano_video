@@ -17,18 +17,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: all dirs psmidi psbytes
+.PHONY: all dirs
 
-all: dirs psmidi psbytes
+all: dirs
 
 dirs:
 	mkdir -p ./include
 	mkdir -p ./lib
-
-psmidi:
-	cd ./psmidi; \
-	make;
-
-psbytes:
-	cd ./psbytes; \
-	make;
