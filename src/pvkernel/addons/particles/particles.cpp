@@ -215,7 +215,7 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height,
             const UCH value_streak = value_border;
             const UCH color_main[3] = {value_main, value_main, value_main};
             const UCH color_border[3] = {value_border, value_border, value_border};
-            const UCH color_streak[3] = {value_streak, value_streak/1.08, value_streak/1.06};
+            const UCH color_streak[3] = {value_streak, (UCH)((double)value_streak/1.08), (UCH)((double)value_streak/1.06)};
 
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
@@ -230,7 +230,7 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height,
                         if (img_bounds(width, height, nx, ny)) {
                             UCH original[3], modified[3];
                             img_getc(img, width, nx, ny, original);
-                            img_mix(modified, original, color_border, intensity/3.0);
+                            img_mix(modified, original, color_streak, intensity/3.0);
                             img_addc(img, width, nx, ny, modified);
                         }
                     }

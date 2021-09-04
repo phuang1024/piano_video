@@ -31,7 +31,7 @@ CUFILES = utils_cu.o random_cu.o
 
 # Useful targets
 
-all: cpp cuda clean
+all: cpp clean #cpp cuda clean
 
 cpp: $(CXXFILES)
 	$(CXX) -shared -o libpvkernel.so $(CXXFILES)
