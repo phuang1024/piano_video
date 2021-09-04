@@ -17,10 +17,24 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <iostream>
 #include <fstream>
-#include "struct.hpp"
 
 
-int main() {
-}
+namespace Struct {
+
+const int _one = 1;
+const bool _endian_little = *(char*)(&_one);
+
+/**
+ * Write data to file.
+ * @param reverse whether to write bytes starting from last.
+ */
+void write_raw(std::ofstream& fp, const void* data, const int size, const bool reverse);
+
+/**
+ * Write number (or any data) to file.
+ * @param little_endian whether to WRITE as little endian.
+ */
+void write_num(std::ofstream& fp, const void* data, const int size, const bool little_endian);
+
+}  // namespace Struct

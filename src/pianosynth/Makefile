@@ -19,7 +19,7 @@
 
 CXX = g++
 CXXFLAGS = -Wall -O3
-CXXFILES = main.o
+CXXFILES = main.o struct.o wave.o
 
 .PHONY: all compile clean
 

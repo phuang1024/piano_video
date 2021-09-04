@@ -22,5 +22,23 @@
 #include "struct.hpp"
 
 
-int main() {
+namespace Struct {
+
+void write_raw(std::ofstream& fp, const void* _data, const int size, const bool reverse) {
+    const char* data = (char*)_data;
+
+    if (reverse) {
+        for (int i = size-1; i >= 0; i--)
+            fp.write(data+i, 1);
+    } else {
+        fp.write(data, size);
+    }
 }
+
+void write_num(std::ofstream& fp, const void* _data, const int size, const bool little_endian) {
+    const char* data = (char*)_data;
+
+    write_raw(fp, data, size, little_endian != _endian_little);
+}
+
+}  // namespace Struct
