@@ -63,7 +63,7 @@ class BUILTIN_PT_BlocksSolid(pv.PropertyGroup):
     border = FloatProp(
         name="Border",
         description="Border thickness in pixels.",
-        default=0,
+        default=0.5,
     )
 
     glow = BoolProp(
@@ -75,13 +75,13 @@ class BUILTIN_PT_BlocksSolid(pv.PropertyGroup):
     color = ListProp(
         name="Inside Color",
         description="RGBA color of the inside of the block.",
-        default=[255, 218, 79, 255],
+        default=[212, 181, 66, 255],
     )
 
     border_color = ListProp(
         name="Border Color",
         description="RGBA color of the border.",
-        default=[255, 255, 255, 255],
+        default=[212, 212, 212, 255],
     )
 
     glow_color = ListProp(
