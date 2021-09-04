@@ -17,10 +17,16 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: all dirs
+CXX = g++
+CXXFLAGS = -Wall -O3
+CXXFILES = main.o
 
-all: dirs
+.PHONY: all compile clean
 
-dirs:
-	mkdir -p ./include
-	mkdir -p ./lib
+all: compile clean
+
+compile: $(CXXFILES)
+	g++ $(CXXFILES) -o pianosynth
+
+clean:
+	rm *.o
