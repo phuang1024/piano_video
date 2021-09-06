@@ -25,18 +25,19 @@
 #include "../../utils.hpp"
 #include "../../random.hpp"
 
-#define  AIR_RESIST  0.95
-#define  MAX_AGE     4
-#define  ATTR_DIST   4
-#define  ATTR_STR    4
 
-#define  VX_MIN  -10
-#define  VX_MAX  10
-#define  VY_MIN  -125
-#define  VY_MAX  -100
+constexpr  AIR_RESIST = 0.95
+constexpr  MAX_AGE    = 4
+constexpr  ATTR_DIST  = 4
+constexpr  ATTR_STR   = 4
 
-#define  STREAK_LEN    10
-#define  STREAK_ANGLE  55 * PI / 180
+constexpr  VX_MIN = -10
+constexpr  VX_MAX = 10
+constexpr  VY_MIN = -125
+constexpr  VY_MAX = -100
+
+constexpr  STREAK_LEN   = 10
+constexpr  STREAK_ANGLE = 55 * PI / 180
 
 
 struct Particle {
