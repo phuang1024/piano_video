@@ -26,18 +26,18 @@
 #include "../../random.hpp"
 
 
-constexpr  AIR_RESIST = 0.95
-constexpr  MAX_AGE    = 4
-constexpr  ATTR_DIST  = 4
-constexpr  ATTR_STR   = 4
+constexpr double AIR_RESIST = 0.95
+constexpr int MAX_AGE    = 4
+constexpr int ATTR_DIST  = 4
+constexpr int ATTR_STR   = 4
 
-constexpr  VX_MIN = -10
-constexpr  VX_MAX = 10
-constexpr  VY_MIN = -125
-constexpr  VY_MAX = -100
+constexpr int VX_MIN = -10
+constexpr int VX_MAX = 10
+constexpr int VY_MIN = -125
+constexpr int VY_MAX = -100
 
-constexpr  STREAK_LEN   = 10
-constexpr  STREAK_ANGLE = 55 * PI / 180
+constexpr int STREAK_LEN   = 10
+constexpr double STREAK_ANGLE = 55 * PI / 180
 
 
 struct Particle {
