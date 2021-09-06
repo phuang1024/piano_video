@@ -5,6 +5,7 @@ Changelog
 
 * Fade out bottom of keyboard.
 * Streaks on bright particles.
+* Minor improvements to smoke and particles.
 
 **0.3.0 (current release)**
 

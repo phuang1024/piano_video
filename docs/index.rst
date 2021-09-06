@@ -46,3 +46,6 @@ Piano Video
     blog/particles.rst
 
 A free piano visualizer.
+
+.. image:: https://github.com/phuang1024/piano_video/blob/main/examples/sep_6_2021.png?raw=true
+    :width: 500

@@ -7,3 +7,8 @@ docs/conf.py
 src/pv/__init__.py
 src/pvgui/main.py
 src/pvkernel/__init__.py
+
+Preview images:
+README.md
+docs/index.rst
+docs/general/about.rst
