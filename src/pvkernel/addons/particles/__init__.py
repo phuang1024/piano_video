@@ -23,7 +23,7 @@ Particle effects.
 
 import numpy as np
 import pv
-from pv.props import FloatProp
+from pv.props import BoolProp, FloatProp
 from pvkernel import Video
 from pvkernel.lib import *
 
@@ -37,6 +37,12 @@ render_func = LIB.ptcl_render
 
 class PTCLS_PT_Props(pv.PropertyGroup):
     idname = "ptcls"
+
+    on = BoolProp(
+        name="Particles On",
+        description="Whether to use particle effects.",
+        default=True,
+    )
 
     intensity = FloatProp(
         name="Intensity",
@@ -87,6 +93,9 @@ def get_cpath(cache: pv.Cache, frame, default="", check_exist=True):
 
 def simulate(video: Video):
     """Call ptcls simulation library."""
+    if not video.props.ptcls.on:
+        return
+
     cache: pv.Cache = video.caches.ptcls
     frame = video.frame
 
@@ -111,6 +120,9 @@ def simulate(video: Video):
 
 def render(video: Video):
     """Call ptcls render library."""
+    if not video.props.ptcls.on:
+        return
+
     cache: pv.Cache = video.caches.ptcls
     frame = video.frame
 

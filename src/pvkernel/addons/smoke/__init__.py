@@ -39,6 +39,12 @@ render_func = LIB.smoke_render
 class SMOKE_PT_Props(pv.PropertyGroup):
     idname = "smoke"
 
+    on = BoolProp(
+        name="Smoke On",
+        description="Whether to use smoke effects",
+        default=True,
+    )
+
     intensity = FloatProp(
         name="Intensity",
         description="Smoke opacity multiplier.",
@@ -89,6 +95,9 @@ def get_cpath(cache: pv.Cache, frame, default="", check_exist=True):
 
 def simulate(video: Video):
     """Call smoke simulation library."""
+    if not video.props.smoke.on:
+        return
+
     cache: pv.Cache = video.caches.smoke
     frame = video.frame
 
@@ -113,11 +122,14 @@ def simulate(video: Video):
 
 def render(video: Video):
     """Call smoke render library."""
+    if not video.props.smoke.on:
+        return
+
     cache: pv.Cache = video.caches.smoke
     frame = video.frame
 
     path = get_cpath(cache, frame)
-    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity/8)
+    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity/7)
 
 
 classes = (
