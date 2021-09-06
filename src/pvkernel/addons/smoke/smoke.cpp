@@ -25,10 +25,10 @@
 #include "../../random.hpp"
 #include "../../utils.hpp"
 
-#define  AIR_RESIST  0.95
-#define  MAX_AGE     5
-#define  DIFF_DIST   4
-#define  DIFF_STR    1
+constexpr double AIR_RESIST = 0.95;
+constexpr int MAX_AGE    = 5;
+constexpr int DIFF_DIST  = 4;
+constexpr int DIFF_STR   = 1;
 
 
 struct SmokePtcl {
