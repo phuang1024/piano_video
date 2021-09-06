@@ -57,7 +57,7 @@ class BUILTIN_PT_BlocksSolid(pv.PropertyGroup):
     rounding = FloatProp(
         name="Rounding",
         description="Corner rounding radius in pixels.",
-        default=5,
+        default=8,
     )
 
     border = FloatProp(
@@ -75,19 +75,19 @@ class BUILTIN_PT_BlocksSolid(pv.PropertyGroup):
     color = ListProp(
         name="Inside Color",
         description="RGBA color of the inside of the block.",
-        default=[212, 181, 66, 255],
+        default=[195, 165, 50, 255],
     )
 
     border_color = ListProp(
         name="Border Color",
         description="RGBA color of the border.",
-        default=[212, 212, 212, 255],
+        default=[220, 210, 210, 255],
     )
 
     glow_color = ListProp(
         name="Glow Color",
         description="Color of the glow.",
-        default=[255, 224, 136, 100],
+        default=[255, 220, 200, 90],
     )
 
 

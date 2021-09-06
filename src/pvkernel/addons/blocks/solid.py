@@ -30,4 +30,4 @@ def draw_block_solid(video: Video, rect):
         draw.rect(video.render_img, props.glow_color, new_rect, border_radius=rounding)
     draw.rect(video.render_img, props.color, rect, border_radius=rounding)
     if props.border > 0:
-        draw.rect(video.render_img, props.border_color, rect, border=props.border, border_radius=rounding)
+        draw.rect(video.render_img, props.border_color, rect, border=props.border, border_radius=rounding+2)
