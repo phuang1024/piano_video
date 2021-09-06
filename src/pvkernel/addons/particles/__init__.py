@@ -53,7 +53,7 @@ class PTCLS_PT_Props(pv.PropertyGroup):
     pps = FloatProp(
         name="Particles/Second",
         description="Amount of particles to emit per second per note.",
-        default=100,
+        default=200,
     )
 
 
@@ -115,7 +115,7 @@ def render(video: Video):
     frame = video.frame
 
     path = get_cpath(cache, frame)
-    render_func(video.render_img, *video.resolution, path, video.props.ptcls.intensity)
+    render_func(video.render_img, *video.resolution, path, video.props.ptcls.intensity*0.7)
 
 
 classes = (

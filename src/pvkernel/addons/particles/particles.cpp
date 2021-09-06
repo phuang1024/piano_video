@@ -35,8 +35,8 @@
 #define  VY_MIN  -125
 #define  VY_MAX  -100
 
-#define  STREAK_LEN    8
-#define  STREAK_ANGLE  50 * PI / 180
+#define  STREAK_LEN    10
+#define  STREAK_ANGLE  55 * PI / 180
 
 
 struct Particle {

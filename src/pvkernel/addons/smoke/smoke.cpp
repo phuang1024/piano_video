@@ -26,7 +26,7 @@
 #include "../../utils.hpp"
 
 #define  AIR_RESIST  0.95
-#define  MAX_AGE     10
+#define  MAX_AGE     5
 #define  DIFF_DIST   4
 #define  DIFF_STR    1
 
@@ -160,6 +160,7 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
 
     const int size = ptcls.size();
     CD air_resist = std::pow(AIR_RESIST, 1/fps);
+    CD air_resist_x = std::pow(air_resist, 4);  // X vel decreases faster
 
     // Simulate motion
     for (int i = 0; i < size; i++) {
@@ -174,9 +175,9 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
             ptcl.good = false;
             continue;
         }
-        ptcl.vx *= air_resist;
+        ptcl.vx *= air_resist_x;
         ptcl.vy *= air_resist;
-        ptcl.age += 1/fps;
+        ptcl.age += 1.0 / fps;
     }
     if (diffusion)
         smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
@@ -205,8 +206,8 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
         const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
 
         if (ptcls[i].age < MAX_AGE && img_bounds(width, height, x, y)) {
-            // Use an inverse quadratic interp to make it fade slowly, and suddenly go away.
-            const UCH value = 255 * (1-pow(ptcls[i].age/MAX_AGE, 2));
+            // REMEMBER TO CHANGE MAX_AGE CONSTANT IF YOU ARE ADJUSTING THIS
+            const UCH value = 255 * dbounds(map_range(ptcls[i].age, 3, 5, 1, 0));
             const UCH white[3] = {value, value, value};
 
             UCH original[3], modified[3];
