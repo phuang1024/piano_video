@@ -46,6 +46,8 @@ if get_last_comp() != __version__:
     build()
 set_last_comp()
 del build
+del get_last_comp
+del set_last_comp
 
 from . import draw
 from .video import Video
