@@ -20,7 +20,12 @@
 .PHONY: help build dist docs ps
 
 help:
-	# Please see https://piano-video.rtfd.io for support.
+	@echo "Makefile help:"
+	@echo "help: Display this help message."
+	@echo "build: Build kernel C++ shared library."
+	@echo "dist: Build distributable binaries in ./build"
+	@echo "docs: Build sphinx documentation."
+	@echo "ps: Build pianosynth."
 
 build:
 	cd ./src/pvkernel; \
