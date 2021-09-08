@@ -32,7 +32,6 @@ namespace Random {
 
 
     MODS int randint(const int min, const int max) {
-        /* Return int NOT including max */
         return min + (rand() % (max-min));
     }
 

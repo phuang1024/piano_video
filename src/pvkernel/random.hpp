@@ -23,8 +23,18 @@
 
 
 namespace Random {
+    /**
+     * Set seed to current time.
+     */
     MODS void seed();
 
+    /**
+     * Return integer including min, not including max
+     */
     MODS int randint(const int min, const int max);
+
+    /**
+     * Return float between min and max.
+     */
     MODS double uniform(const double min, const double max);
 }
