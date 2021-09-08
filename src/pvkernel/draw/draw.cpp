@@ -25,19 +25,14 @@ using std::min;
 using std::max;
 
 
+/**
+ * TODO buggy
+ * Draws a line.
+ *
+ * @param thick Line thickness in pixels.
+ */
 extern "C" void draw_line(UCH* img, const int width, const int height, CD x1, CD y1, CD x2, CD y2,
         CD thick, CD r, CD g, CD b, CD a) {
-    /*
-    TODO buggy
-    Draws a line.
-
-    :param img: Image.
-    :param width: Image width.
-    :param height: Image height.
-    :param x1, x2, y1, y2: Line points.
-    :param thick: Line thickness.
-    :param r, g, b, a: R, G, B, A values.
-    */
     const int xmin = max((int)(min(x1, x2)-thick-1), 0);
     const int xmax = min((int)(max(x1, x2)+thick+1), (int)width-1);
     const int ymin = max((int)(min(y1, y2)-thick-1), 0);
@@ -64,20 +59,16 @@ extern "C" void draw_line(UCH* img, const int width, const int height, CD x1, CD
     }
 }
 
+/**
+ * Draws a circle.
+ *
+ * @param cx Center X.
+ * @param cy Center Y.
+ * @param rad Radius.
+ * @param border Border thickness. Set to 0 for filled.
+ */
 extern "C" void draw_circle(UCH* img, const int width, const int height, CD cx, CD cy,
         CD rad, CD border, CD r, CD g, CD b, CD a) {
-    /*
-    Draws a circle.
-
-    :param img: Image.
-    :param width: Image width.
-    :param height: Image height.
-    :param cx: Center X.
-    :param cy: Center Y.
-    :param rad: Radius.
-    :param border: Border thickness. Set to 0 for filled.
-    :param r, g, b, a: R, G, B, A values.
-    */
     const int xmin = max((int)(cx-rad-1), 0);
     const int xmax = min((int)(cx+rad+1), (int)width-1);
     const int ymin = max((int)(cy-rad-1), 0);
@@ -102,25 +93,22 @@ extern "C" void draw_circle(UCH* img, const int width, const int height, CD cx, 
     }
 }
 
+/**
+ * Draws a rectangle.
+ *
+ * @param dx Top left X.
+ * @param dy Top left Y.
+ * @param dw Width.
+ * @param dh Height.
+ * @param border Border thickness. Set to 0 for filled.
+ * @param border_rad Radius of corner rounding.
+ * @param tl_rad Top left corner radius.
+ * @param tr_rad Top right corner radius.
+ * @param bl_rad Bottom left corner radius.
+ * @param br_rad Bottom right corner radius.
+ */
 extern "C" void draw_rect(UCH* img, const int width, const int height, CD dx, CD dy, CD dw, CD dh,
         CD border, CD border_rad, CD tl_rad, CD tr_rad, CD bl_rad, CD br_rad, CD r, CD g, CD b, CD a) {
-    /*
-    Draws a rectangle.
-
-    :param img: Image.
-    :param width: Image width.
-    :param height: Image height.
-    :param dx: Top left X.
-    :param dy: Top left Y.
-    :param dw: Width.
-    :param dh: Height.
-    :param border: Border thickness. Set to 0 for filled.
-    :param border_rad: Radius of corner rounding.
-    :param tl_rad: Top left corner radius.
-    :param tr_rad: Top right corner radius.
-    :param bl_rad: Bottom left corner radius.
-    :param br_rad: Bottom right corner radius.
-    */
     CD radii[4] = {
         (tl_rad < 0) ? border_rad : tl_rad,
         (tr_rad < 0) ? border_rad : tr_rad,
