@@ -19,11 +19,7 @@
 
 #pragma once
 
-#ifdef __GNUC__
-    #define  MODS
-#else
-    #define  MODS  __host__ __device__
-#endif
+#include "utils.hpp"
 
 
 namespace Random {

@@ -24,12 +24,6 @@
 #include "utils.hpp"
 #include "random.hpp"
 
-#if CPP
-    #define  MODS
-#else
-    #define  MODS  __host__ __device__
-#endif
-
 
 namespace Random {
     MODS void seed() {
