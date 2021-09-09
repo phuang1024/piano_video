@@ -35,10 +35,15 @@ void write_raw(std::ofstream& fp, const void* _data, const int size, const bool 
     }
 }
 
-void write_num(std::ofstream& fp, const void* _data, const int size, const bool little_endian) {
+void write_data(std::ofstream& fp, const void* _data, const int size, const bool little_endian) {
     const char* data = (char*)_data;
 
     write_raw(fp, data, size, little_endian != _endian_little);
+}
+
+template<class T>
+void write_num(std::ofstream fp, const T v, const bool little_endian) {
+    write_data(fp, &v, sizeof(v), little_endian);
 }
 
 }  // namespace Struct

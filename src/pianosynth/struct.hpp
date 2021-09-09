@@ -19,6 +19,12 @@
 
 #include <fstream>
 
+typedef  unsigned char       UCH;
+typedef  unsigned short      USHORT;
+typedef  unsigned int        UINT;
+typedef  long long           LL;
+typedef  unsigned long long  ULL;
+
 
 namespace Struct {
 
@@ -32,9 +38,17 @@ const bool _endian_little = *(char*)(&_one);
 void write_raw(std::ofstream& fp, const void* data, const int size, const bool reverse);
 
 /**
- * Write number (or any data) to file.
+ * Write data to file.
  * @param little_endian whether to WRITE as little endian.
  */
-void write_num(std::ofstream& fp, const void* data, const int size, const bool little_endian);
+void write_data(std::ofstream& fp, const void* data, const int size, const bool little_endian);
+
+/**
+ * Write number to file.
+ * Use the template to specify type.
+ * @param little_endian whether to WRITE as little endian.
+ */
+template<class T>
+void write_num(std::ofstream& fp, const T v, const bool little_endian);
 
 }  // namespace Struct
