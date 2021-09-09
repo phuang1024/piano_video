@@ -165,8 +165,6 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
     // Simulate motion
     for (int i = 0; i < size; i++) {
         SmokePtcl& ptcl = ptcls[i];
-        ptcl.x += ptcl.vx;
-        ptcl.y += ptcl.vy;
         if (!img_bounds(width, height, ptcl.x, ptcl.y)) {
             ptcl.good = false;
             continue;
@@ -175,12 +173,20 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
             ptcl.good = false;
             continue;
         }
+
+        // Add velocities to positions
+        ptcl.x += ptcl.vx;
+        ptcl.y += ptcl.vy;
         ptcl.vx *= air_resist_x;
         ptcl.vy *= air_resist;
         ptcl.age += 1.0 / fps;
+
+        // Sway back and forth depending on Y position and random
+        const float wind = sin(ptcl.y/25.0 + Random::uniform(-0.1, 0.1)) + Random::uniform(-0.1, 0.1);
+        ptcl.vx += wind / 20.0;
     }
-    if (diffusion)
-        smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
+    // if (diffusion)
+    //     smoke_sim_diff(&(ptcls[0]), size, DIFF_STR/fps);
 
     // Write to output
     std::ofstream fout(op);
