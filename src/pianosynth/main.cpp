@@ -17,10 +17,18 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <iostream>
+#include <cmath>
 #include <fstream>
+#include <iostream>
 #include "struct.hpp"
+#include "wave.hpp"
 
 
 int main() {
+    Wave::WaveWrite fp("a.wav");
+
+    for (int i = 0; i < (int)1e7; i++) {
+        const int v = 100000000 * sin((double)i/33.0);
+        fp.write_frame(v);
+    }
 }

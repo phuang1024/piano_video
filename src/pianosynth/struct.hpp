@@ -49,6 +49,8 @@ void write_data(std::ofstream& fp, const void* data, const int size, const bool 
  * @param little_endian whether to WRITE as little endian.
  */
 template<class T>
-void write_num(std::ofstream& fp, const T v, const bool little_endian);
+void write_num(std::ofstream& fp, const T v, const bool little_endian) {
+    write_data(fp, &v, sizeof(v), little_endian);
+}
 
 }  // namespace Struct

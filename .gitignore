@@ -11,6 +11,7 @@ lib
 *.mid
 *.mp3
 *.mp4
+*.wav
 
 !examples/*
 
