@@ -24,9 +24,10 @@
 namespace Wave {
 
 /**
- * Write wave file. File format and specifications are static:
+ * Write wave file. File format and specifications are constant:
  * 32 bit
  * 1 channel
+ * 44100 fps
  */
 class WaveWrite {
 public:
@@ -45,9 +46,17 @@ public:
      */
     void close();
 
+    /**
+     * Write one frame (signed 32 bit int)
+     */
+    void write_frame(const int v);
+
 private:
-    bool _open;
     std::ofstream _fp;
+    bool _open;
+    int _frames_written;
+
+    void _write_header();
 };
 
 }  // namespace Wave

@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <string>
+#include "struct.hpp"
 #include "wave.hpp"
 
 
@@ -32,10 +33,39 @@ WaveWrite::~WaveWrite() {
 WaveWrite::WaveWrite(const std::string path) {
     _fp = std::ofstream(path);
     _open = true;
+    _frames_written = 0;
 }
 
 void WaveWrite::close() {
-    _open = false;
+    if (_open) {
+        _write_header();
+        _open = false;
+        _fp.close();
+    }
+}
+
+void WaveWrite::write_frame(const int v) {
+    Struct::write_num<int>(_fp, v, true);
+    _frames_written++;
+}
+
+void WaveWrite::_write_header() {
+    const int data_len = _frames_written * 4;
+
+    _fp.seekp(0);
+    _fp.write("RIFF", 4);
+    Struct::write_num<UINT>(_fp, 36+data_len, true);    // Data length including header
+    _fp.write("WAVE", 4);
+    _fp.write("fmt ", 4);
+    Struct::write_num<UINT>(_fp, 16, true);       // Something
+    Struct::write_num<USHORT>(_fp, 1, true);      // Audio format PCM
+    Struct::write_num<USHORT>(_fp, 1, true);      // One channel
+    Struct::write_num<UINT>(_fp, 44100, true);    // FPS
+    Struct::write_num<UINT>(_fp, 44100*4, true);  // FPS * nchannels * sampwidth
+    Struct::write_num<USHORT>(_fp, 4, true);      // nchannels * sampwidth
+    Struct::write_num<USHORT>(_fp, 32, true);     // sampwidth * 4
+    _fp.write("data", 4);
+    Struct::write_num<UINT>(_fp, data_len, true); // length of actual audio
 }
 
 }  // namespace Wave
