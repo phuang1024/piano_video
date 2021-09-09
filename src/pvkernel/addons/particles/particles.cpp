@@ -31,8 +31,8 @@ constexpr int MAX_AGE    = 4;
 constexpr int ATTR_DIST  = 4;
 constexpr int ATTR_STR   = 4;
 
-constexpr int VX_MIN = -10;
-constexpr int VX_MAX = 10;
+constexpr int VX_MIN = -5;
+constexpr int VX_MAX = 5;
 constexpr int VY_MIN = -125;
 constexpr int VY_MAX = -100;
 
@@ -144,8 +144,6 @@ extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int n
     // Simulate motion
     for (int i = 0; i < size; i++) {
         Particle& ptcl = ptcls[i];
-        ptcl.x += ptcl.vx;
-        ptcl.y += ptcl.vy;
         if (!img_bounds(width, height, ptcl.x, ptcl.y)) {
             ptcl.good = false;
             continue;
@@ -154,9 +152,20 @@ extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int n
             ptcl.good = false;
             continue;
         }
+
+        // Add velocities to positions.
+        ptcl.x += ptcl.vx;
+        ptcl.y += ptcl.vy;
         ptcl.vx *= air_resist;
         ptcl.vy *= air_resist;
-        ptcl.age += 1/fps;
+        ptcl.age += 1 / fps;
+
+        // Wind
+        const float age = ptcl.age;
+        const float x_wind = sin(age*4.3 + Random::uniform(-0.1, 0.1)) + Random::uniform(-0.1, 0.1);
+        const float y_wind = sin(age*5.7 + Random::uniform(-2.1, 2.1)) + Random::uniform(-0.1, 0.1);
+        ptcl.vx += x_wind / 15.0;
+        ptcl.vy += y_wind / 15.0;
     }
 
     // Simulate attracted to each other
