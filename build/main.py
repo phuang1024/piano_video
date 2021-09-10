@@ -21,7 +21,7 @@ import os
 from deb import PyDeb
 from whl import Wheel
 
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 with open(os.path.realpath(os.path.join(PARENT, "..", "requirements.txt")), "r") as fp:
