@@ -8,5 +8,5 @@ The official repository and distribution on
 `GitHub <https://github.com/phuang1024/piano_video>`__ also provides all
 downloads gratis.
 
-.. image:: https://github.com/phuang1024/piano_video/blob/main/examples/sep_6_2021.png?raw=true
+.. image:: https://github.com/phuang1024/piano_video/blob/main/examples/sep_9_2021.png?raw=true
     :width: 500

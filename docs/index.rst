@@ -47,5 +47,5 @@ Piano Video
 
 A free piano visualizer.
 
-.. image:: https://github.com/phuang1024/piano_video/blob/main/examples/sep_6_2021.png?raw=true
+.. image:: https://github.com/phuang1024/piano_video/blob/main/examples/sep_9_2021.png?raw=true
     :width: 500
