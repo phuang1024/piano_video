@@ -3,6 +3,10 @@ Changelog
 
 **0.3.2**
 
+* Minor improvements to smoke and particles.
+* Improved block glow.
+* Option for octave lines.
+
 **0.3.1 (current release)**
 
 * Fade out bottom of keyboard.
