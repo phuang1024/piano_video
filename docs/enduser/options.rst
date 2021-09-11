@@ -3,6 +3,8 @@ Built-in Options
 
 This page provides reference to the built-in options you can use.
 
+TODO Some of this is old.
+
 General
 -------
 

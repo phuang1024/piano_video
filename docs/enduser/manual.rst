@@ -45,7 +45,8 @@ Almost done! We just have to export the video using the code
     video.export("video.mp4")
 
 Hooray! You have your first video exported! With the default settings, this can take
-a few minutes.
+a few minutes. Feel free to stop the export (``Ctrl+C``) at any time, and you will
+be able to view the rendered frames in the video.
 
 
 Properties
@@ -60,3 +61,5 @@ Let's change the block color to blue (add this line before the export):
 .. code-block:: python
 
     video.props.blocks_solid.color = (100, 100, 200)
+
+Now, export again, and you should see the blocks are now blue.
