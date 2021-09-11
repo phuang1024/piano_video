@@ -54,7 +54,7 @@ class SMOKE_PT_Props(pv.PropertyGroup):
     pps = FloatProp(
         name="Particles/Second",
         description="Amount of smoke particles to emit per second per note.",
-        default=20000,
+        default=5500,
     )
 
     diffusion = BoolProp(
@@ -129,7 +129,7 @@ def render(video: Video):
     frame = video.frame
 
     path = get_cpath(cache, frame)
-    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity/14)
+    render_func(video.render_img, *video.resolution, path, video.props.smoke.intensity/7)
 
 
 classes = (
