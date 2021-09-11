@@ -1,6 +1,14 @@
 Installation
 ============
 
+Requirements
+------------
+
+* The GNU Compiler Collection
+* GNU Make
+* Python 3.8
+* `Python packages <https://github.com/phuang1024/piano_video/blob/main/requirements.txt>`__
+
 GNU/Linux
 ---------
 

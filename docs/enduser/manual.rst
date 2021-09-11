@@ -15,7 +15,7 @@ Your First Video
 
 First, `install <install.html>`__ Piano Video.
 
-Import the ``pvkernel`` library, which will give us to the ``Video`` class.
+Import the ``pvkernel`` library, which will give us access to the ``Video`` class.
 The default resolution and fps are ``(1920, 1080)``, and ``30`` respectively.
 
 .. code-block:: python
