@@ -48,7 +48,7 @@ def build():
     if p1.returncode != 0:
         print("pvkernel: c++ compilation failed.")
 
-    if "PV_USE_CUDA" in os.environ:
+    if False and "PV_USE_CUDA" in os.environ:
         p2 = Popen(["make", "cuda"], cwd=PARENT, stdin=DEVNULL, stdout=DEVNULL, stderr=DEVNULL)
         p2.wait()
         if p2.returncode != 0:
