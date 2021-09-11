@@ -54,7 +54,7 @@ class SMOKE_PT_Props(pv.PropertyGroup):
     pps = FloatProp(
         name="Particles/Second",
         description="Amount of smoke particles to emit per second per note.",
-        default=20000,
+        default=5500,
     )
 
     diffusion = BoolProp(
