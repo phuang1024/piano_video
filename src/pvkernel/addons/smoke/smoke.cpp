@@ -219,7 +219,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height, const 
 
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
-            img_mix(modified, original, color, intensity/10.0);
+            img_mix(modified, original, color, intensity/Random::uniform(9, 11));
             img_addc(img, width, x, y, modified);
 
             for (int dx = -2; dx <= 2; dx++) {
@@ -228,7 +228,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height, const 
                     if (img_bounds(width, height, nx, ny)) {
                         UCH original[3], modified[3];
                         img_getc(img, width, nx, ny, original);
-                        img_mix(modified, original, color, intensity/30.0);
+                        img_mix(modified, original, color, intensity/Random::uniform(28, 32));
                         img_addc(img, width, nx, ny, modified);
                     }
                 }

@@ -161,7 +161,7 @@ extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int n
         ptcl.age += 1 / fps;
 
         // Wind
-        const float age = ptcl.age;
+        const float age = ptcl.age + ptcl.x/10000;
         const float x_wind = sin(age*4.3 + Random::uniform(-0.1, 0.1)) + Random::uniform(-0.1, 0.1);
         const float y_wind = sin(age*5.7 + Random::uniform(-2.1, 2.1)) + Random::uniform(-0.1, 0.1);
         ptcl.vx += x_wind / 15.0;
@@ -220,7 +220,7 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height, const c
             // color_main = color of the main particle
             // color_border = color of the side particles.
             // color_streak = color of the streak.
-            const double value_main = 1 - pow(ptcls[i].age/MAX_AGE, 2);
+            const double value_main = (1-pow(ptcls[i].age/MAX_AGE, 2)) * Random::uniform(0.95, 1.05);
             const double value_border = dbounds(map_range(value_main, 0.6, 1, 0, 1), 0, 1);
             const double value_streak = value_border;
             const UCH color_main[3] = {(UCH)(r*value_main), (UCH)(g*value_main), (UCH)(b*value_main)};
