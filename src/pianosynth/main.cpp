@@ -24,11 +24,29 @@
 #include "wave.hpp"
 
 
-int main() {
-    Wave::WaveWrite fp("a.wav");
+/**
+ * This function is called by the Python CLI tool.
+ *
+ * Invoke:
+ *  ./pianosynth out.wav
+ *
+ * stdin:
+ *  num_events
+ *  event1 opt1 opt2
+ *  event2 opt3 opt4
+ *  ...
+ *
+ * Available events:
+ *  Note on: note_on note velocity
+ *  Note off: note_off note
+ *  Damper set: damper value
+ * Lowest note on piano has a value of 0
+ */
+int main(int argc, char** argv) {
+    Wave::WaveWrite fp(argv[1]);
 
-    for (int i = 0; i < (int)1e7; i++) {
-        const int v = 100000000 * sin((double)i/33.0);
+    for (int i = 0; i < (int)1e5; i++) {
+        const int v = 100000000. * sin((double)i/33.0);
         fp.write_frame(v);
     }
 }
