@@ -221,8 +221,8 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
             img_mix(modified, original, white, intensity/10.0);
             img_addc(img, width, x, y, modified);
 
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
                     const int nx = x+dx, ny = y+dy;
                     if (img_bounds(width, height, nx, ny)) {
                         UCH original[3], modified[3];
