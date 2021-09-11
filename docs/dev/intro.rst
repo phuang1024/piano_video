@@ -16,12 +16,11 @@ Documentation on the sections can be found in their respective pages.
 General
 -------
 
-Most typo or conspicuous bug fixes are accepted. If you propose an incompatible API
+Most typo or bug fixes are accepted. If you propose an incompatible API
 change or a major feature, please discuss with me first.
 
 Do not make patches for Windows or MacOS support. I will not support
 `malware <https://www.gnu.org/proprietary/proprietary.html>`__ in this project.
-
 If you would like Windows or MacOS support, please fork the project and edit your own
 copy.
 
