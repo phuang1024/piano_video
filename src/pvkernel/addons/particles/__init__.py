@@ -23,12 +23,12 @@ Particle effects.
 
 import numpy as np
 import pv
-from pv.props import BoolProp, FloatProp
+from pv.props import BoolProp, FloatProp, ListProp
 from pvkernel import Video
 from pvkernel.lib import *
 
 sim_args = (F64, I32, I32, I32, AR_DBL, AR_DBL, F64, AR_CH, AR_CH, I32, I32)
-render_args = (IMG, I32, I32, AR_CH, F64)
+render_args = (IMG, I32, I32, AR_CH, F64, UCH, UCH, UCH)
 LIB.ptcl_sim.argtypes = sim_args
 LIB.ptcl_render.argtypes = render_args
 sim_func = LIB.ptcl_sim
@@ -60,6 +60,12 @@ class PTCLS_PT_Props(pv.PropertyGroup):
         name="Particles/Second",
         description="Amount of particles to emit per second per note.",
         default=200,
+    )
+
+    color = ListProp(
+        name="Smoke Color",
+        description="RGB color of smoke.",
+        default=[255, 255, 255],
     )
 
 
@@ -127,7 +133,7 @@ def render(video: Video):
     frame = video.frame
 
     path = get_cpath(cache, frame)
-    render_func(video.render_img, *video.resolution, path, video.props.ptcls.intensity*0.7)
+    render_func(video.render_img, *video.resolution, path, video.props.ptcls.intensity*0.7, *video.props.ptcls.color)
 
 
 classes = (

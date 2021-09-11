@@ -39,9 +39,8 @@ cpp: $(CXXFILES)
 cuda: $(CUFILES)
 	$(CUDA) -shared -o libpvkernel.cu.so $(CUFILES)
 
-clean:  # for some reason needs to do it twice
-	find . -name "*.o" -delete
-	find . -name "*.o" -delete
+clean:
+	rm -f $(CXXFILES)
 
 
 # Cuda files

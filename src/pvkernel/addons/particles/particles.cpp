@@ -202,8 +202,8 @@ extern "C" void ptcl_sim(CD fps, const int frame, const int num_new, const int n
  * @param path Input cache path.
  * @param intensity Intensity multiplier.
  */
-extern "C" void ptcl_render(UCH* img, const int width, const int height,
-        const char* const path, CD intensity) {
+extern "C" void ptcl_render(UCH* img, const int width, const int height, const char* path, CD intensity,
+        const UCH r, const UCH g, const UCH b) {
 
     std::ifstream fp(path);
     std::vector<Particle> ptcls;
@@ -220,12 +220,12 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height,
             // color_main = color of the main particle
             // color_border = color of the side particles.
             // color_streak = color of the streak.
-            const UCH value_main = 255 * (1 - pow(ptcls[i].age/MAX_AGE, 2));
-            const UCH value_border = ibounds(map_range(value_main, 150, 255, 0, 255), 0, 255);
-            const UCH value_streak = value_border;
-            const UCH color_main[3] = {value_main, value_main, value_main};
-            const UCH color_border[3] = {value_border, value_border, value_border};
-            const UCH color_streak[3] = {value_streak, (UCH)((double)value_streak/1.08), (UCH)((double)value_streak/1.06)};
+            const double value_main = 1 - pow(ptcls[i].age/MAX_AGE, 2);
+            const double value_border = dbounds(map_range(value_main, 0.6, 1, 0, 1), 0, 1);
+            const double value_streak = value_border;
+            const UCH color_main[3] = {(UCH)(r*value_main), (UCH)(g*value_main), (UCH)(b*value_main)};
+            const UCH color_border[3] = {(UCH)(r*value_border), (UCH)(g*value_border), (UCH)(b*value_border)};
+            const UCH color_streak[3] = {(UCH)(r*value_streak), (UCH)((double)value_streak/1.08*g), (UCH)((double)value_streak/1.06*b)};
 
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);

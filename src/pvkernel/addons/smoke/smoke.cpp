@@ -114,9 +114,9 @@ void smoke_sim_diff(SmokePtcl* ptcls, const int size, CD strength) {
  * @param op Output file path.
  */
 extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int num_notes,
-        CD* const x_starts, CD* const x_ends, CD y_start, CD x_vel_min, CD x_vel_max,
-        CD y_vel_min, CD y_vel_max, const char* const ip, const char* const op,
-        const int width, const int height, const bool diffusion) {
+        CD* x_starts, CD* x_ends, CD y_start, CD x_vel_min, CD x_vel_max, CD y_vel_min,
+        CD y_vel_max, const char* ip, const char* op, const int width, const int height,
+        const bool diffusion) {
 
     CD vx_min = x_vel_min/fps, vx_max = x_vel_max/fps;
     CD vy_min = y_vel_min/fps, vy_max = y_vel_max/fps;
@@ -199,8 +199,9 @@ extern "C" void smoke_sim(CD fps, const int frame, const int num_new, const int 
  * @param path Input cache path.
  * @param intensity Intensity multiplier.
  */
-extern "C" void smoke_render(UCH* img, const int width, const int height,
-        const char* const path, CD intensity) {
+extern "C" void smoke_render(UCH* img, const int width, const int height, const char* path, CD intensity,
+        const UCH r, const UCH g, const UCH b) {
+
     std::ifstream fp(path);
     std::vector<SmokePtcl> ptcls;
     ptcls.reserve((int)1e6);
@@ -213,12 +214,12 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
 
         if (ptcls[i].age < MAX_AGE && img_bounds(width, height, x, y)) {
             // REMEMBER TO CHANGE MAX_AGE CONSTANT IF YOU ARE ADJUSTING THIS
-            const UCH value = 255 * dbounds(map_range(ptcls[i].age, 3, 5, 1, 0));
-            const UCH white[3] = {value, value, value};
+            CD value = dbounds(map_range(ptcls[i].age, 3, 5, 1, 0));
+            const UCH color[3] = {(UCH)(r*value), (UCH)(g*value), (UCH)(b*value)};
 
             UCH original[3], modified[3];
             img_getc(img, width, x, y, original);
-            img_mix(modified, original, white, intensity/10.0);
+            img_mix(modified, original, color, intensity/10.0);
             img_addc(img, width, x, y, modified);
 
             for (int dx = -1; dx <= 1; dx++) {
@@ -227,7 +228,7 @@ extern "C" void smoke_render(UCH* img, const int width, const int height,
                     if (img_bounds(width, height, nx, ny)) {
                         UCH original[3], modified[3];
                         img_getc(img, width, nx, ny, original);
-                        img_mix(modified, original, white, intensity/30.0);
+                        img_mix(modified, original, color, intensity/30.0);
                         img_addc(img, width, nx, ny, modified);
                     }
                 }
