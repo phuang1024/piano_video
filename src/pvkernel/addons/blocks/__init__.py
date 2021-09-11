@@ -21,6 +21,7 @@
 Block rendering.
 """
 
+import numpy as np
 import pv
 from pv.props import BoolProp, FloatProp, ListProp, StrProp
 from pvkernel import Video
@@ -47,6 +48,12 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
         name="X Offset",
         description="Horizontal offset of blocks.",
         default=0,
+    )
+
+    dim_top = BoolProp(
+        name="Dim Top",
+        description="Whether to dim pixels near the top of the screen",
+        default=True,
     )
 
 
@@ -103,6 +110,11 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
             draw_block_solid(video)
         else:
             raise ValueError(f"Unknown block style: {style}")
+
+        if video.props.blocks.dim_top:
+            for y in range(250):
+                v = np.interp(y, [0, 250], [0.65, 1])
+                video.render_img[y, ...] = video.render_img[y, ...] * v
 
 
 class BUILTIN_JT_Blocks(pv.Job):
