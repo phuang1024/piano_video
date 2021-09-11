@@ -90,7 +90,7 @@ class BUILTIN_OT_KeyPos(pv.Operator):
 
         white_width = width / 52
         black_width = white_width * video.props.keyboard.black_width_fac
-        x = left
+        x = left + video.props.blocks.x_offset
         for key in range(88):
             if self.is_white(key):
                 video.data.core.key_pos[key] = (x, white_width)

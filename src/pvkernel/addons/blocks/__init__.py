@@ -25,6 +25,7 @@ import numpy as np
 import pv
 from pv.props import BoolProp, FloatProp, ListProp, StrProp
 from pvkernel import Video
+from utils import block_pos
 from .solid import draw_block_solid
 
 
@@ -53,6 +54,12 @@ class BUILTIN_PT_Blocks(pv.PropertyGroup):
     dim_top = BoolProp(
         name="Dim Top",
         description="Whether to dim pixels near the top of the screen",
+        default=True,
+    )
+
+    octave_lines = BoolProp(
+        name="Octave Lines",
+        description="Whether to draw vertical lines at each octave.",
         default=True,
     )
 
@@ -104,14 +111,20 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
     description = "The operator that will be run in a job."
 
     def execute(self, video: Video) -> None:
-        style = video.props.blocks.style
+        props = video.props.blocks
+        half = video.resolution[1] // 2
 
-        if style == "SOLID":
+        if props.octave_lines:
+            for note in range(3, 88, 12):
+                x, _ = video.data.core.key_pos[note]
+                video.render_img[:half, int(x), ...] = 75
+
+        if props.style == "SOLID":
             draw_block_solid(video)
         else:
-            raise ValueError(f"Unknown block style: {style}")
+            raise ValueError(f"Unknown block style: {props.style}")
 
-        if video.props.blocks.dim_top:
+        if props.dim_top:
             for y in range(250):
                 v = np.interp(y, [0, 250], [0.65, 1])
                 video.render_img[y, ...] = video.render_img[y, ...] * v

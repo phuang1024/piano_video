@@ -34,7 +34,6 @@ def iter_blocks(video: Video):
         top, bottom = block_pos(video, note, first)
         if not (bottom < 0 or top > threshold):
             x, width = video.data.core.key_pos[note.note]
-            x += video.props.blocks.x_offset
             bottom = min(bottom, threshold+10)
 
             yield (x, top, width, bottom-top)
