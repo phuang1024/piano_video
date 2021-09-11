@@ -18,18 +18,23 @@
 #
 
 from pvkernel import Video
-from pvkernel import draw
-from .block_utils import iter_blocks
+from utils import block_pos, first_note
 
 
-def draw_block_solid(video: Video):
-    for rect in iter_blocks(video):
-        props = video.props.blocks_solid
-        rounding = props.rounding
+def iter_blocks(video: Video):
+    """
+    Iterate through all blocks to draw for the current frame.
+    Return a generator. Each entry is ``(x, y, width, height)``
+    """
+    height = video.resolution[1]
+    threshold = height / 2
+    first = first_note(video)
 
-        if props.glow:
-            new_rect = (rect[0]-2, rect[1]-2, rect[2]+4, rect[3]+4)
-            draw.rect(video.render_img, props.glow_color, new_rect, border_radius=rounding)
-        draw.rect(video.render_img, props.color, rect, border_radius=rounding)
-        if props.border > 0:
-            draw.rect(video.render_img, props.border_color, rect, border=props.border, border_radius=rounding+2)
+    for note in video.data.midi.notes:
+        top, bottom = block_pos(video, note, first)
+        if not (bottom < 0 or top > threshold):
+            x, width = video.data.core.key_pos[note.note]
+            x += video.props.blocks.x_offset
+            bottom = min(bottom, threshold+10)
+
+            yield (x, top, width, bottom-top)

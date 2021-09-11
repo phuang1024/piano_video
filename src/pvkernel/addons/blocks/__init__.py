@@ -24,7 +24,6 @@ Block rendering.
 import pv
 from pv.props import BoolProp, FloatProp, ListProp, StrProp
 from pvkernel import Video
-from utils import block_pos, first_note
 from .solid import draw_block_solid
 
 
@@ -98,22 +97,12 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
     description = "The operator that will be run in a job."
 
     def execute(self, video: Video) -> None:
-        height = video.resolution[1]
-        threshold = height / 2
         style = video.props.blocks.style
-        first = first_note(video)
 
-        for note in video.data.midi.notes:
-            top, bottom = block_pos(video, note, first)
-            if not (bottom < 0 or top > threshold):
-                x, width = video.data.core.key_pos[note.note]
-                x += video.props.blocks.x_offset
-                bottom = min(bottom, threshold+10)
-
-                if style == "SOLID":
-                    draw_block_solid(video, (x, top, width, bottom-top))
-                else:
-                    raise ValueError(f"Unknown block style: {style}")
+        if style == "SOLID":
+            draw_block_solid(video)
+        else:
+            raise ValueError(f"Unknown block style: {style}")
 
 
 class BUILTIN_JT_Blocks(pv.Job):
