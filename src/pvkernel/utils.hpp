@@ -134,3 +134,16 @@ MODS void img_getc(UCH* img, const int width, const int x, const int y, UCH* col
  * @param dest destination color.
  */
 MODS void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac);
+
+/**
+ * Add color to image after mixing with current color.
+ * Current color is the color that is currently on the image.
+ * @param fac 1 is full input color, 0 is full current color
+ */
+MODS void img_mixadd(UCH* img, const int width, const int x, const int y, CD fac, const UCH r,
+    const UCH g, const UCH b);
+
+/**
+ * Overload for img_mixadd which takes UCH[3] for color.
+ */
+MODS void img_mixadd(UCH* img, const int width, const int x, const int y, CD fac, const UCH input[3]);

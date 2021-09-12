@@ -28,8 +28,8 @@ def draw_block_solid(video: Video):
         rounding = props.rounding
 
         if props.glow:
-            new_rect = (rect[0]-2, rect[1]-2, rect[2]+4, rect[3]+4)
-            draw.rect(video.render_img, props.glow_color, new_rect, border_radius=rounding)
+            new_rect = (rect[0]-3, rect[1]-3, rect[2]+6, rect[3]+6)
+            draw.rect(video.render_img, props.glow_color, new_rect, border_radius=rounding+4)
         draw.rect(video.render_img, props.color, rect, border_radius=rounding)
         if props.border > 0:
             draw.rect(video.render_img, props.border_color, rect, border=props.border, border_radius=rounding+2)

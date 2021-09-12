@@ -17,8 +17,9 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 #include "../../utils.hpp"
 #include "../../random.hpp"
 
@@ -56,12 +57,11 @@ extern "C" void glare(UCH* img, const int width, const int height, CD intensity,
                 CD angle_dist = std::min(abs(angle-23), abs(angle-54));
                 CD angle_fac = dbounds(map_range(angle_dist, 0, 5, 0.96, 1));
 
-                CD fac = dbounds(angle_fac * dist_fac);      // 0 = full white, 1 = no white
-                CD real_fac = 1 - ((1-fac)*curr_intensity);  // Account for intensity
-                UCH original[3], modified[3];
-                img_getc(img, width, x, y, original);
-                img_mix(modified, white, original, real_fac);
-                img_setc(img, width, x, y, modified[0], modified[1], modified[2]);
+                CD fac = dbounds(1 - (angle_fac*dist_fac));  // 0 = full white, 1 = no white
+                CD real_fac = fac * curr_intensity;      // Account for intensity
+                if (real_fac < 0)
+                    std::cout << real_fac << std::endl;
+                img_mixadd(img, width, x, y, real_fac, white);
             }
         }
     }

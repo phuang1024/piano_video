@@ -139,3 +139,16 @@ MODS void img_mix(UCH* dest, const UCH* c1, const UCH* c2, CD fac) {
     for (int i = 0; i < 3; i++)
         dest[i] = ibounds(c1[i]*(1-fac) + c2[i]*fac, 0, 255);
 }
+
+MODS void img_mixadd(UCH* img, const int width, const int x, const int y, CD fac, const UCH r,
+        const UCH g, const UCH b) {
+    UCH original[3], modified[3];
+    const UCH input[3] = {r, g, b};
+    img_getc(img, width, x, y, original);
+    img_mix(modified, original, input, fac);
+    img_setc(img, width, x, y, modified[0], modified[1], modified[2]);
+}
+
+MODS void img_mixadd(UCH* img, const int width, const int x, const int y, CD fac, const UCH input[3]) {
+    img_mixadd(img, width, x, y, fac, input[0], input[1], input[2]);
+}
