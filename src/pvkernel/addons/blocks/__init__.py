@@ -114,11 +114,6 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
         props = video.props.blocks
         half = video.resolution[1] // 2
 
-        if props.octave_lines:
-            for note in range(3, 88, 12):
-                x, _ = video.data.core.key_pos[note]
-                video.render_img[:half, int(x), ...] = 55
-
         if props.style == "SOLID":
             draw_block_solid(video)
         else:
@@ -128,6 +123,13 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
             for y in range(250):
                 v = np.interp(y, [0, 250], [0.65, 1])
                 video.render_img[y, ...] = video.render_img[y, ...] * v
+
+        if props.octave_lines:
+            for note in range(3, 88, 12):
+                x, _ = video.data.core.key_pos[note]
+                for y in range(half):
+                    for ch in range(3):
+                        video.render_img[y, int(x), ch] = max(video.render_img[y, int(x), ch], 55)
 
 
 class BUILTIN_JT_Blocks(pv.Job):
