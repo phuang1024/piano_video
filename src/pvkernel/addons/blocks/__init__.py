@@ -127,7 +127,9 @@ class BUILTIN_OT_BlocksRender(pv.Operator):
         if props.octave_lines:
             for note in range(3, 88, 12):
                 x, _ = video.data.core.key_pos[note]
-                video.render_img[:half, int(x), ...] = np.minimum(255, video.render_img[:half, int(x), ...] + 55)
+                for y in range(half):
+                    for ch in range(3):
+                        video.render_img[y, int(x), ch] = max(video.render_img[y, int(x), ch], 55)
 
 
 class BUILTIN_JT_Blocks(pv.Job):
