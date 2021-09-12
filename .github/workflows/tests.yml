@@ -1,64 +1,38 @@
+# Tests the following:
+# * Build API and Kernel
+# * Install API and Kernel
+# * Import API and Kernel (while doing docs)
+# * Build docs
+# * Formatting
+
 name: Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  compile:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # - uses: Jimver/cuda-toolkit@v0.2.4
-      - name: C++
+      - name: Install dependencies
         run: |
-          cd ./src/pvkernel; \
-          make cpp;
-      # - name: Cuda
-      #   run: |
-      #     cd ./src/pvkernel; \
-      #     make cuda;
-
-  modules:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install packages
-        run: pip install -r requirements.txt
-      - name: Kernel
-        run: |
-          cd ./src; \
-          python3 -c "import pvkernel"
-      - name: Pv
-        run: |
-          cd ./src; \
-          python3 -c "import pv"
-
-  formatting:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run check
-        run: python3 ./tests/formatting.py
-
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install packages
-        run: |
-          pip install sphinx sphinx-rtd-theme
           pip install -r requirements.txt
-      - name: Build wheels
-        run: make dist
-      - name: Install packages
+          pip install sphinx sphinx-rtd-theme
+
+      - name: Build and install wheels
         run: |
-          cd ./build/dist; \
-          pip install *.whl
-      - name: Build docs
+          make dist
+          pip install build/dist/*.whl
+
+      - name: Docs
         run: |
           cd ./docs
           mkdir ./_static ./_templates
           make html SPHINXOPTS="-W --keep-going"
+
+      - name: Formatting
+        run: python tests/formatting.py

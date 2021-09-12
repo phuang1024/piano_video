@@ -22,14 +22,10 @@
 help:
 	@echo "Makefile help:"
 	@echo "help: Display this help message."
-	@echo "build: Build kernel C++ shared library."
 	@echo "dist: Build distributable binaries in ./build"
 	@echo "docs: Build sphinx documentation."
+	@echo "kernel: Build kernel C++ shared library."
 	@echo "ps: Build pianosynth."
-
-build:
-	cd ./src/pvkernel; \
-	make;
 
 dist:
 	cd ./build; \
@@ -37,6 +33,10 @@ dist:
 
 docs:
 	cd ./docs; \
+
+kernel:
+	cd ./src/pvkernel; \
+	make;
 	make html;
 
 ps:   # pianosynth
