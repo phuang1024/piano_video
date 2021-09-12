@@ -217,8 +217,8 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height, const c
 
         if (ptcls[i].age < MAX_AGE && img_bounds(width, height, x, y)) {
             // Use an inverse quadratic interp to make it fade slowly, and suddenly go away.
-            // color_main = color of the main particle
-            // color_border = color of the side particles.
+            // color_main = color of the main pixel
+            // color_border = color of the side pixels.
             // color_streak = color of the streak.
             const double value_main = (1-pow(ptcls[i].age/MAX_AGE, 2)) * Random::uniform(0.95, 1.05);
             const double value_border = dbounds(map_range(value_main, 0.6, 1, 0, 1), 0, 1);
@@ -227,22 +227,14 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height, const c
             const UCH color_border[3] = {(UCH)(r*value_border), (UCH)(g*value_border), (UCH)(b*value_border)};
             const UCH color_streak[3] = {(UCH)(r*value_streak), (UCH)((double)value_streak/1.08*g), (UCH)((double)value_streak/1.06*b)};
 
-            UCH original[3], modified[3];
-            img_getc(img, width, x, y, original);
-            img_mix(modified, original, color_main, intensity);
-            img_addc(img, width, x, y, modified);
-
-            // Render pixels surrounding particle
+            // Render pixels surrounding particle (also including)
+            img_mixadd(img, width, x, y, intensity, color_main);
             if (value_border > 0) {
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         const int nx = x+dx, ny = y+dy;
-                        if (img_bounds(width, height, nx, ny)) {
-                            UCH original[3], modified[3];
-                            img_getc(img, width, nx, ny, original);
-                            img_mix(modified, original, color_streak, intensity/3.0);
-                            img_addc(img, width, nx, ny, modified);
-                        }
+                        if (img_bounds(width, height, nx, ny))
+                            img_mixadd(img, width, nx, ny, intensity/3.0, color_border);
                     }
                 }
             }
@@ -286,12 +278,8 @@ extern "C" void ptcl_render(UCH* img, const int width, const int height, const c
                         const float x_fac = dbounds((fabs(1-tx) - (1-curr_x_size)) / curr_x_size);
                         const float final_fac = x_fac * y_fac;
 
-                        if (final_fac > 0) {
-                            UCH original[3], modified[3];
-                            img_getc(img, width, nx, ny, original);
-                            img_mix(modified, original, color_border, final_fac/5.0);
-                            img_addc(img, width, nx, ny, modified);
-                        }
+                        if (final_fac > 0)
+                            img_mixadd(img, width, nx, ny, final_fac/5.0, color_streak);
                     }
                 }
             }

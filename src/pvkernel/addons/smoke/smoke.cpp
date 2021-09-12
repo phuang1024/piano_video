@@ -26,9 +26,9 @@
 #include "../../utils.hpp"
 
 constexpr double AIR_RESIST = 0.95;
-constexpr int MAX_AGE    = 5;
-constexpr int DIFF_DIST  = 4;
-constexpr int DIFF_STR   = 1;
+constexpr int MAX_AGE       = 6;
+constexpr int DIFF_DIST     = 4;
+constexpr int DIFF_STR      = 1;
 
 
 struct SmokePtcl {
@@ -213,23 +213,19 @@ extern "C" void smoke_render(UCH* img, const int width, const int height, const 
         const int x = (int)ptcls[i].x, y = (int)ptcls[i].y;
 
         if (ptcls[i].age < MAX_AGE && img_bounds(width, height, x, y)) {
-            // REMEMBER TO CHANGE MAX_AGE CONSTANT IF YOU ARE ADJUSTING THIS
-            CD value = dbounds(map_range(ptcls[i].age, 3, 5, 1, 0));
+            // Between 3 and MAX_AGE secs, the brightness will go from 1 to 0
+            CD value = dbounds(map_range(ptcls[i].age, 3, MAX_AGE, 1, 0));
             const UCH color[3] = {(UCH)(r*value), (UCH)(g*value), (UCH)(b*value)};
 
-            UCH original[3], modified[3];
-            img_getc(img, width, x, y, original);
-            img_mix(modified, original, color, intensity/Random::uniform(9, 11));
-            img_addc(img, width, x, y, modified);
+            CD fac = intensity / Random::uniform(9, 11);
+            img_mixadd(img, width, x, y, fac, color);
 
             for (int dx = -2; dx <= 2; dx++) {
                 for (int dy = -2; dy <= 2; dy++) {
                     const int nx = x+dx, ny = y+dy;
                     if (img_bounds(width, height, nx, ny)) {
-                        UCH original[3], modified[3];
-                        img_getc(img, width, nx, ny, original);
-                        img_mix(modified, original, color, intensity/Random::uniform(28, 32));
-                        img_addc(img, width, nx, ny, modified);
+                        CD fac = intensity / Random::uniform(28, 32);
+                        img_mixadd(img, width, nx, ny, fac, color);
                     }
                 }
             }
