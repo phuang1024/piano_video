@@ -36,32 +36,34 @@
  * @param x_end X pixel end of piano.
  */
 extern "C" void glare(UCH* img, const int width, const int height, CD intensity, CD radius,
-        const UCH* notes, const UCH num_notes, CD x_start, CD x_end, CD jitter) {
-    CD mid = height / 2.0;
+        const UCH* notes, const UCH num_notes, CD x_start, CD x_end) {
+    const double mid = height / 2.0;
     const UCH white[3] = {255, 255, 255};
     const int border = 25;
 
     for (UCH i = 0; i < num_notes; i++) {
         const UCH note = notes[i];
-        CD x_pos = key_pos(x_start, x_end, note);
-        CD curr_intensity = intensity - Random::uniform(0, jitter);
+        const double x_pos = key_pos(x_start, x_end, note);
+        const double curr_intensity = intensity - Random::uniform(0, 0.1);
+        const double rad = radius * Random::uniform(1, 0.9);   // Current radius
 
-        for (int x = x_pos-radius-border; x < x_pos+radius+border; x++) {
-            for (int y = mid-radius-border; y < mid+radius+border; y++) {
-                CD dx = abs(x-x_pos), dy = abs(y-mid);
-                CD dist = pythag(x-x_pos, y-mid);
-                CD dist_fac = dist / radius;
+        for (int x = x_pos-rad-border; x < x_pos+rad+border; x++) {
+            for (int y = mid-rad-border; y < mid+rad+border; y++) {
+                // const double dx = abs(x-x_pos), dy = abs(y-mid);
+                const double dist = pythag(x-x_pos, y-mid);
+                const double dist_fac = dist / rad;
 
-                // Streaks
-                CD angle = degrees(atan(dy/dx));
-                CD angle_dist = std::min(abs(angle-23), abs(angle-54));
-                CD angle_fac = dbounds(map_range(angle_dist, 0, 5, 0.96, 1));
-
-                CD fac = dbounds(1 - (angle_fac*dist_fac));  // 0 = full white, 1 = no white
-                CD real_fac = fac * curr_intensity;      // Account for intensity
-                if (real_fac < 0)
-                    std::cout << real_fac << std::endl;
-                img_mixadd(img, width, x, y, real_fac, white);
+                if (dist_fac < 0.5) {
+                    const double fac = std::pow(map_range(dist_fac, 0, 0.5, 0.9, 0.3), 2);
+                    img_mixadd(img, width, x, y, fac, white);
+                } else if (dist_fac < 1) {
+                    const double h = map_range(dist_fac, 0.5, 1, 0, 0.8);
+                    const double s = 0.5;
+                    const double v = dbounds(map_range(dist_fac, 0.5, 1, 0.16, 0)) * curr_intensity;
+                    UCH color[3];
+                    hsv2rgb(color, h, s, 1);
+                    img_mixadd(img, width, x, y, v, color);
+                }
             }
         }
     }

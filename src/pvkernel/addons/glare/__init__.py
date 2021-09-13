@@ -27,7 +27,7 @@ from pv.props import BoolProp, FloatProp
 from pvkernel import Video
 from pvkernel.lib import *
 
-LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64, F64)
+LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64)
 
 
 class GLARE_PT_Props(pv.PropertyGroup):
@@ -51,12 +51,6 @@ class GLARE_PT_Props(pv.PropertyGroup):
         default=75,
     )
 
-    jitter = FloatProp(
-        name="Jitter",
-        description="Amount to randomize intensity by.",
-        default=0.1,
-    )
-
 
 class GLARE_OT_Apply(pv.Operator):
     group = "glare"
@@ -78,7 +72,7 @@ class GLARE_OT_Apply(pv.Operator):
         notes = np.array(video.data.midi.notes_playing, dtype=np.uint8)
 
         LIB.glare(video.render_img, width, height, intensity/2, radius,
-            notes, notes.shape[0], start, end, props.jitter)
+            notes, notes.shape[0], start, end)
 
 
 class GLARE_JT_Job(pv.Job):
