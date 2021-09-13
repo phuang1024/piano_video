@@ -94,6 +94,43 @@ MODS double key_pos(CD start, CD end, const UCH key) {
 }
 
 
+MODS void hsv2rgb(UCH dest[3], CD src[3]) {
+    const double h = src[0], s = src[1], v = src[2];
+
+    const double c = s * v;
+    const double x = c * (1 - fabs(fmod(h*6, 2) - 1));
+    const double m = v - c;
+
+    // r prime, g prime, b prime
+    double rp, gp, bp;
+    if (h < 1.0/6) {
+        rp = c; gp = x; bp = 0;
+    } else if (h < 2.0/6) {
+        rp = x; gp = c; bp = 0;
+    } else if (h < 3.0/6) {
+        rp = 0; gp = c; bp = x;
+    } else if (h < 4.0/6) {
+        rp = 0; gp = x; bp = c;
+    } else if (h < 5.0/6) {
+        rp = x; gp = 0; bp = c;
+    } else {
+        rp = c; gp = 0; bp = x;
+    }
+
+    const double r = (rp + m) * 255;
+    const double g = (gp + m) * 255;
+    const double b = (bp + m) * 255;
+    dest[0] = r;
+    dest[1] = g;
+    dest[2] = b;
+}
+
+MODS void hsv2rgb(UCH dest[3], CD h, CD s, CD v) {
+    const double src[3] = {h, s, v};
+    hsv2rgb(dest, src);
+}
+
+
 MODS bool img_bounds(const int width, const int height, const int x, const int y) {
     return ((0<=x && x<width) && (0<=y && y<height));
 }

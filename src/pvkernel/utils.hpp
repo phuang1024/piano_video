@@ -36,7 +36,7 @@
 typedef  unsigned char       UCH;
 typedef  long long           LL;
 typedef  unsigned long long  ULL;
-typedef  const double        CD;
+typedef  const double        CD;   // Only use in arguments
 
 
 /**
@@ -86,6 +86,18 @@ MODS bool is_white(const UCH key);
  * @param key key number. 0 = lowest.
  */
 MODS double key_pos(CD start, CD end, const UCH key);
+
+/**
+ * Convert HSV to RGB.
+ * H, S, and V are all factors from 0 to 1
+ * Output is RGB from 0 to 255
+ */
+MODS void hsv2rgb(UCH dest[3], CD src[3]);
+
+/**
+ * Overload for hsv2rgb
+ */
+MODS void hsv2rgb(UCH dest[3], CD h, CD s, CD v);
 
 /**
  * Check whether the point is inside the image dimensions.
