@@ -38,6 +38,23 @@ This adds your MIDI file into the paths that the kernel will render.
 To seperate multiple MIDIs, use just a colon with no spaces. There
 are example MIDIs all ready inside the examples folder.
 
+We can also add the video recording to play underneath the blocks. Along with
+the video, we need to specify the start time in seconds and the crop.
+
+The start time is the time you press the first note in the video. So, if you
+press the first note at ``1.23`` seconds, put ``1.23`` into the property.
+
+The crop is a list of four lists (see below). They specify the four corners of
+the keyboard keys in your video, starting from the top left and going clockwise.
+The X coordinate starts at 0 from the left and increases going to the right.
+The Y coordinate starts at 0 from the top and increases going down.
+
+.. code-block:: python
+
+    video.props.keyboard.video_path = "your/video/path.mp4"
+    video.props.keyboard.video_start = 1.23   # seconds
+    video.props.keyboard.crop = [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]  # put in actual values here
+
 Almost done! We just have to export the video using the code
 
 .. code-block:: python
