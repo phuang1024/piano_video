@@ -24,7 +24,7 @@ Keyboard rendering.
 import numpy as np
 import cv2
 import pv
-from pv.props import FloatProp, ListProp, StrProp
+from pv.props import BoolProp, FloatProp, ListProp, StrProp
 from pvkernel import Video
 from .crop import KEYBOARD_JT_Init
 from .studio import register as reg_studio, apply_lighting
@@ -32,6 +32,12 @@ from .studio import register as reg_studio, apply_lighting
 
 class KEYBOARD_PT_Props(pv.PropertyGroup):
     idname = "keyboard"
+
+    on = BoolProp(
+        name="Particles On",
+        description="Whether to use particle effects.",
+        default=True,
+    )
 
     left_offset = FloatProp(
         name="Left Offset",
@@ -105,6 +111,9 @@ class KEYBOARD_OT_Render(pv.Operator):
     description = "Render keyboard on render image."
 
     def execute(self, video: Video) -> None:
+        if not video.props.keyboard.on:
+            return
+
         width, height = video.resolution
         height_mid = height // 2
 

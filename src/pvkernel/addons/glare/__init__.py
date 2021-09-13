@@ -33,6 +33,12 @@ LIB.glare.argtypes = (IMG, I32, I32, F64, F64, AR_UCH, UCH, F64, F64, F64)
 class GLARE_PT_Props(pv.PropertyGroup):
     idname = "glare"
 
+    on = BoolProp(
+        name="Particles On",
+        description="Whether to use particle effects.",
+        default=True,
+    )
+
     intensity = FloatProp(
         name="Intensity",
         description="Glare brightness multiplier.",
@@ -59,6 +65,9 @@ class GLARE_OT_Apply(pv.Operator):
     description = "Render glare on the render image."
 
     def execute(self, video: Video) -> None:
+        if not video.props.glare.on:
+            return
+
         width, height = video.resolution
         props = video.props.glare
 
