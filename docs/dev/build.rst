@@ -21,3 +21,10 @@ The distributable binaries are:
 * ``build/dist/pvkernel-...whl``: The Kernel, as a Python library.
 
 To install, see `Installation <../enduser/install.html>`__.
+
+Run From Source
+===============
+
+While developing, it may be faster to run the scripts directly from source, instead of
+building and installing for every test. To do this, place a Python file in the `src`
+directory, and it will be able to import `pv` and `pvkernel`.
