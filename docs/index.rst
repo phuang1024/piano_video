@@ -44,6 +44,7 @@ Piano Video
     blog/cuda.rst
     blog/smoke.rst
     blog/particles.rst
+    blog/new_api.rst
 
 A free piano visualizer.
 
