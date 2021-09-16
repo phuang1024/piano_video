@@ -14,3 +14,9 @@ Problems
 
 Solutions
 ---------
+
+* The effects should not exist in the folder ``pvkernel/addons``. They should be in
+  their own folder, but may be copied to `pvkernel/addons`` when building the wheel.
+* Instead of render jobs, we will have props and operators under the namespace ``render``.
+  These will handle the rendering.
+* In each release, ``pvutils.hpp`` file is provided. This is the header for utility functions.
