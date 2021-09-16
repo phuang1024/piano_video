@@ -124,6 +124,7 @@ MODS void hsv2rgb(UCH dest[3], CD src[3]);
  */
 MODS void hsv2rgb(UCH dest[3], CD h, CD s, CD v);
 
+
 /**
  * Check whether the point is inside the image dimensions.
  */
@@ -184,3 +185,41 @@ MODS void img_mixadd(UCH* img, const int width, const int x, const int y, CD fac
  * Overload for img_mixadd which takes UCH[3] for color.
  */
 MODS void img_mixadd(UCH* img, const int width, const int x, const int y, CD fac, const UCH input[3]);
+
+
+/**
+ * TODO buggy
+ * Draws a line.
+ *
+ * @param thick Line thickness in pixels.
+ */
+extern "C" void draw_line(UCH* img, const int width, const int height, CD x1, CD y1, CD x2, CD y2,
+        CD thick, CD r, CD g, CD b, CD a);
+
+/**
+ * Draws a circle.
+ *
+ * @param cx Center X.
+ * @param cy Center Y.
+ * @param rad Radius.
+ * @param border Border thickness. Set to 0 for filled.
+ */
+extern "C" void draw_circle(UCH* img, const int width, const int height, CD cx, CD cy,
+    CD rad, CD border, CD r, CD g, CD b, CD a);
+
+/**
+ * Draws a rectangle.
+ *
+ * @param dx Top left X.
+ * @param dy Top left Y.
+ * @param dw Width.
+ * @param dh Height.
+ * @param border Border thickness. Set to 0 for filled.
+ * @param border_rad Radius of corner rounding.
+ * @param tl_rad Top left corner radius.
+ * @param tr_rad Top right corner radius.
+ * @param bl_rad Bottom left corner radius.
+ * @param br_rad Bottom right corner radius.
+ */
+extern "C" void draw_rect(UCH* img, const int width, const int height, CD dx, CD dy, CD dw, CD dh,
+    CD border, CD border_rad, CD tl_rad, CD tr_rad, CD bl_rad, CD br_rad, CD r, CD g, CD b, CD a);

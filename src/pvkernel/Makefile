@@ -21,7 +21,7 @@ CXX = g++
 CUDA = nvcc
 
 CXXFLAGS = -Wall -O3 -c -fPIC -I.
-CXXFILES = pvimg.o pvrandom.o pvutils.o draw/draw.o addons/glare/glare.o addons/smoke/smoke.o \
+CXXFILES = pvimg.o pvrandom.o pvutils.o pvdraw.o addons/glare/glare.o addons/smoke/smoke.o \
 	addons/particles/particles.o
 
 CUFLAGS = -dc -Xptxas -O3 -use_fast_math -c -Xcompiler -fPIC
