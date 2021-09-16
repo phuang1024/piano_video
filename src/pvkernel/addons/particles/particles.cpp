@@ -22,8 +22,7 @@
 #include <cstring>
 #include <cmath>
 #include <vector>
-#include "../../utils.hpp"
-#include "../../random.hpp"
+#include "../../pvutils.hpp"
 
 
 constexpr double AIR_RESIST = 0.95;

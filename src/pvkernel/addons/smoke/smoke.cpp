@@ -22,8 +22,7 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
-#include "../../random.hpp"
-#include "../../utils.hpp"
+#include "../../pvutils.hpp"
 
 constexpr double AIR_RESIST = 0.95;
 constexpr int MAX_AGE       = 6;

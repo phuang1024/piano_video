@@ -17,12 +17,14 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+/**
+ * Implementation for random number generating functions.
+ */
 
 #include <cstdlib>
 #include <cmath>
 #include <ctime>
-#include "utils.hpp"
-#include "random.hpp"
+#include "pvutils.hpp"
 
 
 namespace Random {
