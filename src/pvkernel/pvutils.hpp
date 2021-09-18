@@ -35,7 +35,7 @@
     #define  CPP  true
 #endif
 
-#define  PI  3.14159265
+constexpr double PI = 3.14159;
 
 typedef  unsigned char       UCH;
 typedef  long long           LL;
