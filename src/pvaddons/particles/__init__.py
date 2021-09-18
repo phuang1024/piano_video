@@ -21,6 +21,16 @@
 Particle effects.
 """
 
+pv_info = {
+    "idname": "particles",
+    "name": "Particles",
+    "description": "Built-in particle rendering.",
+    "author": "Patrick Huang",
+    "version": (0, 1, 0),
+    "pv": (0, 4, 0),
+    "url": "https://github.com/phuang1024/piano_video",
+}
+
 import numpy as np
 import pv
 from pv.props import BoolProp, FloatProp, ListProp

@@ -19,14 +19,17 @@
 
 """
 MIDI parsing and handling.
-
-Will register:
-
-* Data group ``midi``
-* Property group ``midi``
-* Operator group ``midi``
-* Job ``midi``
 """
+
+pv_info = {
+    "idname": "midi",
+    "name": "Midi",
+    "description": "MIDI parsing and handling.",
+    "author": "Patrick Huang",
+    "version": (0, 1, 0),
+    "pv": (0, 4, 0),
+    "url": "https://github.com/phuang1024/piano_video",
+}
 
 import os
 import mido

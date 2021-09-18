@@ -19,14 +19,17 @@
 
 """
 Core properties and operators.
-
-Will register:
-
-* Data group ``core``
-* Property group ``core``
-* Operator group ``core``
-* Job group ``core``
 """
+
+pv_info = {
+    "idname": "core",
+    "name": "Core",
+    "description": "Core utilities for other add-ons.",
+    "author": "Patrick Huang",
+    "version": (0, 1, 0),
+    "pv": (0, 4, 0),
+    "url": "https://github.com/phuang1024/piano_video",
+}
 
 import pv
 from pv.props import FloatProp

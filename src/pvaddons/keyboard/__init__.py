@@ -21,6 +21,16 @@
 Keyboard rendering.
 """
 
+pv_info = {
+    "idname": "keyboard",
+    "name": "Keyboard",
+    "description": "Built-in keyboard rendering.",
+    "author": "Patrick Huang",
+    "version": (0, 1, 0),
+    "pv": (0, 4, 0),
+    "url": "https://github.com/phuang1024/piano_video",
+}
+
 import numpy as np
 import cv2
 import pv
