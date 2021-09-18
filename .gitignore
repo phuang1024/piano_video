@@ -32,3 +32,5 @@ lib
 /src/pianosynth/pianosynth
 /src/pvkernel/last_compiled.txt
 /src/test*.py
+
+/trash
