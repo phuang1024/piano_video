@@ -17,23 +17,30 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import os
-from deb import PyDeb
-from whl import Wheel
+"""
+Run this file for a one-line command to build a wheel package.
 
-VERSION = "0.4.0"
+python package.py "name" "description" "version"
+"""
+
+import sys
+import os
+from subprocess import Popen
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
-with open(os.path.realpath(os.path.join(PARENT, "..", "requirements.txt")), "r") as fp:
-    REQS = fp.read().strip().split("\n")
+PKG = os.path.join(PARENT, "_package.py")
 
 
-PACKAGES = (
-    Wheel("pv", "Piano Video API.", "src/pv"),
-    Wheel("pvkernel", "Piano Video Kernel.", "src/pvkernel"),
-    PyDeb("pvid", "A free piano visualizer", "src/pvgui", VERSION),
-)
+def main():
+    with open("../requirements.txt", "r") as fp:
+        reqs = fp.read()
 
-for pkg in PACKAGES:
-    with pkg:
-        pkg.build(VERSION, REQS)
+    env = os.environ.copy()
+    env["PV_NAME"] = sys.argv[1]
+    env["PV_DESCRIPTION"] = sys.argv[2]
+    env["PV_VERSION"] = sys.argv[3]
+    env["PV_REQS"] = reqs
+    Popen(["python", PKG, "bdist_wheel", "sdist"], env=env).wait()
+
+
+main()

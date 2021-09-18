@@ -18,28 +18,30 @@
 #
 
 """
-Actually does the setting up.
-Will be called through subprocess because setuptools
-can only handle one call per process.
+This file is invoked by package.py
+
+This file does the actual building. Setuptools can only build once
+per process, so that is why a separate file is needed.
+
+Run package.py instead
 """
 
 import os
-import sys
 import setuptools
 import glob
 
+name = os.environ["PV_NAME"]
+description = os.environ["PV_DESCRIPTION"]
+version = os.environ["PV_VERSION"]
+reqs = os.environ["PV_REQS"].strip().split()
+
 PARENT = os.path.dirname(os.path.realpath(__file__))
+PKG_PATH = os.path.join(PARENT, name)
 
 non_py_extensions = ("*.cpp", "*.hpp", "*.cu", "*.cuh", "Makefile")
-non_py_files = [glob.iglob(os.path.join(PARENT, f"**/{ext}"), recursive=True) for ext in non_py_extensions]
+non_py_files = [glob.iglob(os.path.join(PKG_PATH, f"**/{ext}"), recursive=True) for ext in non_py_extensions]
 non_py_files = [path for gl in non_py_files for path in gl]
-
-name = sys.argv[3]
-description = sys.argv[4]
-version = sys.argv[5]
-reqs = sys.argv[6:]
-
-del sys.argv[3:]
+non_py_files = list(set(non_py_files))
 
 setuptools.setup(
     name=name,

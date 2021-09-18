@@ -22,6 +22,8 @@ lib
 /build/*.egg-info
 /build/build
 /build/dist
+/build/pv
+/build/pvkernel
 
 /docs/_build
 /docs/_static
