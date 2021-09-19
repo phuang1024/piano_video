@@ -3,7 +3,16 @@ Plan
 
 *Written on August 4, 2021*
 
-*Updated August 5, 2021*
+*Updated September 18, 2021*
+
+Update
+------
+
+The current design is different than this plan describes.
+Please see developer documentation for more info.
+
+Plan
+----
 
 Currently, I have the plan to develop Piano Video in three sections:
 

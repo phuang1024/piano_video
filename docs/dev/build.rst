@@ -1,8 +1,8 @@
 Building
 ========
 
-As mentioned in the `plan <../blog/plan.html>`__, Piano Video comes in three parts.
-Each part is built to separate binary files.
+Piano Video comes in a few modules, which are built to a few binary files.
+``pvkernel`` and ``pvaddons`` are merged into one.
 
 Build instructions:
 
@@ -18,7 +18,7 @@ The distributable binaries are:
 
 * ``build/pvid_x.x.x.deb``: The GUI, as a Debian package.
 * ``build/dist/pv-...whl``: The API, as a Python library.
-* ``build/dist/pvkernel-...whl``: The Kernel, as a Python library.
+* ``build/dist/pvkernel-...whl``: The Kernel and PV Add-ons, as a Python library.
 
 To install, see `Installation <../enduser/install.html>`__.
 

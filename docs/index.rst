@@ -32,6 +32,7 @@ Piano Video
     dev/gui.rst
     dev/api.rst
     dev/kernel.rst
+    dev/pvaddons.rst
     dev/synth.rst
 
 .. toctree::

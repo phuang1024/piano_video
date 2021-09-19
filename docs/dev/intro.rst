@@ -3,12 +3,12 @@ Introduction
 
 Thanks for considering contributing to Piano Video!
 
-As outlined in the `plan <../blog/plan.html>`__, Piano Video comes in three
-sections:
+Piano Video comes in modules:
 
 * `GUI <gui.html>`__
 * `API <api.html>`__
 * `Kernel <kernel.html>`__
+* `Add-ons <pvaddons.html>`__ (built-in effects)
 
 Documentation on the sections can be found in their respective pages.
 
@@ -16,7 +16,7 @@ Documentation on the sections can be found in their respective pages.
 General
 -------
 
-Most typo or bug fixes are accepted. If you propose an incompatible API
+Most bug fixes are accepted. If you propose an incompatible API
 change or a major feature, please discuss with me first.
 
 Do not make patches for Windows or MacOS support. I will not support
@@ -57,5 +57,7 @@ The Piano Video repository contains these folders:
       - `GUI <gui.html>`__ source code.
     * - ``/src/pvkernel``
       - `Kernel <kernel.html>`__ source code.
+    * - ``/src/pvaddons``
+      - `PV Addons <pvaddons.html>`__ (built-in effects) source code.
     * - ``/tests``
       - Testing scripts.
