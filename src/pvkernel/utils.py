@@ -23,7 +23,7 @@ from typing import Any, Dict
 
 PARENT = os.path.dirname(os.path.realpath(__file__))
 ADDON_PATHS = (
-    os.path.join(PARENT, "addons"),
+    os.path.join(PARENT, "pvaddons"),
 )
 
 CUDA = False#("PV_USE_CUDA" in os.environ)

@@ -1,35 +1,37 @@
+# Editor config
 .vscode
 
+# Cache
 __pycache__
 .pvcache
 
-include
-lib
-
-*.json
+# Media, test, build files
 *.out
 *.mid
 *.mp3
 *.mp4
 *.wav
 
-!examples/*
-
 *.o
 *.so
 
-/build/*.deb
-/build/*.egg-info
+*.deb
+*.egg-info
+*.whl
+
+# C++
+include
+lib
+
+# Specific
+!examples/*
+
 /build/build
 /build/dist
 /build/pv
 /build/pvkernel
 
 /docs/_build
-/docs/_static
-/docs/_templates
-
-/lib
 
 /src/pianosynth/pianosynth
 /src/pvkernel/last_compiled.txt
